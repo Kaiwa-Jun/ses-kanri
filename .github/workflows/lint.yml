@@ -1,0 +1,106 @@
+name: Lint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lint:
+    name: Run Linters
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for better analysis
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      id: eslint
+      run: |
+        npm run lint -- --format json --output-file eslint-report.json || true
+        echo "::set-output name=eslint_exit_code::$?"
+
+    - name: Run TypeScript type check
+      id: typescript
+      run: |
+        npx tsc --noEmit > typescript-errors.txt 2>&1 || true
+        echo "::set-output name=tsc_exit_code::$?"
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          let comment = '## 🔍 Lint結果\n\n';
+          
+          // ESLint結果
+          const eslintExitCode = '${{ steps.eslint.outputs.eslint_exit_code }}';
+          if (eslintExitCode === '0') {
+            comment += '### ✅ ESLint: 問題なし\n\n';
+          } else {
+            comment += '### ⚠️ ESLint: 警告/エラーあり\n\n';
+            comment += 'ESLintのエラーを修正してください。\n\n';
+          }
+          
+          // TypeScript結果
+          const tscExitCode = '${{ steps.typescript.outputs.tsc_exit_code }}';
+          if (tscExitCode === '0') {
+            comment += '### ✅ TypeScript: 問題なし\n\n';
+          } else {
+            comment += '### ❌ TypeScript: 型エラーあり\n\n';
+            try {
+              const errors = fs.readFileSync('typescript-errors.txt', 'utf8');
+              const errorLines = errors.split('\n').slice(0, 20);
+              comment += '```\n' + errorLines.join('\n') + '\n```\n';
+              if (errors.split('\n').length > 20) {
+                comment += '\n*...その他のエラーは省略されました*\n';
+              }
+            } catch (e) {
+              comment += 'TypeScriptの型エラーを修正してください。\n';
+            }
+          }
+          
+          // PRにコメント
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && comment.body.includes('🔍 Lint結果')
+          );
+          
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: comment
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+          }
+
+    - name: Fail if errors
+      run: |
+        if [ "${{ steps.eslint.outputs.eslint_exit_code }}" != "0" ] || [ "${{ steps.typescript.outputs.tsc_exit_code }}" != "0" ]; then
+          echo "Lint or type check failed!"
+          exit 1
+        fi 

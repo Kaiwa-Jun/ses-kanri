@@ -1,5 +1,8 @@
 # SESエンジニア管理アプリケーション
 
+[![CI](https://github.com/[YOUR_GITHUB_USERNAME]/ses-kanri/actions/workflows/ci.yml/badge.svg)](https://github.com/[YOUR_GITHUB_USERNAME]/ses-kanri/actions/workflows/ci.yml)
+[![Lint](https://github.com/[YOUR_GITHUB_USERNAME]/ses-kanri/actions/workflows/lint.yml/badge.svg)](https://github.com/[YOUR_GITHUB_USERNAME]/ses-kanri/actions/workflows/lint.yml)
+
 SES企業向けの営業担当者とエンジニアの業務を効率化するための業務支援ツールです。
 
 ## 機能概要
@@ -161,3 +164,43 @@ docker-compose build --no-cache
 - 開発環境では `node_modules` と `.next` ディレクトリがボリュームとして除外されているため、パッケージの追加・更新時はコンテナの再ビルドが必要です
 - 本番環境では、Next.jsのスタンドアロンモードを使用して最適化されたイメージを作成しています
 - ポート3000がデフォルトで使用されます。必要に応じて `docker-compose.yml` で変更してください
+
+## GitHub Actions CI/CD
+
+このプロジェクトでは、GitHub Actionsを使用した継続的インテグレーション（CI）が設定されています。
+
+### ワークフロー
+
+#### 1. CI（`.github/workflows/ci.yml`）
+mainブランチとdevelopブランチへのプッシュ・プルリクエスト時に実行されます。
+
+- **Lint and Type Check**: ESLintとTypeScriptの型チェックを実行
+- **Build**: Next.jsアプリケーションのビルド
+- **Docker Build**: 開発用・本番用のDockerイメージのビルド
+- **Test Docker**: Dockerコンテナの起動テスト
+
+#### 2. Lint（`.github/workflows/lint.yml`）
+プルリクエスト時に実行される軽量なLint専用ワークフロー。
+
+- ESLintの実行
+- TypeScriptの型チェック
+- PRへの結果コメント投稿
+
+#### 3. Dependency Review（`.github/workflows/dependency-review.yml`）
+プルリクエスト時に依存関係のセキュリティチェックを実行。
+
+### ローカルでのLint実行
+
+```bash
+# ESLintの実行
+npm run lint
+
+# TypeScriptの型チェック
+npx tsc --noEmit
+```
+
+### CI/CDの設定
+
+1. GitHubリポジトリの設定で、ブランチ保護ルールを設定することを推奨します
+2. 必要に応じて、環境変数をGitHub Secretsに設定してください
+3. READMEのバッジのURLを実際のGitHubユーザー名に更新してください

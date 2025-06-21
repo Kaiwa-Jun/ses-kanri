@@ -250,7 +250,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
   };
 
   return (
-    <div className="px-4 py-4 max-w-none">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <div className="mb-4">
         <Link href="/sales/engineers">
           <Button variant="ghost" size="sm" className="gap-1">
@@ -340,28 +340,6 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   {getAvailabilityText(engineer.availability)}
                 </Badge>
               )}
-
-              {/* エクスポートボタン */}
-              <div className="mt-4 w-full space-y-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full text-xs h-7 justify-start"
-                  onClick={() => handleExportResume('pdf')}
-                >
-                  <Download className="h-3 w-3 mr-2" />
-                  職務経歴書
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full text-xs h-7 justify-start"
-                  onClick={() => alert('スキルシートをダウンロードします')}
-                >
-                  <Download className="h-3 w-3 mr-2" />
-                  スキルシート
-                </Button>
-              </div>
             </div>
 
             {/* 基本情報 */}
@@ -520,7 +498,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
             </div>
 
             {/* 現在の案件 - editアイコンを削除 */}
-            <div className="col-span-1 border-l border-border pl-4">
+            <div className="col-span-3 border-l border-border pl-4">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-blue-500" />
                 現在の案件
@@ -543,6 +521,34 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   <Clock className="h-3 w-3 mr-1" />
                   {currentProject.status}
                 </Badge>
+              </div>
+            </div>
+
+            {/* エクスポート */}
+            <div className="col-span-1 border-l border-border pl-4">
+              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <Download className="h-4 w-4" />
+                エクスポート
+              </h3>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs h-8 justify-start"
+                  onClick={() => handleExportResume('pdf')}
+                >
+                  <Download className="h-3 w-3 mr-2" />
+                  職務経歴書
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs h-8 justify-start"
+                  onClick={() => alert('スキルシートをダウンロードします')}
+                >
+                  <Download className="h-3 w-3 mr-2" />
+                  スキルシート
+                </Button>
               </div>
             </div>
           </div>

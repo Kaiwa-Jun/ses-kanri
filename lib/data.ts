@@ -8,7 +8,7 @@ export type Project = {
   maxRate: number; // 単価上限（円）
   period: string;
   workStyle: 'remote' | 'onsite' | 'hybrid';
-  status: 'open' | 'in_progress' | 'negotiating' | 'closed';
+  status: 'open' | 'closed';
   description: string;
   startDate: string;
   endDate: string;
@@ -502,7 +502,7 @@ export const mockProjects: Project[] = [
     maxRate: 900000,
     period: '12ヶ月',
     workStyle: 'hybrid',
-    status: 'in_progress',
+    status: 'open',
     description: '既存金融システムの保守運用および機能追加案件。',
     startDate: '2023-04-01',
     endDate: '2024-03-31',
@@ -518,7 +518,7 @@ export const mockProjects: Project[] = [
     maxRate: 1000000,
     period: '9ヶ月',
     workStyle: 'onsite',
-    status: 'negotiating',
+    status: 'open',
     description:
       '製造業向けIoTプラットフォームの構築案件。AI/ML技術を活用した予知保全システムの開発。',
     startDate: '2023-08-01',

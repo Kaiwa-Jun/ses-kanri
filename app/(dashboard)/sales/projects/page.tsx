@@ -98,10 +98,6 @@ export default function ProjectsPage() {
     switch (status) {
       case 'open':
         return 'text-green-500 bg-green-100';
-      case 'in_progress':
-        return 'text-blue-500 bg-blue-100';
-      case 'negotiating':
-        return 'text-yellow-500 bg-yellow-100';
       case 'closed':
         return 'text-gray-500 bg-gray-100';
       default:
@@ -113,10 +109,6 @@ export default function ProjectsPage() {
     switch (status) {
       case 'open':
         return '募集中';
-      case 'in_progress':
-        return '進行中';
-      case 'negotiating':
-        return '交渉中';
       case 'closed':
         return '終了';
       default:
@@ -187,8 +179,6 @@ export default function ProjectsPage() {
           <SelectContent>
             <SelectItem value="all">全てのステータス</SelectItem>
             <SelectItem value="open">募集中</SelectItem>
-            <SelectItem value="in_progress">進行中</SelectItem>
-            <SelectItem value="negotiating">交渉中</SelectItem>
             <SelectItem value="closed">終了</SelectItem>
           </SelectContent>
         </Select>

@@ -43,7 +43,7 @@ const projectSchema = z
     maxRate: z.coerce.number().positive('単価（上限）は正の数を入力してください'),
     period: z.string().min(1, '期間を入力してください'),
     workStyle: z.enum(['remote', 'onsite', 'hybrid']),
-    status: z.enum(['open', 'in_progress', 'negotiating', 'closed']),
+    status: z.enum(['open', 'closed']),
     description: z.string().min(10, '説明は10文字以上で入力してください'),
     startDate: z.string().min(1, '開始日を入力してください'),
     endDate: z.string().min(1, '終了日を入力してください'),
@@ -229,8 +229,6 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="open">募集中</SelectItem>
-                        <SelectItem value="in_progress">進行中</SelectItem>
-                        <SelectItem value="negotiating">交渉中</SelectItem>
                         <SelectItem value="closed">終了</SelectItem>
                       </SelectContent>
                     </Select>

@@ -62,13 +62,9 @@ export function ProjectDetails({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
-      case 'in_progress':
-        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
-      case 'negotiating':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+        return 'text-green-500 bg-green-100';
       case 'closed':
-        return 'text-gray-500 bg-gray-100 dark:bg-gray-800';
+        return 'text-gray-500 bg-gray-100';
       default:
         return '';
     }
@@ -78,10 +74,6 @@ export function ProjectDetails({
     switch (status) {
       case 'open':
         return '募集中';
-      case 'in_progress':
-        return '進行中';
-      case 'negotiating':
-        return '交渉中';
       case 'closed':
         return '終了';
       default:
@@ -182,8 +174,6 @@ export function ProjectDetails({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="open">募集中</SelectItem>
-                        <SelectItem value="in_progress">進行中</SelectItem>
-                        <SelectItem value="negotiating">交渉中</SelectItem>
                         <SelectItem value="closed">終了</SelectItem>
                       </SelectContent>
                     </Select>

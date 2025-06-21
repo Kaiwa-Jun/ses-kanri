@@ -12,8 +12,11 @@ RUN npm ci
 # アプリケーションのソースコードをコピー
 COPY . .
 
+# publicディレクトリが存在しない場合は作成
+RUN mkdir -p public
+
 # ビルド時の環境変数設定
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Next.jsアプリケーションをビルド
 RUN npm run build
@@ -24,8 +27,8 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 # 本番環境用の環境変数
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # グループとユーザーを作成
 RUN addgroup -g 1001 -S nodejs

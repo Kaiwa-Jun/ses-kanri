@@ -81,3 +81,83 @@ SES企業向けの営業担当者とエンジニアの業務を効率化する�
 - グラフ表示: Recharts
 - アイコン: Lucide React
 - アニメーション: Framer Motion
+
+## Docker環境での実行
+
+### 開発環境
+
+開発環境でDockerを使用してアプリケーションを起動する場合：
+
+```bash
+# Dockerコンテナの起動
+docker-compose up -d
+
+# ログの確認
+docker-compose logs -f
+
+# コンテナの停止
+docker-compose down
+```
+
+開発環境では、ホットリロードが有効になっており、ソースコードの変更が自動的に反映されます。
+
+### 本番環境
+
+本番環境用の最適化されたDockerイメージを使用する場合：
+
+```bash
+# 本番環境用のコンテナの起動
+docker-compose -f docker-compose.prod.yml up -d
+
+# ログの確認
+docker-compose -f docker-compose.prod.yml logs -f
+
+# コンテナの停止
+docker-compose -f docker-compose.prod.yml down
+```
+
+### Dockerコマンド一覧
+
+```bash
+# イメージのビルド
+docker-compose build
+
+# コンテナの起動（バックグラウンド）
+docker-compose up -d
+
+# コンテナの起動（フォアグラウンド）
+docker-compose up
+
+# 実行中のコンテナ確認
+docker-compose ps
+
+# コンテナの停止
+docker-compose stop
+
+# コンテナの停止と削除
+docker-compose down
+
+# コンテナとボリュームの削除
+docker-compose down -v
+
+# ログの確認
+docker-compose logs
+
+# 特定のサービスのログ確認
+docker-compose logs app
+
+# リアルタイムログの確認
+docker-compose logs -f
+
+# コンテナ内でコマンド実行
+docker-compose exec app sh
+
+# イメージの再ビルド
+docker-compose build --no-cache
+```
+
+### 注意事項
+
+- 開発環境では `node_modules` と `.next` ディレクトリがボリュームとして除外されているため、パッケージの追加・更新時はコンテナの再ビルドが必要です
+- 本番環境では、Next.jsのスタンドアロンモードを使用して最適化されたイメージを作成しています
+- ポート3000がデフォルトで使用されます。必要に応じて `docker-compose.yml` で変更してください

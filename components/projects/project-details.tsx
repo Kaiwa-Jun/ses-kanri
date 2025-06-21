@@ -301,7 +301,7 @@ export function ProjectDetails({
                 {isEditing ? (
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-2">
-                      {project.skills.map(skill => (
+                      {project.skills.map((skill: string) => (
                         <Badge 
                           key={skill} 
                           variant="secondary"
@@ -311,7 +311,7 @@ export function ProjectDetails({
                           <button
                             onClick={() => setProject({
                               ...project,
-                              skills: project.skills.filter(s => s !== skill)
+                              skills: project.skills.filter((s: string) => s !== skill)
                             })}
                             className="text-muted-foreground hover:text-foreground transition-colors"
                           >
@@ -344,7 +344,7 @@ export function ProjectDetails({
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {project.skills.map(skill => (
+                    {project.skills.map((skill: string) => (
                       <Badge key={skill} variant="secondary">
                         {skill}
                       </Badge>
@@ -493,7 +493,7 @@ export function ProjectDetails({
                             </p>
                           </div>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {engineer.skills.slice(0, 3).map(skill => (
+                            {engineer.skills.slice(0, 3).map((skill: any) => (
                               <Badge key={skill.name} variant="outline" className="text-xs py-0">
                                 {skill.name}
                               </Badge>

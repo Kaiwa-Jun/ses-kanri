@@ -356,7 +356,7 @@ export function BulkTimeEntry() {
                   return (
                     <TableRow 
                       key={entry.date}
-                      className={`h-12 ${getRowBackground(date, isApproved)}`}
+                      className={`h-12 ${getRowBackground(date, isApproved || false)}`}
                     >
                       <TableCell className="py-2">
                         <div className="flex items-center justify-between">

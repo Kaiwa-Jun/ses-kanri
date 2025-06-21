@@ -198,7 +198,7 @@ export default function SalesNotificationsPage() {
                     <div className="flex items-center gap-2 mt-1 text-xs">
                       <span className="text-muted-foreground">稼働時間:</span>
                       <span className={`font-medium ${
-                        notification.actualHours < (notification.contractMinHours || 0) ? "text-red-600" : "text-orange-600"
+                        (notification.actualHours || 0) < (notification.contractMinHours || 0) ? "text-red-600" : "text-orange-600"
                       }`}>
                         {notification.actualHours}h
                       </span>

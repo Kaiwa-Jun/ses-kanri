@@ -82,11 +82,31 @@ const skillOptions = {
   infrastructure: ["AWS", "GCP", "Azure", "Docker", "Kubernetes", "Terraform"]
 };
 
+// プロジェクトの型定義
+interface Project {
+  id?: string;
+  projectName: string;
+  startDate: string;
+  endDate: string;
+  teamSize: number;
+  description: string;
+  responsibilities: string;
+  skills: {
+    frontend: string[];
+    backend: string[];
+    infrastructure: string[];
+  };
+}
+
 export default function ResumePage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [editingProjectIndex, setEditingProjectIndex] = useState<number | null>(null);
-  const [selectedSkills, setSelectedSkills] = useState<Record<string, string[]>>({
+  const [selectedSkills, setSelectedSkills] = useState<{
+    frontend: string[];
+    backend: string[];
+    infrastructure: string[];
+  }>({
     frontend: [],
     backend: [],
     infrastructure: [],
@@ -110,14 +130,20 @@ export default function ResumePage() {
   });
 
   // プロジェクトの追加・編集
-  const handleProjectSubmit = (data: any) => {
+  const handleProjectSubmit = (data: z.infer<typeof projectSchema>) => {
+    const projectWithId: Project = {
+      ...data,
+      id: editingProjectIndex !== null ? projects[editingProjectIndex].id : Date.now().toString(),
+      skills: selectedSkills
+    };
+    
     if (editingProjectIndex !== null) {
       const updatedProjects = [...projects];
-      updatedProjects[editingProjectIndex] = { ...data, skills: selectedSkills };
+      updatedProjects[editingProjectIndex] = projectWithId;
       setProjects(updatedProjects);
       setEditingProjectIndex(null);
     } else {
-      setProjects([...projects, { ...data, skills: selectedSkills }]);
+      setProjects([...projects, projectWithId]);
     }
     projectForm.reset();
     setSelectedSkills({ frontend: [], backend: [], infrastructure: [] });
@@ -137,7 +163,7 @@ export default function ResumePage() {
   };
 
   // スキルの選択状態を切り替え
-  const toggleSkill = (category: string, skill: string) => {
+  const toggleSkill = (category: keyof typeof selectedSkills, skill: string) => {
     setSelectedSkills(prev => ({
       ...prev,
       [category]: prev[category].includes(skill)
@@ -466,9 +492,9 @@ export default function ResumePage() {
                   {skills.map(skill => (
                     <Badge
                       key={skill}
-                      variant={selectedSkills[category].includes(skill) ? "default" : "outline"}
+                      variant={selectedSkills[category as keyof typeof selectedSkills].includes(skill) ? "default" : "outline"}
                       className="cursor-pointer"
-                      onClick={() => toggleSkill(category, skill)}
+                      onClick={() => toggleSkill(category as keyof typeof selectedSkills, skill)}
                     >
                       {skill}
                     </Badge>
@@ -530,7 +556,7 @@ export default function ResumePage() {
                   <p className="text-sm font-medium">使用技術</p>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {Object.entries(project.skills).map(([category, techs]) =>
-                      techs.map((tech: string) => (
+                      (techs as string[]).map((tech: string) => (
                         <Badge key={tech} variant="secondary">
                           {tech}
                         </Badge>
@@ -712,7 +738,7 @@ export default function ResumePage() {
                   <p className="text-sm font-medium">使用技術:</p>
                   <div className="flex flex-wrap gap-1">
                     {Object.entries(project.skills).map(([category, techs]) =>
-                      techs.map((tech: string) => (
+                      (techs as string[]).map((tech: string) => (
                         <Badge key={tech} variant="outline">
                           {tech}
                         </Badge>

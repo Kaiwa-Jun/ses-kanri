@@ -1,9 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+// import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ 
+//   subsets: ['latin'],
+//   display: 'swap',
+//   preload: false,
+// });
 
 export const metadata: Metadata = {
   title: 'SESエンジニア管理アプリ',
@@ -17,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

@@ -74,9 +74,13 @@ export default function ClientsPage() {
     }
     
     if (sortOrder === "desc") {
-      return typeof aValue === "string" ? bValue.localeCompare(aValue) : bValue - aValue;
+      return typeof aValue === "string" && typeof bValue === "string" 
+        ? bValue.localeCompare(aValue) 
+        : (bValue as number) - (aValue as number);
     } else {
-      return typeof aValue === "string" ? aValue.localeCompare(bValue) : aValue - bValue;
+      return typeof aValue === "string" && typeof bValue === "string"
+        ? aValue.localeCompare(bValue) 
+        : (aValue as number) - (bValue as number);
     }
   });
   

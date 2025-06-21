@@ -158,9 +158,6 @@ export default function EngineersPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">エンジニア一覧</h1>
-            <p className="text-muted-foreground">
-              所属エンジニアの情報一覧（{sortedEngineers.length}名）
-            </p>
           </div>
           <Button onClick={() => setIsAddModalOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />

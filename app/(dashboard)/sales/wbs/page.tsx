@@ -114,7 +114,6 @@ export default function WBSPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">稼働状況（WBS）</h1>
-          <p className="text-muted-foreground">エンジニアの稼働状況をガントチャートで確認</p>
         </div>
       </motion.div>
 

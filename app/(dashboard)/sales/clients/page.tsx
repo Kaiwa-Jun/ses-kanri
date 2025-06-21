@@ -139,7 +139,6 @@ export default function ClientsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">クライアント一覧</h1>
-          <p className="text-muted-foreground">取引先企業の管理（{sortedClients.length}社）</p>
         </div>
         <Button size="sm" className="gap-2">
           <Plus className="h-4 w-4" />

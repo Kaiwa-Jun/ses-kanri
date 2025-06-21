@@ -561,7 +561,6 @@ export default function TeamsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">営業チーム管理</h1>
-          <p className="text-muted-foreground">営業チームの担当状況と実績を管理</p>
         </div>
       </motion.div>
 

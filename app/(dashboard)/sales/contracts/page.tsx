@@ -415,7 +415,6 @@ export default function ContractsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">契約管理</h1>
-          <p className="text-muted-foreground">契約書の作成・管理・ステータス追跡</p>
         </div>
         <Button size="sm" className="gap-2" onClick={() => setIsCreateDialogOpen(true)}>
           <Plus className="h-4 w-4" />

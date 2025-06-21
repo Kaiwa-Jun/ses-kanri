@@ -257,9 +257,6 @@ export default function SalesNotificationsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">通知</h1>
-          <p className="text-muted-foreground">
-            未読の通知が{notifications.filter((n) => n.status === 'unread').length}件あります
-          </p>
         </div>
       </motion.div>
 

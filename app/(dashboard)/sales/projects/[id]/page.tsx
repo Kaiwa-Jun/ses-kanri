@@ -1,0 +1,26 @@
+import { mockProjects, getMatchingEngineers } from "@/lib/data";
+import { ProjectDetails } from "@/components/projects/project-details";
+
+// 静的に生成するページのパラメータを定義
+export async function generateStaticParams() {
+  // mockProjectsから全てのプロジェクトIDを取得
+  return mockProjects.map((project) => ({
+    id: project.id
+  }));
+}
+
+export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
+  // 実際のアプリでは、APIからデータを取得する
+  const project = mockProjects.find((p) => p.id === params.id);
+  const matchingEngineers = getMatchingEngineers(params.id);
+  
+  if (!project) {
+    return (
+      <div className="container py-6">
+        <p>案件が見つかりません</p>
+      </div>
+    );
+  }
+
+  return <ProjectDetails project={project} matchingEngineers={matchingEngineers} />;
+}

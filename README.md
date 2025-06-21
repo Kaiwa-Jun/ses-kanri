@@ -227,7 +227,6 @@ npx tsc --noEmit
 
 - **pre-commit**: コミット時にステージングされたファイルに対してLintとフォーマットを実行
 - **pre-push**: プッシュ前にLint、型チェック、フォーマットチェックを実行
-- **commit-msg**: コミットメッセージが規約に従っているかチェック
 
 ### 利用可能なコマンド
 
@@ -246,23 +245,4 @@ npm run type-check
 
 # すべてのチェック + ビルド
 npm run validate
-```
-
-### コミットメッセージ規約
-
-```
-<type>(<scope>): <subject>
-
-使用可能なtype:
-- feat:     新機能
-- fix:      バグ修正
-- docs:     ドキュメントのみの変更
-- style:    フォーマットの変更
-- refactor: リファクタリング
-- test:     テストの追加・修正
-- chore:    ビルドプロセスやツールの変更
-- perf:     パフォーマンス改善
-- ci:       CI/CDの設定変更
-- build:    ビルドシステムの変更
-- revert:   以前のコミットの取り消し
 ```

@@ -1,25 +1,31 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { 
-  ChevronLeft, Building2, Mail, Phone, User, FileText, Calendar,
-  Users, Star, Briefcase, Edit2, Save, Download
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { mockProjects, type Client } from "@/lib/data";
+  ChevronLeft,
+  Building2,
+  Mail,
+  Phone,
+  User,
+  FileText,
+  Calendar,
+  Users,
+  Star,
+  Briefcase,
+  Edit2,
+  Save,
+  Download,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
+import { mockProjects, type Client } from '@/lib/data';
 
 interface ClientDetailsProps {
   client: Client;
@@ -28,7 +34,7 @@ interface ClientDetailsProps {
 export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
   const [client, setClient] = useState(initialClient);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const handleSave = () => {
     // 実際のアプリではここでAPIを呼び出して保存
     setIsEditing(false);
@@ -36,25 +42,26 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
 
   // モッククライアント詳細データ（実際のアプリではAPIから取得）
   const clientDetails = {
-    description: "大手商社。IT投資に積極的で、特にDX推進に注力している。",
+    description: '大手商社。IT投資に積極的で、特にDX推進に注力している。',
     projects: mockProjects.slice(0, 3),
     successfulEngineers: [
       {
-        name: "山田太郎",
-        role: "フロントエンドリード",
-        period: "2022年4月〜2023年3月",
+        name: '山田太郎',
+        role: 'フロントエンドリード',
+        period: '2022年4月〜2023年3月',
         rating: 4.8,
-        imageUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
+        imageUrl: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
       },
       {
-        name: "鈴木花子",
-        role: "バックエンドエンジニア",
-        period: "2022年7月〜2023年6月",
+        name: '鈴木花子',
+        role: 'バックエンドエンジニア',
+        period: '2022年7月〜2023年6月',
         rating: 4.5,
-        imageUrl: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
-      }
+        imageUrl: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg',
+      },
     ],
-    notes: "・新規案件の打診は部長経由で行うこと\n・見積もりは必ず課長の確認を得ること\n・リモートワークに柔軟な対応が可能",
+    notes:
+      '・新規案件の打診は部長経由で行うこと\n・見積もりは必ず課長の確認を得ること\n・リモートワークに柔軟な対応が可能',
   };
 
   return (
@@ -67,7 +74,7 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
           </Button>
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div
           className="lg:col-span-2 space-y-6"
@@ -93,13 +100,9 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+                  onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
                 >
-                  {isEditing ? (
-                    <Save className="h-4 w-4" />
-                  ) : (
-                    <Edit2 className="h-4 w-4" />
-                  )}
+                  {isEditing ? <Save className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                 </Button>
               </div>
             </CardHeader>
@@ -107,15 +110,12 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
               <div>
                 <h3 className="font-medium mb-2">企業概要</h3>
                 {isEditing ? (
-                  <Textarea
-                    value={clientDetails.description}
-                    rows={3}
-                  />
+                  <Textarea value={clientDetails.description} rows={3} />
                 ) : (
                   <p className="text-muted-foreground">{clientDetails.description}</p>
                 )}
               </div>
-              
+
               <div>
                 <h3 className="font-medium mb-2">担当者情報</h3>
                 <div className="space-y-4">
@@ -152,32 +152,29 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-medium mb-2">求められるスキル</h3>
                 <div className="flex flex-wrap gap-2">
-                  {client.preferredSkills.map(skill => (
+                  {client.preferredSkills.map((skill) => (
                     <Badge key={skill} variant="secondary">
                       {skill}
                     </Badge>
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="font-medium mb-2">営業メモ</h3>
                 {isEditing ? (
-                  <Textarea
-                    value={clientDetails.notes}
-                    rows={5}
-                  />
+                  <Textarea value={clientDetails.notes} rows={5} />
                 ) : (
                   <p className="text-muted-foreground whitespace-pre-line">{clientDetails.notes}</p>
                 )}
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -196,7 +193,7 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
                   </div>
                   <p className="text-sm text-muted-foreground">{project.description}</p>
                   <div className="flex flex-wrap gap-1">
-                    {project.skills.map(skill => (
+                    {project.skills.map((skill) => (
                       <Badge key={skill} variant="secondary">
                         {skill}
                       </Badge>
@@ -208,7 +205,7 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           className="space-y-6"
           initial={{ opacity: 0, y: 20 }}
@@ -224,7 +221,10 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {clientDetails.successfulEngineers.map((engineer, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 hover:bg-muted rounded-lg transition-colors">
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-3 hover:bg-muted rounded-lg transition-colors"
+                >
                   <Avatar>
                     <AvatarImage src={engineer.imageUrl} />
                     <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
@@ -239,8 +239,8 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
                           key={i}
                           className={`h-4 w-4 ${
                             i < Math.floor(engineer.rating)
-                              ? "text-yellow-500 fill-yellow-500"
-                              : "text-muted-foreground"
+                              ? 'text-yellow-500 fill-yellow-500'
+                              : 'text-muted-foreground'
                           }`}
                         />
                       ))}
@@ -251,7 +251,7 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
               ))}
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

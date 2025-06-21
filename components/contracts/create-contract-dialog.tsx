@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,35 +19,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
 const contractSchema = z.object({
-  clientName: z.string().min(1, "クライアント名を入力してください"),
-  contractType: z.string().min(1, "契約形態を選択してください"),
-  startDate: z.string().min(1, "開始日を入力してください"),
-  endDate: z.string().min(1, "終了日を入力してください"),
-  workStyle: z.string().min(1, "勤務形態を選択してください"),
+  clientName: z.string().min(1, 'クライアント名を入力してください'),
+  contractType: z.string().min(1, '契約形態を選択してください'),
+  startDate: z.string().min(1, '開始日を入力してください'),
+  endDate: z.string().min(1, '終了日を入力してください'),
+  workStyle: z.string().min(1, '勤務形態を選択してください'),
   workLocation: z.string().optional(),
-  workingHoursStart: z.string().min(1, "開始時間を選択してください"),
-  workingHoursEnd: z.string().min(1, "終了時間を選択してください"),
+  workingHoursStart: z.string().min(1, '開始時間を選択してください'),
+  workingHoursEnd: z.string().min(1, '終了時間を選択してください'),
   isFlextime: z.boolean().default(false),
-  workingDaysUnit: z.enum(["週", "月"]),
-  workingDaysCount: z.string().min(1, "日数を選択してください"),
-  rate: z.coerce.number().positive("単価を入力してください"),
-  workload: z.coerce.number().positive("契約工数を入力してください"),
-  minHours: z.coerce.number().positive("最小稼働時間を入力してください"),
-  maxHours: z.coerce.number().positive("最大稼働時間を入力してください"),
-  overtimeRule: z.string().min(1, "超過／控除ルールを入力してください"),
-  paymentTerms: z.string().min(1, "支払条件を選択してください"),
+  workingDaysUnit: z.enum(['週', '月']),
+  workingDaysCount: z.string().min(1, '日数を選択してください'),
+  rate: z.coerce.number().positive('単価を入力してください'),
+  workload: z.coerce.number().positive('契約工数を入力してください'),
+  minHours: z.coerce.number().positive('最小稼働時間を入力してください'),
+  maxHours: z.coerce.number().positive('最大稼働時間を入力してください'),
+  overtimeRule: z.string().min(1, '超過／控除ルールを入力してください'),
+  paymentTerms: z.string().min(1, '支払条件を選択してください'),
 });
 
 type ContractFormValues = z.infer<typeof contractSchema>;
@@ -65,11 +71,11 @@ const generateTimeOptions = () => {
 
 // 支払条件の選択肢
 const paymentTermsOptions = [
-  { value: "月末締め翌月末払い", label: "月末締め翌月末払い" },
-  { value: "月末締め翌月15日払い", label: "月末締め翌月15日払い" },
-  { value: "15日締め月末払い", label: "15日締め月末払い" },
-  { value: "15日締め翌月15日払い", label: "15日締め翌月15日払い" },
-  { value: "月末締め翌々月末払い", label: "月末締め翌々月末払い" },
+  { value: '月末締め翌月末払い', label: '月末締め翌月末払い' },
+  { value: '月末締め翌月15日払い', label: '月末締め翌月15日払い' },
+  { value: '15日締め月末払い', label: '15日締め月末払い' },
+  { value: '15日締め翌月15日払い', label: '15日締め翌月15日払い' },
+  { value: '月末締め翌々月末払い', label: '月末締め翌々月末払い' },
 ];
 
 // 稼働日数の選択肢
@@ -80,30 +86,30 @@ const workingDaysOptions = Array.from({ length: 7 }, (_, i) => ({
 
 export function CreateContractDialog({ open, onOpenChange }: CreateContractDialogProps) {
   const timeOptions = generateTimeOptions();
-  
+
   const form = useForm<ContractFormValues>({
     resolver: zodResolver(contractSchema),
     defaultValues: {
-      clientName: "",
-      contractType: "準委任",
-      startDate: "",
-      endDate: "",
-      workStyle: "remote",
-      workLocation: "",
-      workingHoursStart: "09:00",
-      workingHoursEnd: "18:00",
+      clientName: '',
+      contractType: '準委任',
+      startDate: '',
+      endDate: '',
+      workStyle: 'remote',
+      workLocation: '',
+      workingHoursStart: '09:00',
+      workingHoursEnd: '18:00',
       isFlextime: false,
-      workingDaysUnit: "週",
-      workingDaysCount: "5",
+      workingDaysUnit: '週',
+      workingDaysCount: '5',
       rate: 0,
       workload: 160,
       minHours: 140,
       maxHours: 180,
-      overtimeRule: "1時間単位で精算（基準単価の1.25倍）",
-      paymentTerms: "月末締め翌月末払い",
+      overtimeRule: '1時間単位で精算（基準単価の1.25倍）',
+      paymentTerms: '月末締め翌月末払い',
     },
   });
-  
+
   const onSubmit = (data: ContractFormValues) => {
     console.log(data);
     // 実際には保存処理を行う
@@ -117,13 +123,13 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
         <DialogHeader>
           <DialogTitle>新規契約書作成</DialogTitle>
         </DialogHeader>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* 基本情報 */}
             <div className="space-y-4">
               <h3 className="font-medium">基本情報</h3>
-              
+
               <FormField
                 control={form.control}
                 name="clientName"
@@ -137,7 +143,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                   </FormItem>
                 )}
               />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -152,7 +158,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="endDate"
@@ -168,13 +174,13 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                 />
               </div>
             </div>
-            
+
             <Separator />
-            
+
             {/* 契約条件 */}
             <div className="space-y-4">
               <h3 className="font-medium">契約条件</h3>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -198,7 +204,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="paymentTerms"
@@ -212,7 +218,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {paymentTermsOptions.map(option => (
+                          {paymentTermsOptions.map((option) => (
                             <SelectItem key={option.value} value={option.value}>
                               {option.label}
                             </SelectItem>
@@ -223,7 +229,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="workStyle"
@@ -246,7 +252,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="workLocation"
@@ -261,7 +267,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                   )}
                 />
               </div>
-              
+
               {/* 稼働時間帯 */}
               <div className="space-y-2">
                 <FormLabel>稼働時間帯</FormLabel>
@@ -278,7 +284,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {timeOptions.map(time => (
+                            {timeOptions.map((time) => (
                               <SelectItem key={time} value={time}>
                                 {time}
                               </SelectItem>
@@ -289,7 +295,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="workingHoursEnd"
@@ -302,7 +308,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {timeOptions.map(time => (
+                            {timeOptions.map((time) => (
                               <SelectItem key={time} value={time}>
                                 {time}
                               </SelectItem>
@@ -332,7 +338,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                   )}
                 />
               </div>
-              
+
               {/* 稼働日数 */}
               <div className="space-y-2">
                 <FormLabel>稼働日数</FormLabel>
@@ -357,7 +363,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="workingDaysCount"
@@ -370,7 +376,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {workingDaysOptions.map(option => (
+                            {workingDaysOptions.map((option) => (
                               <SelectItem key={option.value} value={option.value}>
                                 {option.label}
                               </SelectItem>
@@ -384,13 +390,13 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                 </div>
               </div>
             </div>
-            
+
             <Separator />
-            
+
             {/* 単価・費用 */}
             <div className="space-y-4">
               <h3 className="font-medium">単価・費用</h3>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -405,7 +411,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="workload"
@@ -419,7 +425,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="minHours"
@@ -433,7 +439,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="maxHours"
@@ -448,7 +454,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                   )}
                 />
               </div>
-              
+
               <FormField
                 control={form.control}
                 name="overtimeRule"
@@ -463,7 +469,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                 )}
               />
             </div>
-            
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 キャンセル

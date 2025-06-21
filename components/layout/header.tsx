@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { RocketIcon, Users } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { RocketIcon, Users } from 'lucide-react';
+import { ModeToggle } from '@/components/mode-toggle';
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  
+
   const isCurrentRole = (role: string) => {
     return pathname.startsWith(`/${role}`);
   };
@@ -29,7 +29,7 @@ export function Header() {
               <span className="font-bold text-xl">SES管理</span>
             </Link>
           </motion.div>
-          
+
           <div className="flex items-center gap-4">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -38,26 +38,26 @@ export function Header() {
               className="flex gap-2"
             >
               <Button
-                variant={isCurrentRole("sales") ? "default" : "ghost"}
+                variant={isCurrentRole('sales') ? 'default' : 'ghost'}
                 size="sm"
                 className="gap-2"
-                onClick={() => router.push("/sales/projects")}
+                onClick={() => router.push('/sales/projects')}
               >
                 <RocketIcon className="w-4 h-4" />
                 営業
               </Button>
-              
+
               <Button
-                variant={isCurrentRole("engineer") ? "default" : "ghost"}
+                variant={isCurrentRole('engineer') ? 'default' : 'ghost'}
                 size="sm"
                 className="gap-2"
-                onClick={() => router.push("/engineer/dashboard")}
+                onClick={() => router.push('/engineer/dashboard')}
               >
                 <Users className="w-4 h-4" />
                 エンジニア
               </Button>
             </motion.div>
-            
+
             <ModeToggle />
           </div>
         </div>

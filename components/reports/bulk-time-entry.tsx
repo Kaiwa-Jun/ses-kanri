@@ -1,13 +1,25 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { format, eachDayOfInterval, startOfMonth, endOfMonth, isWeekend, isSunday, isSaturday, startOfWeek, endOfWeek, addDays, subMonths } from "date-fns";
-import { ja } from "date-fns/locale";
-import { Copy, ClipboardCopy, Save, CheckCircle, Calendar, Zap, History } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  format,
+  eachDayOfInterval,
+  startOfMonth,
+  endOfMonth,
+  isWeekend,
+  isSunday,
+  isSaturday,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  subMonths,
+} from 'date-fns';
+import { ja } from 'date-fns/locale';
+import { Copy, ClipboardCopy, Save, CheckCircle, Calendar, Zap, History } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -15,17 +27,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -33,16 +45,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
 const timeEntrySchema = z.object({
-  entries: z.array(z.object({
-    date: z.string(),
-    workingHours: z.coerce.number().min(0).max(24),
-    overtimeHours: z.coerce.number().min(0).max(24),
-    description: z.string(),
-    isApproved: z.boolean().optional(),
-  })),
+  entries: z.array(
+    z.object({
+      date: z.string(),
+      workingHours: z.coerce.number().min(0).max(24),
+      overtimeHours: z.coerce.number().min(0).max(24),
+      description: z.string(),
+      isApproved: z.boolean().optional(),
+    })
+  ),
 });
 
 type TimeEntryFormValues = z.infer<typeof timeEntrySchema>;
@@ -57,18 +71,18 @@ export function BulkTimeEntry() {
 
   // 一括入力用の状態
   const [bulkSettings, setBulkSettings] = useState({
-    dateRange: "this-week", // this-week, this-month
-    workingHours: "8",
-    overtimeHours: "0",
-    description: "",
+    dateRange: 'this-week', // this-week, this-month
+    workingHours: '8',
+    overtimeHours: '0',
+    description: '',
   });
 
   // 先月のデータ（モック）
   const getPreviousMonthData = () => {
     return {
-      workingHours: "8",
-      overtimeHours: "1",
-      description: "システム開発・機能実装・テスト実施",
+      workingHours: '8',
+      overtimeHours: '1',
+      description: 'システム開発・機能実装・テスト実施',
     };
   };
 
@@ -80,10 +94,10 @@ export function BulkTimeEntry() {
 
     return {
       entries: daysInMonth.map((date, index) => ({
-        date: format(date, "yyyy-MM-dd"),
+        date: format(date, 'yyyy-MM-dd'),
         workingHours: isWeekend(date) ? 0 : 8,
         overtimeHours: 0,
-        description: "",
+        description: '',
         // モックデータとして、最初の5日間を承認済みとする
         isApproved: index < 5,
       })),
@@ -96,7 +110,7 @@ export function BulkTimeEntry() {
   });
 
   const handleMonthChange = (value: string) => {
-    const [year, month] = value.split("-").map(Number);
+    const [year, month] = value.split('-').map(Number);
     const newDate = new Date(year, month - 1);
     setSelectedMonth(newDate);
     form.reset(generateDefaultValues(newDate));
@@ -128,12 +142,12 @@ export function BulkTimeEntry() {
   const handleBulkInput = () => {
     const entries = form.getValues().entries;
     const targetDates = getTargetDates();
-    
-    const updatedEntries = entries.map(entry => {
+
+    const updatedEntries = entries.map((entry) => {
       const entryDate = new Date(entry.date);
-      const shouldUpdate = targetDates.some(targetDate => 
-        format(targetDate, "yyyy-MM-dd") === entry.date
-      ) && !entry.isApproved; // 承認済みは除外
+      const shouldUpdate =
+        targetDates.some((targetDate) => format(targetDate, 'yyyy-MM-dd') === entry.date) &&
+        !entry.isApproved; // 承認済みは除外
 
       if (shouldUpdate) {
         return {
@@ -154,12 +168,12 @@ export function BulkTimeEntry() {
     const previousData = getPreviousMonthData();
     const entries = form.getValues().entries;
     const targetDates = getTargetDates();
-    
-    const updatedEntries = entries.map(entry => {
+
+    const updatedEntries = entries.map((entry) => {
       const entryDate = new Date(entry.date);
-      const shouldUpdate = targetDates.some(targetDate => 
-        format(targetDate, "yyyy-MM-dd") === entry.date
-      ) && !entry.isApproved; // 承認済みは除外
+      const shouldUpdate =
+        targetDates.some((targetDate) => format(targetDate, 'yyyy-MM-dd') === entry.date) &&
+        !entry.isApproved; // 承認済みは除外
 
       if (shouldUpdate) {
         return {
@@ -178,14 +192,14 @@ export function BulkTimeEntry() {
   // 対象日付を取得する関数
   const getTargetDates = (): Date[] => {
     const today = new Date();
-    
+
     switch (bulkSettings.dateRange) {
-      case "this-week":
+      case 'this-week':
         return eachDayOfInterval({
           start: startOfWeek(today, { locale: ja }),
           end: endOfWeek(today, { locale: ja }),
         });
-      case "this-month":
+      case 'this-month':
         return eachDayOfInterval({
           start: startOfMonth(selectedMonth),
           end: endOfMonth(selectedMonth),
@@ -201,22 +215,19 @@ export function BulkTimeEntry() {
 
   // 土日の背景色を取得する関数
   const getRowBackground = (date: Date, isApproved: boolean) => {
-    if (isApproved) return "bg-green-50/50 dark:bg-green-950/20";
-    if (isSunday(date)) return "bg-red-50/50 dark:bg-red-950/20";
-    if (isSaturday(date)) return "bg-blue-50/50 dark:bg-blue-950/20";
-    return "";
+    if (isApproved) return 'bg-green-50/50 dark:bg-green-950/20';
+    if (isSunday(date)) return 'bg-red-50/50 dark:bg-red-950/20';
+    if (isSaturday(date)) return 'bg-blue-50/50 dark:bg-blue-950/20';
+    return '';
   };
 
-  const previousMonthName = format(subMonths(selectedMonth, 1), "M月", { locale: ja });
+  const previousMonthName = format(subMonths(selectedMonth, 1), 'M月', { locale: ja });
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <Select
-            value={format(selectedMonth, "yyyy-MM")}
-            onValueChange={handleMonthChange}
-          >
+          <Select value={format(selectedMonth, 'yyyy-MM')} onValueChange={handleMonthChange}>
             <SelectTrigger className="w-[200px]">
               <SelectValue />
             </SelectTrigger>
@@ -225,11 +236,8 @@ export function BulkTimeEntry() {
                 const date = new Date();
                 date.setMonth(date.getMonth() - 6 + i);
                 return (
-                  <SelectItem 
-                    key={format(date, "yyyy-MM")} 
-                    value={format(date, "yyyy-MM")}
-                  >
-                    {format(date, "yyyy年M月", { locale: ja })}
+                  <SelectItem key={format(date, 'yyyy-MM')} value={format(date, 'yyyy-MM')}>
+                    {format(date, 'yyyy年M月', { locale: ja })}
                   </SelectItem>
                 );
               })}
@@ -261,13 +269,15 @@ export function BulkTimeEntry() {
                   {previousMonthName}と同じ内容で入力
                 </Button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div>
                   <label className="text-sm font-medium mb-2 block">対象期間</label>
                   <Select
                     value={bulkSettings.dateRange}
-                    onValueChange={(value) => setBulkSettings({ ...bulkSettings, dateRange: value })}
+                    onValueChange={(value) =>
+                      setBulkSettings({ ...bulkSettings, dateRange: value })
+                    }
                   >
                     <SelectTrigger className="w-[120px]">
                       <SelectValue />
@@ -287,7 +297,9 @@ export function BulkTimeEntry() {
                     min="0"
                     max="24"
                     value={bulkSettings.workingHours}
-                    onChange={(e) => setBulkSettings({ ...bulkSettings, workingHours: e.target.value })}
+                    onChange={(e) =>
+                      setBulkSettings({ ...bulkSettings, workingHours: e.target.value })
+                    }
                     className="w-[80px]"
                   />
                 </div>
@@ -300,7 +312,9 @@ export function BulkTimeEntry() {
                     min="0"
                     max="24"
                     value={bulkSettings.overtimeHours}
-                    onChange={(e) => setBulkSettings({ ...bulkSettings, overtimeHours: e.target.value })}
+                    onChange={(e) =>
+                      setBulkSettings({ ...bulkSettings, overtimeHours: e.target.value })
+                    }
                     className="w-[80px]"
                   />
                 </div>
@@ -309,16 +323,15 @@ export function BulkTimeEntry() {
                   <label className="text-sm font-medium mb-2 block">業務内容</label>
                   <Input
                     value={bulkSettings.description}
-                    onChange={(e) => setBulkSettings({ ...bulkSettings, description: e.target.value })}
+                    onChange={(e) =>
+                      setBulkSettings({ ...bulkSettings, description: e.target.value })
+                    }
                     placeholder="業務内容を入力"
                   />
                 </div>
 
                 <div>
-                  <Button 
-                    onClick={handleBulkInput}
-                    className="gap-2"
-                  >
+                  <Button onClick={handleBulkInput} className="gap-2">
                     <Zap className="h-4 w-4" />
                     一括入力
                   </Button>
@@ -326,8 +339,8 @@ export function BulkTimeEntry() {
               </div>
 
               <div className="text-sm text-muted-foreground">
-                {bulkSettings.dateRange === "this-week" && "今週の平日に一括入力されます"}
-                {bulkSettings.dateRange === "this-month" && "今月の平日に一括入力されます"}
+                {bulkSettings.dateRange === 'this-week' && '今週の平日に一括入力されます'}
+                {bulkSettings.dateRange === 'this-month' && '今月の平日に一括入力されます'}
               </div>
             </div>
           </CardContent>
@@ -354,17 +367,22 @@ export function BulkTimeEntry() {
                   const isApproved = entry.isApproved;
 
                   return (
-                    <TableRow 
+                    <TableRow
                       key={entry.date}
                       className={`h-12 ${getRowBackground(date, isApproved || false)}`}
                     >
                       <TableCell className="py-2">
                         <div className="flex items-center justify-between">
-                          <span className={`text-sm font-medium ${isWeekendDay ? "text-muted-foreground" : ""}`}>
-                            {format(date, "M/d(E)", { locale: ja })}
+                          <span
+                            className={`text-sm font-medium ${isWeekendDay ? 'text-muted-foreground' : ''}`}
+                          >
+                            {format(date, 'M/d(E)', { locale: ja })}
                           </span>
                           {isApproved && (
-                            <Badge variant="outline" className="bg-green-100 text-green-700 dark:bg-green-900/30 text-xs px-2 py-0 ml-2">
+                            <Badge
+                              variant="outline"
+                              className="bg-green-100 text-green-700 dark:bg-green-900/30 text-xs px-2 py-0 ml-2"
+                            >
                               <CheckCircle className="h-3 w-3 mr-1" />
                               承認済
                             </Badge>
@@ -379,12 +397,12 @@ export function BulkTimeEntry() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  step="0.5" 
+                                <Input
+                                  type="number"
+                                  step="0.5"
                                   {...field}
                                   disabled={isApproved}
-                                  className={`w-20 h-8 text-sm ${isWeekendDay || isApproved ? "bg-muted" : ""}`}
+                                  className={`w-20 h-8 text-sm ${isWeekendDay || isApproved ? 'bg-muted' : ''}`}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -400,12 +418,12 @@ export function BulkTimeEntry() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  step="0.5" 
+                                <Input
+                                  type="number"
+                                  step="0.5"
                                   {...field}
                                   disabled={isApproved}
-                                  className={`w-20 h-8 text-sm ${isWeekendDay || isApproved ? "bg-muted" : ""}`}
+                                  className={`w-20 h-8 text-sm ${isWeekendDay || isApproved ? 'bg-muted' : ''}`}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -421,10 +439,10 @@ export function BulkTimeEntry() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input 
+                                <Input
                                   {...field}
                                   disabled={isApproved}
-                                  className={`h-8 text-sm ${isWeekendDay || isApproved ? "bg-muted" : ""}`}
+                                  className={`h-8 text-sm ${isWeekendDay || isApproved ? 'bg-muted' : ''}`}
                                   placeholder="業務内容を入力"
                                 />
                               </FormControl>

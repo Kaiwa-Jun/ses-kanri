@@ -1,44 +1,44 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { 
-  Clock, MapPin, CreditCard, Briefcase, Calendar, ChevronLeft, UserCheck,
-  CheckCircle2, X, ExternalLink, Edit2, Save
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+  Clock,
+  MapPin,
+  CreditCard,
+  Briefcase,
+  Calendar,
+  ChevronLeft,
+  UserCheck,
+  CheckCircle2,
+  X,
+  ExternalLink,
+  Edit2,
+  Save,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
-export function ProjectDetails({ 
-  project: initialProject, 
-  matchingEngineers 
-}: { 
+export function ProjectDetails({
+  project: initialProject,
+  matchingEngineers,
+}: {
   project: any;
   matchingEngineers: any[];
 }) {
@@ -46,66 +46,78 @@ export function ProjectDetails({
   const [isEditing, setIsEditing] = useState(false);
   const [selectedEngineers, setSelectedEngineers] = useState<string[]>([]);
   const [assignedEngineers, setAssignedEngineers] = useState<any[]>([]);
-  
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "open": return "text-green-500 bg-green-100 dark:bg-green-900/30";
-      case "in_progress": return "text-blue-500 bg-blue-100 dark:bg-blue-900/30";
-      case "negotiating": return "text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30";
-      case "closed": return "text-gray-500 bg-gray-100 dark:bg-gray-800";
-      default: return "";
+      case 'open':
+        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+      case 'in_progress':
+        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
+      case 'negotiating':
+        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+      case 'closed':
+        return 'text-gray-500 bg-gray-100 dark:bg-gray-800';
+      default:
+        return '';
     }
   };
-  
+
   const getStatusText = (status: string) => {
     switch (status) {
-      case "open": return "募集中";
-      case "in_progress": return "進行中";
-      case "negotiating": return "交渉中";
-      case "closed": return "終了";
-      default: return status;
+      case 'open':
+        return '募集中';
+      case 'in_progress':
+        return '進行中';
+      case 'negotiating':
+        return '交渉中';
+      case 'closed':
+        return '終了';
+      default:
+        return status;
     }
   };
-  
+
   const getWorkStyleText = (workStyle: string) => {
     switch (workStyle) {
-      case "remote": return "リモート";
-      case "onsite": return "常駐";
-      case "hybrid": return "ハイブリッド";
-      default: return workStyle;
+      case 'remote':
+        return 'リモート';
+      case 'onsite':
+        return '常駐';
+      case 'hybrid':
+        return 'ハイブリッド';
+      default:
+        return workStyle;
     }
   };
-  
+
   const getMatchColor = (score: number) => {
-    if (score >= 85) return "text-green-500";
-    if (score >= 70) return "text-blue-500";
-    if (score >= 50) return "text-yellow-500";
-    return "text-gray-500";
+    if (score >= 85) return 'text-green-500';
+    if (score >= 70) return 'text-blue-500';
+    if (score >= 50) return 'text-yellow-500';
+    return 'text-gray-500';
   };
-  
+
   const handleAssign = () => {
-    const engineersToAssign = matchingEngineers.filter(
-      ({ engineer }) => selectedEngineers.includes(engineer.id)
+    const engineersToAssign = matchingEngineers.filter(({ engineer }) =>
+      selectedEngineers.includes(engineer.id)
     );
-    
+
     setAssignedEngineers([...assignedEngineers, ...engineersToAssign]);
     setSelectedEngineers([]);
   };
-  
+
   const handleUnassign = (engineerId: string) => {
-    setAssignedEngineers(assignedEngineers.filter(
-      ({ engineer }) => engineer.id !== engineerId
-    ));
+    setAssignedEngineers(assignedEngineers.filter(({ engineer }) => engineer.id !== engineerId));
   };
-  
+
   const toggleEngineer = (engineerId: string) => {
     if (selectedEngineers.includes(engineerId)) {
-      setSelectedEngineers(selectedEngineers.filter(id => id !== engineerId));
+      setSelectedEngineers(selectedEngineers.filter((id) => id !== engineerId));
     } else {
       setSelectedEngineers([...selectedEngineers, engineerId]);
     }
   };
-  
+
   const handleSave = () => {
     // 実際のアプリではここでAPIを呼び出して保存
     setIsEditing(false);
@@ -121,7 +133,7 @@ export function ProjectDetails({
           </Button>
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div
           className="lg:col-span-2 space-y-6"
@@ -157,13 +169,9 @@ export function ProjectDetails({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+                  onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
                 >
-                  {isEditing ? (
-                    <Save className="h-4 w-4" />
-                  ) : (
-                    <Edit2 className="h-4 w-4" />
-                  )}
+                  {isEditing ? <Save className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                 </Button>
               </div>
               {isEditing ? (
@@ -248,17 +256,17 @@ export function ProjectDetails({
                   </p>
                   {isEditing ? (
                     <Input
-                      value={project.location || ""}
+                      value={project.location || ''}
                       onChange={(e) => setProject({ ...project, location: e.target.value })}
                       className="font-medium"
                       placeholder="未定"
                     />
                   ) : (
-                    <p className="font-medium">{project.location || "未定"}</p>
+                    <p className="font-medium">{project.location || '未定'}</p>
                   )}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground mb-1 flex items-center gap-1">
@@ -293,26 +301,24 @@ export function ProjectDetails({
                   )}
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div>
                 <h3 className="font-medium mb-2">必要スキル</h3>
                 {isEditing ? (
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-2">
                       {project.skills.map((skill: string) => (
-                        <Badge 
-                          key={skill} 
-                          variant="secondary"
-                          className="gap-1"
-                        >
+                        <Badge key={skill} variant="secondary" className="gap-1">
                           {skill}
                           <button
-                            onClick={() => setProject({
-                              ...project,
-                              skills: project.skills.filter((s: string) => s !== skill)
-                            })}
+                            onClick={() =>
+                              setProject({
+                                ...project,
+                                skills: project.skills.filter((s: string) => s !== skill),
+                              })
+                            }
                             className="text-muted-foreground hover:text-foreground transition-colors"
                           >
                             <X className="h-3 w-3" />
@@ -324,23 +330,21 @@ export function ProjectDetails({
                       <Input
                         placeholder="新しいスキルを入力"
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             e.preventDefault();
                             const value = e.currentTarget.value.trim();
                             if (value && !project.skills.includes(value)) {
                               setProject({
                                 ...project,
-                                skills: [...project.skills, value]
+                                skills: [...project.skills, value],
                               });
-                              e.currentTarget.value = "";
+                              e.currentTarget.value = '';
                             }
                           }
                         }}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Enterキーを押してスキルを追加
-                    </p>
+                    <p className="text-xs text-muted-foreground">Enterキーを押してスキルを追加</p>
                   </div>
                 ) : (
                   <div className="flex flex-wrap gap-2">
@@ -352,9 +356,9 @@ export function ProjectDetails({
                   </div>
                 )}
               </div>
-              
+
               <Separator />
-              
+
               <div>
                 <h3 className="font-medium mb-2">案件詳細</h3>
                 {isEditing ? (
@@ -371,7 +375,7 @@ export function ProjectDetails({
               </div>
             </CardContent>
           </Card>
-          
+
           {assignedEngineers.length > 0 && (
             <Card>
               <CardHeader>
@@ -382,7 +386,10 @@ export function ProjectDetails({
               </CardHeader>
               <CardContent className="space-y-4">
                 {assignedEngineers.map(({ engineer, score }) => (
-                  <div key={engineer.id} className="flex items-center justify-between gap-3 p-2 hover:bg-muted rounded-lg transition-colors">
+                  <div
+                    key={engineer.id}
+                    className="flex items-center justify-between gap-3 p-2 hover:bg-muted rounded-lg transition-colors"
+                  >
                     <div className="flex items-center gap-3">
                       <Avatar>
                         <AvatarImage src={engineer.imageUrl} />
@@ -398,11 +405,7 @@ export function ProjectDetails({
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        asChild
-                      >
+                      <Button variant="ghost" size="sm" asChild>
                         <Link href={`/sales/engineers/${engineer.id}`}>
                           <ExternalLink className="h-4 w-4 mr-1" />
                           詳細
@@ -422,7 +425,7 @@ export function ProjectDetails({
             </Card>
           )}
         </motion.div>
-        
+
         <motion.div
           className="space-y-6"
           initial={{ opacity: 0, y: 20 }}
@@ -436,10 +439,10 @@ export function ProjectDetails({
                   <UserCheck className="h-5 w-5" />
                   マッチするエンジニア
                 </CardTitle>
-                <Button 
+                <Button
                   size="sm"
                   onClick={handleAssign}
-                  disabled={selectedEngineers.length === 0 || project.status === "closed"}
+                  disabled={selectedEngineers.length === 0 || project.status === 'closed'}
                 >
                   アサイン
                 </Button>
@@ -448,79 +451,80 @@ export function ProjectDetails({
             <CardContent className="space-y-4">
               <TooltipProvider>
                 {matchingEngineers
-                  .filter(({ engineer }) => !assignedEngineers.some(
-                    assigned => assigned.engineer.id === engineer.id
-                  ))
+                  .filter(
+                    ({ engineer }) =>
+                      !assignedEngineers.some((assigned) => assigned.engineer.id === engineer.id)
+                  )
                   .map(({ engineer, score }, index) => (
-                  <motion.div
-                    key={engineer.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
-                  >
-                    <div 
-                      className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
-                      onClick={() => toggleEngineer(engineer.id)}
+                    <motion.div
+                      key={engineer.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
                     >
-                      <Checkbox
-                        checked={selectedEngineers.includes(engineer.id)}
-                        onCheckedChange={() => toggleEngineer(engineer.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <div className="flex items-center gap-3 flex-1">
-                        <Avatar>
-                          <AvatarImage src={engineer.imageUrl} />
-                          <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-center">
-                            <p className="font-medium truncate">{engineer.name}</p>
-                            <p className={`text-sm font-semibold ${getMatchColor(score)}`}>
-                              {score}%
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1">
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Progress value={score} className="h-1.5" />
-                                </TooltipTrigger>
-                                <TooltipContent>マッチ度: {score}%</TooltipContent>
-                              </Tooltip>
+                      <div
+                        className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                        onClick={() => toggleEngineer(engineer.id)}
+                      >
+                        <Checkbox
+                          checked={selectedEngineers.includes(engineer.id)}
+                          onCheckedChange={() => toggleEngineer(engineer.id)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <div className="flex items-center gap-3 flex-1">
+                          <Avatar>
+                            <AvatarImage src={engineer.imageUrl} />
+                            <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-center">
+                              <p className="font-medium truncate">{engineer.name}</p>
+                              <p className={`text-sm font-semibold ${getMatchColor(score)}`}>
+                                {score}%
+                              </p>
                             </div>
-                            <p className="text-xs text-muted-foreground whitespace-nowrap">
-                              {engineer.totalExperience}年
-                            </p>
-                          </div>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {engineer.skills.slice(0, 3).map((skill: any) => (
-                              <Badge key={skill.name} variant="outline" className="text-xs py-0">
-                                {skill.name}
-                              </Badge>
-                            ))}
-                            {engineer.skills.length > 3 && (
-                              <Badge variant="outline" className="text-xs py-0">
-                                +{engineer.skills.length - 3}
-                              </Badge>
-                            )}
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Progress value={score} className="h-1.5" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>マッチ度: {score}%</TooltipContent>
+                                </Tooltip>
+                              </div>
+                              <p className="text-xs text-muted-foreground whitespace-nowrap">
+                                {engineer.totalExperience}年
+                              </p>
+                            </div>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {engineer.skills.slice(0, 3).map((skill: any) => (
+                                <Badge key={skill.name} variant="outline" className="text-xs py-0">
+                                  {skill.name}
+                                </Badge>
+                              ))}
+                              {engineer.skills.length > 3 && (
+                                <Badge variant="outline" className="text-xs py-0">
+                                  +{engineer.skills.length - 3}
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Link href={`/sales/engineers/${engineer.id}`}>
+                            <ExternalLink className="h-4 w-4 mr-1" />
+                            詳細
+                          </Link>
+                        </Button>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        asChild
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Link href={`/sales/engineers/${engineer.id}`}>
-                          <ExternalLink className="h-4 w-4 mr-1" />
-                          詳細
-                        </Link>
-                      </Button>
-                    </div>
-                    {index < matchingEngineers.length - 1 && <Separator className="my-2" />}
-                  </motion.div>
-                ))}
+                      {index < matchingEngineers.length - 1 && <Separator className="my-2" />}
+                    </motion.div>
+                  ))}
               </TooltipProvider>
             </CardContent>
           </Card>

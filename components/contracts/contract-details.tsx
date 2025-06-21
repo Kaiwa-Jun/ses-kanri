@@ -1,30 +1,37 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { 
-  ChevronLeft, Building2, FileText, Calendar, Clock, Users, Briefcase,
-  CreditCard, MapPin, FileCheck, AlertTriangle, Edit2, Save, Download
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+  ChevronLeft,
+  Building2,
+  FileText,
+  Calendar,
+  Clock,
+  Users,
+  Briefcase,
+  CreditCard,
+  MapPin,
+  FileCheck,
+  AlertTriangle,
+  Edit2,
+  Save,
+  Download,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 interface ContractDetailsProps {
   contract: any; // 型は実際のcontractの型に合わせて定義してください
@@ -33,25 +40,33 @@ interface ContractDetailsProps {
 export function ContractDetails({ contract: initialContract }: ContractDetailsProps) {
   const [contract, setContract] = useState(initialContract);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "text-green-500 bg-green-100 dark:bg-green-900/30";
-      case "ended": return "text-gray-500 bg-gray-100 dark:bg-gray-900/30";
-      case "draft": return "text-blue-500 bg-blue-100 dark:bg-blue-900/30";
-      default: return "";
+      case 'active':
+        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+      case 'ended':
+        return 'text-gray-500 bg-gray-100 dark:bg-gray-900/30';
+      case 'draft':
+        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
+      default:
+        return '';
     }
   };
-  
+
   const getStatusText = (status: string) => {
     switch (status) {
-      case "active": return "契約中";
-      case "ended": return "終了";
-      case "draft": return "ドラフト";
-      default: return status;
+      case 'active':
+        return '契約中';
+      case 'ended':
+        return '終了';
+      case 'draft':
+        return 'ドラフト';
+      default:
+        return status;
     }
   };
-  
+
   const handleSave = () => {
     // 実際のアプリではここでAPIを呼び出して保存
     setIsEditing(false);
@@ -67,7 +82,7 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
           </Button>
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div
           className="lg:col-span-2 space-y-6"
@@ -87,13 +102,9 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+                  onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
                 >
-                  {isEditing ? (
-                    <Save className="h-4 w-4" />
-                  ) : (
-                    <Edit2 className="h-4 w-4" />
-                  )}
+                  {isEditing ? <Save className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                 </Button>
               </div>
               <CardTitle className="text-2xl flex items-center gap-2">
@@ -149,7 +160,7 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
               </div>
             </CardContent>
           </Card>
-          
+
           {/* 契約条件 */}
           <Card>
             <CardHeader>
@@ -247,7 +258,7 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
               </div>
             </CardContent>
           </Card>
-          
+
           {/* 単価・費用 */}
           <Card>
             <CardHeader>
@@ -276,7 +287,9 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                     <Input
                       type="number"
                       value={contract.workload}
-                      onChange={(e) => setContract({ ...contract, workload: parseInt(e.target.value) })}
+                      onChange={(e) =>
+                        setContract({ ...contract, workload: parseInt(e.target.value) })
+                      }
                     />
                   ) : (
                     <p>{contract.workload}h</p>
@@ -288,7 +301,9 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                     <Input
                       type="number"
                       value={contract.minHours}
-                      onChange={(e) => setContract({ ...contract, minHours: parseInt(e.target.value) })}
+                      onChange={(e) =>
+                        setContract({ ...contract, minHours: parseInt(e.target.value) })
+                      }
                     />
                   ) : (
                     <p>{contract.minHours}h</p>
@@ -300,14 +315,16 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                     <Input
                       type="number"
                       value={contract.maxHours}
-                      onChange={(e) => setContract({ ...contract, maxHours: parseInt(e.target.value) })}
+                      onChange={(e) =>
+                        setContract({ ...contract, maxHours: parseInt(e.target.value) })
+                      }
                     />
                   ) : (
                     <p>{contract.maxHours}h</p>
                   )}
                 </div>
               </div>
-              
+
               <div>
                 <p className="text-sm text-muted-foreground mb-1">超過／控除ルール</p>
                 {isEditing ? (
@@ -322,7 +339,7 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           className="space-y-6"
           initial={{ opacity: 0, y: 20 }}
@@ -346,9 +363,9 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                   <p className="text-sm text-muted-foreground">{contract.engineer.phone}</p>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div>
                 <h3 className="font-medium mb-2">営業担当者</h3>
                 <div className="space-y-1">
@@ -357,21 +374,23 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                   <p className="text-sm text-muted-foreground">{contract.salesPerson.phone}</p>
                 </div>
               </div>
-              
+
               <Separator />
-              
+
               <div>
                 <h3 className="font-medium mb-2">クライアント担当者</h3>
                 <div className="space-y-1">
                   <p>{contract.clientContact.name}</p>
-                  <p className="text-sm text-muted-foreground">{contract.clientContact.department}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {contract.clientContact.department}
+                  </p>
                   <p className="text-sm text-muted-foreground">{contract.clientContact.email}</p>
                   <p className="text-sm text-muted-foreground">{contract.clientContact.phone}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           {/* 契約更新・終了情報 */}
           <Card>
             <CardHeader>
@@ -385,33 +404,36 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
                 <p className="text-sm text-muted-foreground">更新予定日</p>
                 <p>{contract.renewalDate}</p>
               </div>
-              
+
               <div className="flex justify-between items-center">
                 <p className="text-sm text-muted-foreground">確認状況</p>
-                <Badge variant="outline" className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30">
+                <Badge
+                  variant="outline"
+                  className="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30"
+                >
                   {contract.renewalStatus}
                 </Badge>
               </div>
-              
+
               <div>
                 <p className="text-sm text-muted-foreground mb-1">更新条件</p>
                 {isEditing ? (
                   <Input
                     value={contract.renewalConditions}
-                    onChange={(e) => setContract({ ...contract, renewalConditions: e.target.value })}
+                    onChange={(e) =>
+                      setContract({ ...contract, renewalConditions: e.target.value })
+                    }
                   />
                 ) : (
                   <p>{contract.renewalConditions}</p>
                 )}
               </div>
-              
-              {contract.status === "ended" && (
+
+              {contract.status === 'ended' && (
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">契約終了理由</p>
                   {isEditing ? (
-                    <Input
-                      placeholder="契約終了理由を入力"
-                    />
+                    <Input placeholder="契約終了理由を入力" />
                   ) : (
                     <p className="text-muted-foreground">-</p>
                   )}
@@ -419,7 +441,7 @@ export function ContractDetails({ contract: initialContract }: ContractDetailsPr
               )}
             </CardContent>
           </Card>
-          
+
           {/* 備考・メモ */}
           <Card>
             <CardHeader>

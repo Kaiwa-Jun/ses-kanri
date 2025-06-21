@@ -1,22 +1,32 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { 
-  Users, Briefcase, CheckCircle, AlertTriangle, Clock, TrendingUp, Filter, Download,
-  DollarSign, Calendar, BarChart3, PieChart as PieChartIcon
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Users,
+  Briefcase,
+  CheckCircle,
+  AlertTriangle,
+  Clock,
+  TrendingUp,
+  Filter,
+  Download,
+  DollarSign,
+  Calendar,
+  BarChart3,
+  PieChart as PieChartIcon,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { mockProjects, mockEngineers } from "@/lib/data";
+} from '@/components/ui/select';
+import { mockProjects, mockEngineers } from '@/lib/data';
 
 import {
   BarChart,
@@ -34,38 +44,56 @@ import {
   Legend,
   Area,
   AreaChart,
-} from "recharts";
+} from 'recharts';
 
 export default function SalesDashboardPage() {
-  const [revenuePeriod, setRevenuePeriod] = useState<"month" | "quarter" | "year">("month");
-  
+  const [revenuePeriod, setRevenuePeriod] = useState<'month' | 'quarter' | 'year'>('month');
+
   // 案件ステータス集計
-  const projectStatusCounts = mockProjects.reduce((acc, project) => {
-    acc[project.status] = (acc[project.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
+  const projectStatusCounts = mockProjects.reduce(
+    (acc, project) => {
+      acc[project.status] = (acc[project.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   // エンジニア稼働状況集計
-  const engineerAvailabilityCounts = mockEngineers.reduce((acc, engineer) => {
-    acc[engineer.availability] = (acc[engineer.availability] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
+  const engineerAvailabilityCounts = mockEngineers.reduce(
+    (acc, engineer) => {
+      acc[engineer.availability] = (acc[engineer.availability] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   // ステータスごとの案件データ
   const projectStatusData = [
-    { name: "募集中", value: projectStatusCounts.open || 0, color: "hsl(var(--chart-1))" },
-    { name: "進行中", value: projectStatusCounts.in_progress || 0, color: "hsl(var(--chart-2))" },
-    { name: "交渉中", value: projectStatusCounts.negotiating || 0, color: "hsl(var(--chart-3))" },
-    { name: "終了", value: projectStatusCounts.closed || 0, color: "hsl(var(--chart-4))" },
+    { name: '募集中', value: projectStatusCounts.open || 0, color: 'hsl(var(--chart-1))' },
+    { name: '進行中', value: projectStatusCounts.in_progress || 0, color: 'hsl(var(--chart-2))' },
+    { name: '交渉中', value: projectStatusCounts.negotiating || 0, color: 'hsl(var(--chart-3))' },
+    { name: '終了', value: projectStatusCounts.closed || 0, color: 'hsl(var(--chart-4))' },
   ];
-  
+
   // エンジニア稼働状況データ
   const engineerAvailabilityData = [
-    { name: "稼働可能", value: engineerAvailabilityCounts.available || 0, color: "hsl(var(--chart-1))" },
-    { name: "一部稼働可能", value: engineerAvailabilityCounts.partially || 0, color: "hsl(var(--chart-2))" },
-    { name: "稼働不可", value: engineerAvailabilityCounts.unavailable || 0, color: "hsl(var(--chart-3))" },
+    {
+      name: '稼働可能',
+      value: engineerAvailabilityCounts.available || 0,
+      color: 'hsl(var(--chart-1))',
+    },
+    {
+      name: '一部稼働可能',
+      value: engineerAvailabilityCounts.partially || 0,
+      color: 'hsl(var(--chart-2))',
+    },
+    {
+      name: '稼働不可',
+      value: engineerAvailabilityCounts.unavailable || 0,
+      color: 'hsl(var(--chart-3))',
+    },
   ];
-  
+
   // 売上データ（モック）
   const revenueData = {
     month: {
@@ -74,13 +102,13 @@ export default function SalesDashboardPage() {
       target: 5000000,
       growth: 15.5,
       data: [
-        { period: "1月", revenue: 3800000, target: 4000000 },
-        { period: "2月", revenue: 4100000, target: 4200000 },
-        { period: "3月", revenue: 4500000, target: 4500000 },
-        { period: "4月", revenue: 4200000, target: 4300000 },
-        { period: "5月", revenue: 4600000, target: 4600000 },
-        { period: "6月", revenue: 4850000, target: 5000000 },
-      ]
+        { period: '1月', revenue: 3800000, target: 4000000 },
+        { period: '2月', revenue: 4100000, target: 4200000 },
+        { period: '3月', revenue: 4500000, target: 4500000 },
+        { period: '4月', revenue: 4200000, target: 4300000 },
+        { period: '5月', revenue: 4600000, target: 4600000 },
+        { period: '6月', revenue: 4850000, target: 5000000 },
+      ],
     },
     quarter: {
       current: 14250000,
@@ -88,11 +116,11 @@ export default function SalesDashboardPage() {
       target: 15000000,
       growth: 17.8,
       data: [
-        { period: "Q1 2024", revenue: 12400000, target: 12600000 },
-        { period: "Q2 2024", revenue: 13750000, target: 13800000 },
-        { period: "Q3 2024", revenue: 14250000, target: 15000000 },
-        { period: "Q4 2024", revenue: 15200000, target: 15500000 },
-      ]
+        { period: 'Q1 2024', revenue: 12400000, target: 12600000 },
+        { period: 'Q2 2024', revenue: 13750000, target: 13800000 },
+        { period: 'Q3 2024', revenue: 14250000, target: 15000000 },
+        { period: 'Q4 2024', revenue: 15200000, target: 15500000 },
+      ],
     },
     year: {
       current: 55650000,
@@ -100,53 +128,53 @@ export default function SalesDashboardPage() {
       target: 60000000,
       growth: 15.5,
       data: [
-        { period: "2020", revenue: 38000000, target: 40000000 },
-        { period: "2021", revenue: 42500000, target: 45000000 },
-        { period: "2022", revenue: 48200000, target: 50000000 },
-        { period: "2023", revenue: 52800000, target: 55000000 },
-        { period: "2024", revenue: 55650000, target: 60000000 },
-      ]
-    }
+        { period: '2020', revenue: 38000000, target: 40000000 },
+        { period: '2021', revenue: 42500000, target: 45000000 },
+        { period: '2022', revenue: 48200000, target: 50000000 },
+        { period: '2023', revenue: 52800000, target: 55000000 },
+        { period: '2024', revenue: 55650000, target: 60000000 },
+      ],
+    },
   };
-  
+
   // エンジニア別売上データ（モック）
   const engineerRevenueData = [
-    { name: "山田太郎", revenue: 8500000, projects: 2 },
-    { name: "佐藤花子", revenue: 7200000, projects: 1 },
-    { name: "鈴木一郎", revenue: 6800000, projects: 1 },
-    { name: "田中美咲", revenue: 6500000, projects: 1 },
-    { name: "伊藤健太", revenue: 9200000, projects: 2 },
+    { name: '山田太郎', revenue: 8500000, projects: 2 },
+    { name: '佐藤花子', revenue: 7200000, projects: 1 },
+    { name: '鈴木一郎', revenue: 6800000, projects: 1 },
+    { name: '田中美咲', revenue: 6500000, projects: 1 },
+    { name: '伊藤健太', revenue: 9200000, projects: 2 },
   ].sort((a, b) => b.revenue - a.revenue);
-  
+
   // クライアント別売上データ（モック）
   const clientRevenueData = [
-    { name: "〇〇商事", revenue: 12500000, color: "hsl(var(--chart-1))" },
-    { name: "△△システムズ", revenue: 9800000, color: "hsl(var(--chart-2))" },
-    { name: "◇◇フィナンシャル", revenue: 8200000, color: "hsl(var(--chart-3))" },
-    { name: "□□メディカル", revenue: 7100000, color: "hsl(var(--chart-4))" },
-    { name: "☆☆テクノロジー", revenue: 6400000, color: "hsl(var(--chart-5))" },
+    { name: '〇〇商事', revenue: 12500000, color: 'hsl(var(--chart-1))' },
+    { name: '△△システムズ', revenue: 9800000, color: 'hsl(var(--chart-2))' },
+    { name: '◇◇フィナンシャル', revenue: 8200000, color: 'hsl(var(--chart-3))' },
+    { name: '□□メディカル', revenue: 7100000, color: 'hsl(var(--chart-4))' },
+    { name: '☆☆テクノロジー', revenue: 6400000, color: 'hsl(var(--chart-5))' },
   ];
-  
+
   // 月別案件推移データ（モック）
   const monthlyProjectData = [
-    { name: "4月", "新規案件": 3, "終了案件": 1 },
-    { name: "5月", "新規案件": 5, "終了案件": 2 },
-    { name: "6月", "新規案件": 4, "終了案件": 3 },
-    { name: "7月", "新規案件": 6, "終了案件": 2 },
-    { name: "8月", "新規案件": 8, "終了案件": 4 },
-    { name: "9月", "新規案件": 7, "終了案件": 5 },
+    { name: '4月', 新規案件: 3, 終了案件: 1 },
+    { name: '5月', 新規案件: 5, 終了案件: 2 },
+    { name: '6月', 新規案件: 4, 終了案件: 3 },
+    { name: '7月', 新規案件: 6, 終了案件: 2 },
+    { name: '8月', 新規案件: 8, 終了案件: 4 },
+    { name: '9月', 新規案件: 7, 終了案件: 5 },
   ];
-  
+
   // スキル需要データ（モック）
   const skillDemandData = [
-    { name: "React", count: 15 },
-    { name: "TypeScript", count: 12 },
-    { name: "Node.js", count: 10 },
-    { name: "Python", count: 8 },
-    { name: "Java", count: 7 },
-    { name: "AWS", count: 14 },
-    { name: "Docker", count: 9 },
-    { name: "Kubernetes", count: 6 },
+    { name: 'React', count: 15 },
+    { name: 'TypeScript', count: 12 },
+    { name: 'Node.js', count: 10 },
+    { name: 'Python', count: 8 },
+    { name: 'Java', count: 7 },
+    { name: 'AWS', count: 14 },
+    { name: 'Docker', count: 9 },
+    { name: 'Kubernetes', count: 6 },
   ].sort((a, b) => b.count - a.count);
 
   const currentRevenueData = revenueData[revenuePeriod];
@@ -162,16 +190,14 @@ export default function SalesDashboardPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">営業ダッシュボード</h1>
-          <p className="text-muted-foreground">
-            案件・エンジニア・売上状況の概要
-          </p>
+          <p className="text-muted-foreground">案件・エンジニア・売上状況の概要</p>
         </div>
         <Button variant="outline" size="sm" className="gap-2">
           <Download className="h-4 w-4" />
           レポート出力
         </Button>
       </motion.div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -188,14 +214,18 @@ export default function SalesDashboardPage() {
                 {(currentRevenueData.current / 10000).toFixed(0)}万円
               </div>
               <p className="text-xs text-muted-foreground">
-                <span className={`${currentRevenueData.growth >= 0 ? "text-green-600" : "text-red-600"}`}>
-                  {currentRevenueData.growth >= 0 ? "+" : ""}{currentRevenueData.growth}%
-                </span> 前期比
+                <span
+                  className={`${currentRevenueData.growth >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                >
+                  {currentRevenueData.growth >= 0 ? '+' : ''}
+                  {currentRevenueData.growth}%
+                </span>{' '}
+                前期比
               </p>
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -214,7 +244,7 @@ export default function SalesDashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -233,7 +263,7 @@ export default function SalesDashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -246,13 +276,11 @@ export default function SalesDashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{projectStatusCounts.in_progress || 0}件</div>
-              <p className="text-xs text-muted-foreground">
-                前月比: +2件
-              </p>
+              <p className="text-xs text-muted-foreground">前月比: +2件</p>
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -272,18 +300,19 @@ export default function SalesDashboardPage() {
           </Card>
         </motion.div>
       </div>
-      
+
       {/* 売上分析セクション */}
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>
               <CardTitle>売上分析</CardTitle>
-              <CardDescription>
-                期間別の売上推移と目標達成状況
-              </CardDescription>
+              <CardDescription>期間別の売上推移と目標達成状況</CardDescription>
             </div>
-            <Select value={revenuePeriod} onValueChange={(value: "month" | "quarter" | "year") => setRevenuePeriod(value)}>
+            <Select
+              value={revenuePeriod}
+              onValueChange={(value: 'month' | 'quarter' | 'year') => setRevenuePeriod(value)}
+            >
               <SelectTrigger className="w-[180px]">
                 <Calendar className="h-4 w-4 mr-2" />
                 <SelectValue />
@@ -302,12 +331,8 @@ export default function SalesDashboardPage() {
               <AreaChart data={currentRevenueData.data}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="period" />
-                <YAxis 
-                  tickFormatter={(value) => `${(value / 10000).toFixed(0)}万円`}
-                />
-                <Tooltip 
-                  formatter={(value: any) => [`${(value / 10000).toFixed(0)}万円`]}
-                />
+                <YAxis tickFormatter={(value) => `${(value / 10000).toFixed(0)}万円`} />
+                <Tooltip formatter={(value: any) => [`${(value / 10000).toFixed(0)}万円`]} />
                 <Legend />
                 <Area
                   type="monotone"
@@ -332,7 +357,7 @@ export default function SalesDashboardPage() {
           </div>
         </CardContent>
       </Card>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -342,9 +367,7 @@ export default function SalesDashboardPage() {
           <Card className="h-full">
             <CardHeader>
               <CardTitle>案件状況</CardTitle>
-              <CardDescription>
-                ステータス別の案件数
-              </CardDescription>
+              <CardDescription>ステータス別の案件数</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -372,7 +395,7 @@ export default function SalesDashboardPage() {
             </CardContent>
           </Card>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -381,9 +404,7 @@ export default function SalesDashboardPage() {
           <Card className="h-full">
             <CardHeader>
               <CardTitle>クライアント別売上</CardTitle>
-              <CardDescription>
-                主要クライアントの売上構成
-              </CardDescription>
+              <CardDescription>主要クライアントの売上構成</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -403,9 +424,7 @@ export default function SalesDashboardPage() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip 
-                      formatter={(value: any) => [`${(value / 10000).toFixed(0)}万円`]}
-                    />
+                    <Tooltip formatter={(value: any) => [`${(value / 10000).toFixed(0)}万円`]} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
@@ -414,14 +433,12 @@ export default function SalesDashboardPage() {
           </Card>
         </motion.div>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>エンジニア別売上ランキング</CardTitle>
-            <CardDescription>
-              売上貢献度の高いエンジニア
-            </CardDescription>
+            <CardDescription>売上貢献度の高いエンジニア</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -444,13 +461,11 @@ export default function SalesDashboardPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>エンジニア稼働状況</CardTitle>
-            <CardDescription>
-              稼働状況別のエンジニア数
-            </CardDescription>
+            <CardDescription>稼働状況別のエンジニア数</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-80">
@@ -478,7 +493,7 @@ export default function SalesDashboardPage() {
           </CardContent>
         </Card>
       </div>
-      
+
       <Tabs defaultValue="trends">
         <TabsList>
           <TabsTrigger value="trends">案件推移</TabsTrigger>
@@ -488,9 +503,7 @@ export default function SalesDashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>月別案件推移</CardTitle>
-              <CardDescription>
-                過去6ヶ月の新規・終了案件数
-              </CardDescription>
+              <CardDescription>過去6ヶ月の新規・終了案件数</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-96">
@@ -515,11 +528,7 @@ export default function SalesDashboardPage() {
                       stroke="hsl(var(--chart-1))"
                       activeDot={{ r: 8 }}
                     />
-                    <Line
-                      type="monotone"
-                      dataKey="終了案件"
-                      stroke="hsl(var(--chart-2))"
-                    />
+                    <Line type="monotone" dataKey="終了案件" stroke="hsl(var(--chart-2))" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -530,9 +539,7 @@ export default function SalesDashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>スキル需要ランキング</CardTitle>
-              <CardDescription>
-                案件で最も求められているスキル
-              </CardDescription>
+              <CardDescription>案件で最も求められているスキル</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-96">

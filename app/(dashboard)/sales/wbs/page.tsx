@@ -1,72 +1,81 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { format, addDays, eachDayOfInterval, startOfWeek, endOfWeek, isToday, startOfMonth, endOfMonth } from "date-fns";
-import { ja } from "date-fns/locale";
-import { Search, Filter, Calendar, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  format,
+  addDays,
+  eachDayOfInterval,
+  startOfWeek,
+  endOfWeek,
+  isToday,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns';
+import { ja } from 'date-fns/locale';
+import { Search, Filter, Calendar, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { mockEngineers } from "@/lib/data";
+} from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { mockEngineers } from '@/lib/data';
 
 // モックデータ: エンジニアの稼働情報
 const mockWorkloads = [
   {
-    engineerId: "e1",
-    projectId: "p1",
-    startDate: "2024-04-01",
-    endDate: "2024-09-30",
-    status: "planned", // planned, actual, missing
+    engineerId: 'e1',
+    projectId: 'p1',
+    startDate: '2024-04-01',
+    endDate: '2024-09-30',
+    status: 'planned', // planned, actual, missing
     workload: 160,
   },
   {
-    engineerId: "e2",
-    projectId: "p2",
-    startDate: "2024-03-01",
-    endDate: "2024-08-31",
-    status: "actual",
+    engineerId: 'e2',
+    projectId: 'p2',
+    startDate: '2024-03-01',
+    endDate: '2024-08-31',
+    status: 'actual',
     workload: 140,
   },
   {
-    engineerId: "e3",
-    projectId: "p3",
-    startDate: "2024-05-01",
-    endDate: "2024-07-31",
-    status: "missing",
+    engineerId: 'e3',
+    projectId: 'p3',
+    startDate: '2024-05-01',
+    endDate: '2024-07-31',
+    status: 'missing',
     workload: 0,
   },
 ];
 
 export default function WBSPage() {
-  const [selectedEngineers, setSelectedEngineers] = useState(mockEngineers.map(e => e.id));
-  const [viewMode, setViewMode] = useState<"day" | "week" | "month">("week");
+  const [selectedEngineers, setSelectedEngineers] = useState(mockEngineers.map((e) => e.id));
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   // 表示期間の計算
   const displayRange = (() => {
     switch (viewMode) {
-      case "day":
+      case 'day':
         return eachDayOfInterval({
           start: currentDate,
           end: addDays(currentDate, 30),
         });
-      case "week":
+      case 'week':
         return eachDayOfInterval({
           start: startOfWeek(currentDate, { locale: ja }),
           end: addDays(endOfWeek(currentDate, { locale: ja }), 42),
         });
-      case "month":
+      case 'month':
         return eachDayOfInterval({
           start: startOfMonth(currentDate),
           end: addDays(endOfMonth(addDays(currentDate, 60)), 0),
@@ -75,7 +84,7 @@ export default function WBSPage() {
   })();
 
   // エンジニアのフィルタリング
-  const filteredEngineers = mockEngineers.filter(engineer => {
+  const filteredEngineers = mockEngineers.filter((engineer) => {
     const matchesSearch = engineer.name.toLowerCase().includes(searchTerm.toLowerCase());
     const isSelected = selectedEngineers.includes(engineer.id);
     return matchesSearch && isSelected;
@@ -84,10 +93,14 @@ export default function WBSPage() {
   // ステータスに応じた色を取得
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "planned": return "bg-blue-500/20 border-blue-500";
-      case "actual": return "bg-green-500/20 border-green-500";
-      case "missing": return "bg-red-500/20 border-red-500";
-      default: return "bg-gray-500/20 border-gray-500";
+      case 'planned':
+        return 'bg-blue-500/20 border-blue-500';
+      case 'actual':
+        return 'bg-green-500/20 border-green-500';
+      case 'missing':
+        return 'bg-red-500/20 border-red-500';
+      default:
+        return 'bg-gray-500/20 border-gray-500';
     }
   };
 
@@ -101,9 +114,7 @@ export default function WBSPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">稼働状況（WBS）</h1>
-          <p className="text-muted-foreground">
-            エンジニアの稼働状況をガントチャートで確認
-          </p>
+          <p className="text-muted-foreground">エンジニアの稼働状況をガントチャートで確認</p>
         </div>
       </motion.div>
 
@@ -117,7 +128,10 @@ export default function WBSPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Select value={viewMode} onValueChange={(value: "day" | "week" | "month") => setViewMode(value)}>
+        <Select
+          value={viewMode}
+          onValueChange={(value: 'day' | 'week' | 'month') => setViewMode(value)}
+        >
           <SelectTrigger className="w-[180px]">
             <Calendar className="h-4 w-4 mr-2" />
             <SelectValue />
@@ -140,35 +154,36 @@ export default function WBSPage() {
         <CardContent className="overflow-x-auto">
           <div className="min-w-[1200px]">
             {/* ヘッダー（日付） */}
-            <div className="grid" style={{ 
-              gridTemplateColumns: `200px repeat(${displayRange.length}, minmax(40px, 1fr))` 
-            }}>
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: `200px repeat(${displayRange.length}, minmax(40px, 1fr))`,
+              }}
+            >
               <div className="p-2 font-medium border-b">エンジニア</div>
               {displayRange.map((date, index) => (
-                <div 
-                  key={date.toString()} 
+                <div
+                  key={date.toString()}
                   className={`p-2 text-center border-b text-xs ${
-                    isToday(date) ? "bg-primary/5 font-bold" : ""
+                    isToday(date) ? 'bg-primary/5 font-bold' : ''
                   }`}
                 >
-                  {viewMode === "day" ? (
-                    format(date, "M/d")
-                  ) : viewMode === "week" ? (
-                    index % 7 === 0 && format(date, "M/d")
-                  ) : (
-                    index % 30 === 0 && format(date, "yyyy/M")
-                  )}
+                  {viewMode === 'day'
+                    ? format(date, 'M/d')
+                    : viewMode === 'week'
+                      ? index % 7 === 0 && format(date, 'M/d')
+                      : index % 30 === 0 && format(date, 'yyyy/M')}
                 </div>
               ))}
             </div>
 
             {/* エンジニア行 */}
-            {filteredEngineers.map(engineer => (
-              <div 
+            {filteredEngineers.map((engineer) => (
+              <div
                 key={engineer.id}
-                className="grid relative" 
-                style={{ 
-                  gridTemplateColumns: `200px repeat(${displayRange.length}, minmax(40px, 1fr))` 
+                className="grid relative"
+                style={{
+                  gridTemplateColumns: `200px repeat(${displayRange.length}, minmax(40px, 1fr))`,
                 }}
               >
                 {/* エンジニア情報 */}
@@ -186,26 +201,24 @@ export default function WBSPage() {
                 </div>
 
                 {/* 日付セル */}
-                {displayRange.map(date => (
-                  <div 
-                    key={date.toString()} 
-                    className={`p-2 border-b ${
-                      isToday(date) ? "bg-primary/5" : ""
-                    }`}
+                {displayRange.map((date) => (
+                  <div
+                    key={date.toString()}
+                    className={`p-2 border-b ${isToday(date) ? 'bg-primary/5' : ''}`}
                   />
                 ))}
 
                 {/* 稼働バー */}
                 {mockWorkloads
-                  .filter(workload => workload.engineerId === engineer.id)
-                  .map(workload => {
+                  .filter((workload) => workload.engineerId === engineer.id)
+                  .map((workload) => {
                     const startDate = new Date(workload.startDate);
                     const endDate = new Date(workload.endDate);
-                    const startIndex = displayRange.findIndex(date => 
-                      date.getTime() >= startDate.getTime()
+                    const startIndex = displayRange.findIndex(
+                      (date) => date.getTime() >= startDate.getTime()
                     );
-                    const endIndex = displayRange.findIndex(date => 
-                      date.getTime() >= endDate.getTime()
+                    const endIndex = displayRange.findIndex(
+                      (date) => date.getTime() >= endDate.getTime()
                     );
                     const duration = endIndex - startIndex + 1;
 
@@ -218,7 +231,7 @@ export default function WBSPage() {
                         style={{
                           left: `calc(200px + ${startIndex} * 100% / ${displayRange.length})`,
                           width: `calc(${duration} * 100% / ${displayRange.length})`,
-                          top: "4px",
+                          top: '4px',
                         }}
                       />
                     );
@@ -230,15 +243,15 @@ export default function WBSPage() {
           <div className="mt-4 flex items-center gap-4">
             <div className="text-sm">凡例:</div>
             <div className="flex items-center gap-2">
-              <div className={`w-4 h-4 rounded ${getStatusColor("planned")}`} />
+              <div className={`w-4 h-4 rounded ${getStatusColor('planned')}`} />
               <span className="text-sm">予定</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-4 h-4 rounded ${getStatusColor("actual")}`} />
+              <div className={`w-4 h-4 rounded ${getStatusColor('actual')}`} />
               <span className="text-sm">実績</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-4 h-4 rounded ${getStatusColor("missing")}`} />
+              <div className={`w-4 h-4 rounded ${getStatusColor('missing')}`} />
               <span className="text-sm">未入力</span>
             </div>
           </div>

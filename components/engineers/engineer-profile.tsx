@@ -1,28 +1,52 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { 
-  ChevronLeft, Calendar, Mail, Phone, MapPin, Download, User, CreditCard,
-  Briefcase, BarChart2, Award, GraduationCap, Layers, CalendarClock, FileText,
-  Building2, Users, Star, MessageSquare, Edit2, Save, CheckCircle, Clock,
-  Target, Zap, X, Plus, Trash2
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import Link from 'next/link';
+import {
+  ChevronLeft,
+  Calendar,
+  Mail,
+  Phone,
+  MapPin,
+  Download,
+  User,
+  CreditCard,
+  Briefcase,
+  BarChart2,
+  Award,
+  GraduationCap,
+  Layers,
+  CalendarClock,
+  FileText,
+  Building2,
+  Users,
+  Star,
+  MessageSquare,
+  Edit2,
+  Save,
+  CheckCircle,
+  Clock,
+  Target,
+  Zap,
+  X,
+  Plus,
+  Trash2,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Engineer, Skill } from "@/lib/data";
-import { EngineerSkillSheet } from "@/components/engineers/engineer-skill-sheet";
+} from '@/components/ui/select';
+import { Engineer, Skill } from '@/lib/data';
+import { EngineerSkillSheet } from '@/components/engineers/engineer-skill-sheet';
 
 interface EngineerProfileProps {
   engineer: Engineer;
@@ -35,83 +59,100 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
   const [isEditingBasicInfo, setIsEditingBasicInfo] = useState(false);
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [isEditingSkills, setIsEditingSkills] = useState(false);
-  const [memo, setMemo] = useState("非常に優秀なエンジニアです。技術力が高く、コミュニケーション能力も優れています。クライアントからの評価も高く、次回も指名で依頼したいとのことでした。");
-  
+  const [memo, setMemo] = useState(
+    '非常に優秀なエンジニアです。技術力が高く、コミュニケーション能力も優れています。クライアントからの評価も高く、次回も指名で依頼したいとのことでした。'
+  );
+
   // 新しいスキル追加用の状態
   const [newSkill, setNewSkill] = useState({
-    name: "",
-    category: "language" as Skill["category"],
+    name: '',
+    category: 'language' as Skill['category'],
     experienceYears: 1,
   });
-  
+
   // 現在の案件情報の状態
   const [currentProject, setCurrentProject] = useState({
-    client: "〇〇商事株式会社",
-    projectName: "大手ECサイトリニューアル案件",
-    salesPerson: "鈴木健太",
-    startDate: "2024-04-01",
-    endDate: "2024-09-30",
-    status: "進行中"
+    client: '〇〇商事株式会社',
+    projectName: '大手ECサイトリニューアル案件',
+    salesPerson: '鈴木健太',
+    startDate: '2024-04-01',
+    endDate: '2024-09-30',
+    status: '進行中',
   });
 
   // 工程・ポジション情報の状態
   const [participationPhases, setParticipationPhases] = useState([
-    { name: "要件定義", participated: true },
-    { name: "設計", participated: true },
-    { name: "開発", participated: true },
-    { name: "テスト", participated: true },
+    { name: '要件定義', participated: true },
+    { name: '設計', participated: true },
+    { name: '開発', participated: true },
+    { name: 'テスト', participated: true },
   ]);
 
   const [positionExperience, setPositionExperience] = useState([
-    { name: "PM", experience: false },
-    { name: "PL", experience: true },
-    { name: "メンバー", experience: true },
+    { name: 'PM', experience: false },
+    { name: 'PL', experience: true },
+    { name: 'メンバー', experience: true },
   ]);
-  
-  const getAvailabilityColor = (availability: Engineer["availability"]) => {
+
+  const getAvailabilityColor = (availability: Engineer['availability']) => {
     switch (availability) {
-      case "available": return "text-green-500 bg-green-100 dark:bg-green-900/30";
-      case "partially": return "text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30";
-      case "unavailable": return "text-red-500 bg-red-100 dark:bg-red-900/30";
-      default: return "";
+      case 'available':
+        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+      case 'partially':
+        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+      case 'unavailable':
+        return 'text-red-500 bg-red-100 dark:bg-red-900/30';
+      default:
+        return '';
     }
   };
-  
-  const getAvailabilityText = (availability: Engineer["availability"]) => {
+
+  const getAvailabilityText = (availability: Engineer['availability']) => {
     switch (availability) {
-      case "available": return "稼働可能";
-      case "partially": return "一部稼働可能";
-      case "unavailable": return "稼働不可";
-      default: return availability;
+      case 'available':
+        return '稼働可能';
+      case 'partially':
+        return '一部稼働可能';
+      case 'unavailable':
+        return '稼働不可';
+      default:
+        return availability;
     }
   };
-  
-  const getWorkStyleText = (workStyle: Engineer["preferredWorkStyle"]) => {
+
+  const getWorkStyleText = (workStyle: Engineer['preferredWorkStyle']) => {
     switch (workStyle) {
-      case "remote": return "リモート";
-      case "onsite": return "常駐";
-      case "hybrid": return "ハイブリッド";
-      default: return workStyle;
+      case 'remote':
+        return 'リモート';
+      case 'onsite':
+        return '常駐';
+      case 'hybrid':
+        return 'ハイブリッド';
+      default:
+        return workStyle;
     }
   };
-  
+
   // スキルをカテゴリーでグループ化
-  const skillsByCategory = engineer.skills.reduce((acc, skill) => {
-    const category = skill.category;
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(skill);
-    return acc;
-  }, {} as Record<string, typeof engineer.skills>);
-  
+  const skillsByCategory = engineer.skills.reduce(
+    (acc, skill) => {
+      const category = skill.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(skill);
+      return acc;
+    },
+    {} as Record<string, typeof engineer.skills>
+  );
+
   const skillCategoryNames: Record<string, string> = {
-    language: "言語",
-    framework: "FW",
-    database: "DB",
-    infrastructure: "インフラ",
-    tool: "ツール",
-    other: "その他",
+    language: '言語',
+    framework: 'FW',
+    database: 'DB',
+    infrastructure: 'インフラ',
+    tool: 'ツール',
+    other: 'その他',
   };
 
   // 職務経歴書エクスポート関数
@@ -123,12 +164,12 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
 
   const handleSaveMemo = () => {
     setIsEditingMemo(false);
-    console.log("Saving memo:", memo);
+    console.log('Saving memo:', memo);
   };
 
   const handleSaveBasicInfo = () => {
     setIsEditingBasicInfo(false);
-    console.log("Saving engineer data:", engineer);
+    console.log('Saving engineer data:', engineer);
   };
 
   const handleCancelBasicInfo = () => {
@@ -138,24 +179,24 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
 
   const handleSaveProject = () => {
     setIsEditingProject(false);
-    console.log("Saving project data:", currentProject);
+    console.log('Saving project data:', currentProject);
   };
 
   const handleCancelProject = () => {
     setIsEditingProject(false);
     setCurrentProject({
-      client: "〇〇商事株式会社",
-      projectName: "大手ECサイトリニューアル案件",
-      salesPerson: "鈴木健太",
-      startDate: "2024-04-01",
-      endDate: "2024-09-30",
-      status: "進行中"
+      client: '〇〇商事株式会社',
+      projectName: '大手ECサイトリニューアル案件',
+      salesPerson: '鈴木健太',
+      startDate: '2024-04-01',
+      endDate: '2024-09-30',
+      status: '進行中',
     });
   };
 
   const handleSaveSkills = () => {
     setIsEditingSkills(false);
-    console.log("Saving skills:", engineer.skills);
+    console.log('Saving skills:', engineer.skills);
   };
 
   const handleCancelSkills = () => {
@@ -164,19 +205,17 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
   };
 
   const togglePhaseParticipation = (phaseName: string) => {
-    setParticipationPhases(prev => 
-      prev.map(phase => 
-        phase.name === phaseName 
-          ? { ...phase, participated: !phase.participated }
-          : phase
+    setParticipationPhases((prev) =>
+      prev.map((phase) =>
+        phase.name === phaseName ? { ...phase, participated: !phase.participated } : phase
       )
     );
   };
 
   const togglePositionExperience = (positionName: string) => {
-    setPositionExperience(prev => 
-      prev.map(position => 
-        position.name === positionName 
+    setPositionExperience((prev) =>
+      prev.map((position) =>
+        position.name === positionName
           ? { ...position, experience: !position.experience }
           : position
       )
@@ -186,26 +225,29 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
   // スキル編集関連の関数
   const addSkill = () => {
     if (newSkill.name.trim()) {
-      const updatedSkills = [...engineer.skills, { 
-        ...newSkill, 
-        level: 3 as Skill["level"] // デフォルト値として3を設定（表示はしない）
-      }];
+      const updatedSkills = [
+        ...engineer.skills,
+        {
+          ...newSkill,
+          level: 3 as Skill['level'], // デフォルト値として3を設定（表示はしない）
+        },
+      ];
       setEngineer({ ...engineer, skills: updatedSkills });
       setNewSkill({
-        name: "",
-        category: "language",
+        name: '',
+        category: 'language',
         experienceYears: 1,
       });
     }
   };
 
   const removeSkill = (skillName: string) => {
-    const updatedSkills = engineer.skills.filter(skill => skill.name !== skillName);
+    const updatedSkills = engineer.skills.filter((skill) => skill.name !== skillName);
     setEngineer({ ...engineer, skills: updatedSkills });
   };
 
   const updateSkill = (skillName: string, field: keyof Skill, value: any) => {
-    const updatedSkills = engineer.skills.map(skill => 
+    const updatedSkills = engineer.skills.map((skill) =>
       skill.name === skillName ? { ...skill, [field]: value } : skill
     );
     setEngineer({ ...engineer, skills: updatedSkills });
@@ -221,10 +263,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
           </Button>
         </Link>
       </div>
-      
+
       {/* メインコンテナ - 罫線ベースのレイアウト */}
       <div className="border border-border rounded-lg overflow-hidden bg-background">
-        
         {/* ヘッダー部分 */}
         <div className="border-b border-border bg-muted/30 p-4">
           <div className="flex justify-between items-start mb-4">
@@ -232,7 +273,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
             <Button
               variant="outline"
               size="sm"
-              onClick={() => isEditingBasicInfo ? handleSaveBasicInfo() : setIsEditingBasicInfo(true)}
+              onClick={() =>
+                isEditingBasicInfo ? handleSaveBasicInfo() : setIsEditingBasicInfo(true)
+              }
               className="gap-2"
             >
               {isEditingBasicInfo ? (
@@ -248,9 +291,8 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
               )}
             </Button>
           </div>
-          
+
           <div className="grid grid-cols-12 gap-6">
-            
             {/* プロフィール */}
             <div className="col-span-2 flex flex-col items-center">
               <Avatar className="h-16 w-16 mb-2">
@@ -270,7 +312,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                 <Input
                   type="number"
                   value={engineer.totalExperience}
-                  onChange={(e) => setEngineer({ ...engineer, totalExperience: parseInt(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setEngineer({ ...engineer, totalExperience: parseInt(e.target.value) || 0 })
+                  }
                   className="text-center text-sm w-20"
                   placeholder="年数"
                 />
@@ -280,7 +324,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
               {isEditingBasicInfo ? (
                 <Select
                   value={engineer.availability}
-                  onValueChange={(value: Engineer["availability"]) => setEngineer({ ...engineer, availability: value })}
+                  onValueChange={(value: Engineer['availability']) =>
+                    setEngineer({ ...engineer, availability: value })
+                  }
                 >
                   <SelectTrigger className="w-full mt-1">
                     <SelectValue />
@@ -292,7 +338,10 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   </SelectContent>
                 </Select>
               ) : (
-                <Badge variant="outline" className={`${getAvailabilityColor(engineer.availability)} text-xs mt-1`}>
+                <Badge
+                  variant="outline"
+                  className={`${getAvailabilityColor(engineer.availability)} text-xs mt-1`}
+                >
                   {getAvailabilityText(engineer.availability)}
                 </Badge>
               )}
@@ -335,12 +384,12 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   {isEditingBasicInfo ? (
                     <Input
                       type="date"
-                      value={engineer.availableFrom || ""}
+                      value={engineer.availableFrom || ''}
                       onChange={(e) => setEngineer({ ...engineer, availableFrom: e.target.value })}
                       className="h-6 text-sm"
                     />
                   ) : (
-                    <span>{engineer.availableFrom || "応相談"}</span>
+                    <span>{engineer.availableFrom || '応相談'}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -350,7 +399,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                       <Input
                         type="number"
                         value={engineer.preferredRate}
-                        onChange={(e) => setEngineer({ ...engineer, preferredRate: parseInt(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setEngineer({ ...engineer, preferredRate: parseInt(e.target.value) || 0 })
+                        }
                         className="h-6 text-sm w-20"
                       />
                       <span className="text-xs">万円</span>
@@ -364,7 +415,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   {isEditingBasicInfo ? (
                     <Select
                       value={engineer.preferredWorkStyle}
-                      onValueChange={(value: Engineer["preferredWorkStyle"]) => setEngineer({ ...engineer, preferredWorkStyle: value })}
+                      onValueChange={(value: Engineer['preferredWorkStyle']) =>
+                        setEngineer({ ...engineer, preferredWorkStyle: value })
+                      }
                     >
                       <SelectTrigger className="h-6 text-sm">
                         <SelectValue />
@@ -395,7 +448,10 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                     size="sm"
                     className="h-6 w-6 p-0"
                     onClick={() => {
-                      console.log("Saving phases and positions:", { participationPhases, positionExperience });
+                      console.log('Saving phases and positions:', {
+                        participationPhases,
+                        positionExperience,
+                      });
                     }}
                   >
                     <Save className="h-3 w-3" />
@@ -406,9 +462,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                 <div>
                   <p className="text-xs font-medium mb-2">参加工程</p>
                   <div className="grid grid-cols-2 gap-1">
-                    {participationPhases.map(phase => (
-                      <div 
-                        key={phase.name} 
+                    {participationPhases.map((phase) => (
+                      <div
+                        key={phase.name}
                         className={`flex items-center gap-1 ${isEditingBasicInfo ? 'cursor-pointer' : ''}`}
                         onClick={() => isEditingBasicInfo && togglePhaseParticipation(phase.name)}
                       >
@@ -417,7 +473,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                         ) : (
                           <div className="h-3 w-3 rounded-full border border-muted-foreground" />
                         )}
-                        <span className={`text-xs ${phase.participated ? "text-foreground" : "text-muted-foreground"}`}>
+                        <span
+                          className={`text-xs ${phase.participated ? 'text-foreground' : 'text-muted-foreground'}`}
+                        >
                           {phase.name}
                         </span>
                       </div>
@@ -427,12 +485,14 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                 <div>
                   <p className="text-xs font-medium mb-2">ポジション</p>
                   <div className="flex gap-1">
-                    {positionExperience.map(position => (
-                      <Badge 
-                        key={position.name} 
-                        variant={position.experience ? "default" : "outline"}
+                    {positionExperience.map((position) => (
+                      <Badge
+                        key={position.name}
+                        variant={position.experience ? 'default' : 'outline'}
                         className={`text-xs px-2 py-0 ${isEditingBasicInfo ? 'cursor-pointer' : ''}`}
-                        onClick={() => isEditingBasicInfo && togglePositionExperience(position.name)}
+                        onClick={() =>
+                          isEditingBasicInfo && togglePositionExperience(position.name)
+                        }
                       >
                         {position.name}
                       </Badge>
@@ -455,9 +515,14 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                 </div>
                 <div className="text-xs text-muted-foreground space-y-1">
                   <p>担当営業: {currentProject.salesPerson}</p>
-                  <p>期間: {currentProject.startDate} ~ {currentProject.endDate}</p>
+                  <p>
+                    期間: {currentProject.startDate} ~ {currentProject.endDate}
+                  </p>
                 </div>
-                <Badge variant="outline" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 text-xs">
+                <Badge
+                  variant="outline"
+                  className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 text-xs"
+                >
                   <Clock className="h-3 w-3 mr-1" />
                   {currentProject.status}
                 </Badge>
@@ -471,8 +536,8 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                 職務経歴書
               </h3>
               <div className="space-y-1">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="w-full text-xs h-7"
                   onClick={() => handleExportResume('pdf')}
@@ -480,8 +545,8 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   <Download className="h-3 w-3 mr-1" />
                   PDF
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="w-full text-xs h-7"
                   onClick={() => handleExportResume('word')}
@@ -489,8 +554,8 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   <Download className="h-3 w-3 mr-1" />
                   Word
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="w-full text-xs h-7"
                   onClick={() => handleExportResume('excel')}
@@ -506,7 +571,6 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
         {/* メインコンテンツ部分 */}
         <div className="p-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
             {/* スキル情報 */}
             <div className="lg:col-span-2">
               <div className="flex justify-between items-center mb-4 border-b border-border pb-2">
@@ -517,7 +581,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => isEditingSkills ? handleSaveSkills() : setIsEditingSkills(true)}
+                  onClick={() => (isEditingSkills ? handleSaveSkills() : setIsEditingSkills(true))}
                   className="gap-2"
                 >
                   {isEditingSkills ? (
@@ -533,7 +597,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   )}
                 </Button>
               </div>
-              
+
               {/* 新しいスキル追加フォーム（編集モード時のみ表示） */}
               {isEditingSkills && (
                 <div className="mb-6 p-4 border border-dashed border-primary/30 rounded-lg bg-primary/5">
@@ -547,7 +611,9 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                     />
                     <Select
                       value={newSkill.category}
-                      onValueChange={(value: Skill["category"]) => setNewSkill({ ...newSkill, category: value })}
+                      onValueChange={(value: Skill['category']) =>
+                        setNewSkill({ ...newSkill, category: value })
+                      }
                     >
                       <SelectTrigger className="h-8 text-sm">
                         <SelectValue />
@@ -567,7 +633,12 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                       min="0.5"
                       placeholder="経験年数"
                       value={newSkill.experienceYears}
-                      onChange={(e) => setNewSkill({ ...newSkill, experienceYears: parseFloat(e.target.value) || 1 })}
+                      onChange={(e) =>
+                        setNewSkill({
+                          ...newSkill,
+                          experienceYears: parseFloat(e.target.value) || 1,
+                        })
+                      }
                       className="h-8 text-sm"
                     />
                   </div>
@@ -582,7 +653,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                   </Button>
                 </div>
               )}
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {Object.entries(skillsByCategory).map(([category, skills]) => (
                   <div key={category}>
@@ -593,47 +664,58 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                       {skills
                         .sort((a, b) => b.experienceYears - a.experienceYears)
                         .map((skill) => (
-                        <div key={skill.name} className="flex justify-between items-center py-1 border-b border-muted/50 last:border-b-0 group">
-                          <div className="flex-1 min-w-0">
-                            {isEditingSkills ? (
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  value={skill.name}
-                                  onChange={(e) => updateSkill(skill.name, 'name', e.target.value)}
-                                  className="h-6 text-sm font-medium flex-1"
-                                />
-                                <Input
-                                  type="number"
-                                  step="0.5"
-                                  min="0.5"
-                                  value={skill.experienceYears}
-                                  onChange={(e) => updateSkill(skill.name, 'experienceYears', parseFloat(e.target.value) || 1)}
-                                  className="h-6 text-xs w-16"
-                                  title="経験年数"
-                                />
-                                <span className="text-xs text-muted-foreground">年</span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">{skill.name}</span>
-                                <span className="text-xs text-muted-foreground">
-                                  {skill.experienceYears}年
-                                </span>
-                              </div>
+                          <div
+                            key={skill.name}
+                            className="flex justify-between items-center py-1 border-b border-muted/50 last:border-b-0 group"
+                          >
+                            <div className="flex-1 min-w-0">
+                              {isEditingSkills ? (
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    value={skill.name}
+                                    onChange={(e) =>
+                                      updateSkill(skill.name, 'name', e.target.value)
+                                    }
+                                    className="h-6 text-sm font-medium flex-1"
+                                  />
+                                  <Input
+                                    type="number"
+                                    step="0.5"
+                                    min="0.5"
+                                    value={skill.experienceYears}
+                                    onChange={(e) =>
+                                      updateSkill(
+                                        skill.name,
+                                        'experienceYears',
+                                        parseFloat(e.target.value) || 1
+                                      )
+                                    }
+                                    className="h-6 text-xs w-16"
+                                    title="経験年数"
+                                  />
+                                  <span className="text-xs text-muted-foreground">年</span>
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium">{skill.name}</span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {skill.experienceYears}年
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            {isEditingSkills && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => removeSkill(skill.name)}
+                              >
+                                <Trash2 className="h-3 w-3 text-red-500" />
+                              </Button>
                             )}
                           </div>
-                          {isEditingSkills && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() => removeSkill(skill.name)}
-                            >
-                              <Trash2 className="h-3 w-3 text-red-500" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
                 ))}
@@ -653,29 +735,32 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
 
             {/* 右側コンテンツ */}
             <div className="space-y-6">
-              
               {/* 案件履歴 */}
               <div>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 border-b border-border pb-2">
                   <Briefcase className="h-5 w-5" />
                   案件履歴
                 </h3>
-                
+
                 <div className="space-y-3">
                   {engineer.projects.slice(0, 3).map((project, index) => (
-                    <div key={project.id} className={`p-3 bg-muted/30 rounded border-l-4 border-primary/30 ${index > 0 ? 'border-t border-border pt-3' : ''}`}>
+                    <div
+                      key={project.id}
+                      className={`p-3 bg-muted/30 rounded border-l-4 border-primary/30 ${index > 0 ? 'border-t border-border pt-3' : ''}`}
+                    >
                       <div className="flex justify-between items-start gap-2 mb-2">
                         <div className="min-w-0 flex-1">
                           <h4 className="font-medium text-sm line-clamp-1">{project.name}</h4>
                           <p className="text-muted-foreground text-xs">{project.role}</p>
                         </div>
                         <Badge variant="outline" className="text-xs px-2 py-0 whitespace-nowrap">
-                          {project.startDate.substring(0, 7)} ~ {project.endDate?.substring(0, 7) || "現在"}
+                          {project.startDate.substring(0, 7)} ~{' '}
+                          {project.endDate?.substring(0, 7) || '現在'}
                         </Badge>
                       </div>
-                      
+
                       <div className="flex flex-wrap gap-1">
-                        {project.skills.slice(0, 4).map(skill => (
+                        {project.skills.slice(0, 4).map((skill) => (
                           <Badge key={skill} variant="secondary" className="text-xs px-1 py-0">
                             {skill}
                           </Badge>
@@ -709,16 +794,12 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => isEditingMemo ? handleSaveMemo() : setIsEditingMemo(true)}
+                    onClick={() => (isEditingMemo ? handleSaveMemo() : setIsEditingMemo(true))}
                   >
-                    {isEditingMemo ? (
-                      <Save className="h-4 w-4" />
-                    ) : (
-                      <Edit2 className="h-4 w-4" />
-                    )}
+                    {isEditingMemo ? <Save className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                   </Button>
                 </div>
-                
+
                 {isEditingMemo ? (
                   <div className="space-y-3">
                     <Textarea
@@ -746,7 +827,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
                       </div>
                       <p className="text-sm whitespace-pre-line">{memo}</p>
                     </div>
-                    
+
                     <div className="text-xs text-muted-foreground border-t border-dashed border-border pt-2">
                       最終更新: 2024年3月15日
                     </div>
@@ -757,7 +838,7 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
           </div>
         </div>
       </div>
-      
+
       <EngineerSkillSheet
         engineer={engineer}
         open={isSkillSheetOpen}

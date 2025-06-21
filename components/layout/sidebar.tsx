@@ -1,17 +1,26 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { 
-  Briefcase, BarChart2, Users, User, Calendar, FileText, Home,
-  FileEdit, Bell, Building2, Shield
-} from "lucide-react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import {
+  Briefcase,
+  BarChart2,
+  Users,
+  User,
+  Calendar,
+  FileText,
+  Home,
+  FileEdit,
+  Bell,
+  Building2,
+  Shield,
+} from 'lucide-react';
 
 type SidebarProps = {
-  role: "sales" | "engineer";
+  role: 'sales' | 'engineer';
 };
 
 type NavItem = {
@@ -24,51 +33,51 @@ type NavItem = {
 export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
-  
+
   const salesNavItems: NavItem[] = [
     {
-      title: "ダッシュボード",
-      href: "/sales/dashboard",
+      title: 'ダッシュボード',
+      href: '/sales/dashboard',
       icon: <Home className="h-5 w-5" />,
     },
     {
-      title: "案件一覧",
-      href: "/sales/projects",
+      title: '案件一覧',
+      href: '/sales/projects',
       icon: <Briefcase className="h-5 w-5" />,
     },
     {
-      title: "エンジニア一覧",
-      href: "/sales/engineers",
+      title: 'エンジニア一覧',
+      href: '/sales/engineers',
       icon: <Users className="h-5 w-5" />,
     },
     {
-      title: "クライアント一覧",
-      href: "/sales/clients",
+      title: 'クライアント一覧',
+      href: '/sales/clients',
       icon: <Building2 className="h-5 w-5" />,
     },
     {
-      title: "契約管理",
-      href: "/sales/contracts",
+      title: '契約管理',
+      href: '/sales/contracts',
       icon: <FileText className="h-5 w-5" />,
     },
     {
-      title: "稼働状況（WBS）",
-      href: "/sales/wbs",
+      title: '稼働状況（WBS）',
+      href: '/sales/wbs',
       icon: <BarChart2 className="h-5 w-5" />,
     },
     {
-      title: "営業チーム管理",
-      href: "/sales/teams",
+      title: '営業チーム管理',
+      href: '/sales/teams',
       icon: <Building2 className="h-5 w-5" />,
     },
     {
-      title: "権限管理",
-      href: "/sales/permissions",
+      title: '権限管理',
+      href: '/sales/permissions',
       icon: <Shield className="h-5 w-5" />,
     },
     {
-      title: "通知",
-      href: "/sales/notifications",
+      title: '通知',
+      href: '/sales/notifications',
       icon: <Bell className="h-5 w-5" />,
       badge: 7, // 通知数を表示
     },
@@ -76,39 +85,39 @@ export function Sidebar({ role }: SidebarProps) {
 
   const engineerNavItems: NavItem[] = [
     {
-      title: "マイページ",
-      href: "/engineer/dashboard",
+      title: 'マイページ',
+      href: '/engineer/dashboard',
       icon: <Home className="h-5 w-5" />,
     },
     {
-      title: "稼働報告(工数入力)",
-      href: "/engineer/reports",
+      title: '稼働報告(工数入力)',
+      href: '/engineer/reports',
       icon: <Calendar className="h-5 w-5" />,
     },
     {
-      title: "スキル情報",
-      href: "/engineer/skills",
+      title: 'スキル情報',
+      href: '/engineer/skills',
       icon: <BarChart2 className="h-5 w-5" />,
     },
     {
-      title: "案件履歴",
-      href: "/engineer/history",
+      title: '案件履歴',
+      href: '/engineer/history',
       icon: <Briefcase className="h-5 w-5" />,
     },
     {
-      title: "職務経歴入力（初回のみ）",
-      href: "/engineer/resume",
+      title: '職務経歴入力（初回のみ）',
+      href: '/engineer/resume',
       icon: <FileEdit className="h-5 w-5" />,
     },
     {
-      title: "通知",
-      href: "/engineer/notifications",
+      title: '通知',
+      href: '/engineer/notifications',
       icon: <Bell className="h-5 w-5" />,
       badge: 3, // エンジニア側の通知数
     },
   ];
 
-  const navItems = role === "sales" ? salesNavItems : engineerNavItems;
+  const navItems = role === 'sales' ? salesNavItems : engineerNavItems;
 
   return (
     <>
@@ -117,7 +126,7 @@ export function Sidebar({ role }: SidebarProps) {
         className="hidden md:block fixed left-0 top-16 bottom-0 w-4 z-40"
         onMouseEnter={() => setIsVisible(true)}
       />
-      
+
       {/* サイドバー */}
       <AnimatePresence>
         {isVisible && (
@@ -131,13 +140,13 @@ export function Sidebar({ role }: SidebarProps) {
               className="hidden md:block fixed inset-0 bg-black/20 z-40"
               onClick={() => setIsVisible(false)}
             />
-            
+
             {/* サイドバー本体 */}
             <motion.div
               initial={{ opacity: 0, x: -280 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -280 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
               className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-background border-r shadow-lg z-50"
               onMouseLeave={() => setIsVisible(false)}
             >
@@ -145,7 +154,7 @@ export function Sidebar({ role }: SidebarProps) {
                 <div className="px-3 py-2 flex-1">
                   <div className="h-16 flex items-center justify-center border-b">
                     <h2 className="text-lg font-semibold">
-                      {role === "sales" ? "営業メニュー" : "エンジニアメニュー"}
+                      {role === 'sales' ? '営業メニュー' : 'エンジニアメニュー'}
                     </h2>
                   </div>
                   <div className="space-y-1 py-4">
@@ -159,10 +168,10 @@ export function Sidebar({ role }: SidebarProps) {
                         <Link
                           href={item.href}
                           className={cn(
-                            "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-all relative",
+                            'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-all relative',
                             pathname === item.href
-                              ? "bg-accent text-accent-foreground"
-                              : "text-muted-foreground"
+                              ? 'bg-accent text-accent-foreground'
+                              : 'text-muted-foreground'
                           )}
                           onClick={() => setIsVisible(false)}
                         >
@@ -172,10 +181,15 @@ export function Sidebar({ role }: SidebarProps) {
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              transition={{ delay: 0.2, type: "spring", stiffness: 500, damping: 30 }}
+                              transition={{
+                                delay: 0.2,
+                                type: 'spring',
+                                stiffness: 500,
+                                damping: 30,
+                              }}
                               className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm"
                             >
-                              {item.badge > 99 ? "99+" : item.badge}
+                              {item.badge > 99 ? '99+' : item.badge}
                             </motion.div>
                           )}
                         </Link>

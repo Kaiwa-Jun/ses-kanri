@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,29 +19,40 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import { X, Code, Database, Server, Wrench, Package, Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
+import {
+  X,
+  Code,
+  Database,
+  Server,
+  Wrench,
+  Package,
+  Upload,
+  FileText,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 
 const engineerSchema = z.object({
-  name: z.string().min(1, "氏名を入力してください"),
-  email: z.string().email("有効なメールアドレスを入力してください"),
-  phone: z.string().min(1, "電話番号を入力してください"),
-  totalExperience: z.coerce.number().min(0, "経験年数を入力してください"),
-  availability: z.enum(["available", "partially", "unavailable"]),
+  name: z.string().min(1, '氏名を入力してください'),
+  email: z.string().email('有効なメールアドレスを入力してください'),
+  phone: z.string().min(1, '電話番号を入力してください'),
+  totalExperience: z.coerce.number().min(0, '経験年数を入力してください'),
+  availability: z.enum(['available', 'partially', 'unavailable']),
   availableFrom: z.string().optional(),
-  preferredWorkStyle: z.enum(["remote", "onsite", "hybrid"]),
-  preferredRate: z.coerce.number().min(0, "希望単価を入力してください"),
+  preferredWorkStyle: z.enum(['remote', 'onsite', 'hybrid']),
+  preferredRate: z.coerce.number().min(0, '希望単価を入力してください'),
   imageUrl: z.string().optional(),
 });
 
@@ -44,127 +61,207 @@ type EngineerFormValues = z.infer<typeof engineerSchema>;
 interface AddEngineerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: EngineerFormValues & { 
-    skills: Array<{ name: string; category: string; experienceYears: number }>;
-    resumeFiles: File[];
-  }) => void;
+  onSubmit: (
+    data: EngineerFormValues & {
+      skills: Array<{ name: string; category: string; experienceYears: number }>;
+      resumeFiles: File[];
+    }
+  ) => void;
 }
 
 // スキル候補データ
 const skillOptions = {
   language: {
-    name: "プログラミング言語",
+    name: 'プログラミング言語',
     icon: <Code className="h-4 w-4" />,
     skills: [
-      "JavaScript", "TypeScript", "Python", "Java", "C#", "PHP", "Ruby", "Go", 
-      "Rust", "Swift", "Kotlin", "Dart", "C++", "C", "Scala", "R", "MATLAB"
-    ]
+      'JavaScript',
+      'TypeScript',
+      'Python',
+      'Java',
+      'C#',
+      'PHP',
+      'Ruby',
+      'Go',
+      'Rust',
+      'Swift',
+      'Kotlin',
+      'Dart',
+      'C++',
+      'C',
+      'Scala',
+      'R',
+      'MATLAB',
+    ],
   },
   framework: {
-    name: "フレームワーク",
+    name: 'フレームワーク',
     icon: <Package className="h-4 w-4" />,
     skills: [
-      "React", "Vue.js", "Angular", "Next.js", "Nuxt.js", "Svelte", "Express", 
-      "Fastify", "Django", "Flask", "FastAPI", "Spring Boot", "Spring Framework",
-      "ASP.NET", ".NET Core", "Laravel", "Symfony", "Ruby on Rails", "Gin", "Echo"
-    ]
+      'React',
+      'Vue.js',
+      'Angular',
+      'Next.js',
+      'Nuxt.js',
+      'Svelte',
+      'Express',
+      'Fastify',
+      'Django',
+      'Flask',
+      'FastAPI',
+      'Spring Boot',
+      'Spring Framework',
+      'ASP.NET',
+      '.NET Core',
+      'Laravel',
+      'Symfony',
+      'Ruby on Rails',
+      'Gin',
+      'Echo',
+    ],
   },
   database: {
-    name: "データベース",
+    name: 'データベース',
     icon: <Database className="h-4 w-4" />,
     skills: [
-      "MySQL", "PostgreSQL", "Oracle", "SQL Server", "MongoDB", "Redis", 
-      "Elasticsearch", "DynamoDB", "Cassandra", "Neo4j", "InfluxDB", "SQLite"
-    ]
+      'MySQL',
+      'PostgreSQL',
+      'Oracle',
+      'SQL Server',
+      'MongoDB',
+      'Redis',
+      'Elasticsearch',
+      'DynamoDB',
+      'Cassandra',
+      'Neo4j',
+      'InfluxDB',
+      'SQLite',
+    ],
   },
   infrastructure: {
-    name: "インフラ",
+    name: 'インフラ',
     icon: <Server className="h-4 w-4" />,
     skills: [
-      "AWS", "GCP", "Azure", "Docker", "Kubernetes", "Terraform", "Ansible", 
-      "Jenkins", "GitLab CI", "GitHub Actions", "CircleCI", "Nginx", "Apache"
-    ]
+      'AWS',
+      'GCP',
+      'Azure',
+      'Docker',
+      'Kubernetes',
+      'Terraform',
+      'Ansible',
+      'Jenkins',
+      'GitLab CI',
+      'GitHub Actions',
+      'CircleCI',
+      'Nginx',
+      'Apache',
+    ],
   },
   tool: {
-    name: "ツール",
+    name: 'ツール',
     icon: <Wrench className="h-4 w-4" />,
     skills: [
-      "Git", "GitHub", "GitLab", "Jira", "Confluence", "Slack", "Teams", 
-      "Figma", "Adobe XD", "Sketch", "Postman", "Insomnia", "VS Code", "IntelliJ"
-    ]
+      'Git',
+      'GitHub',
+      'GitLab',
+      'Jira',
+      'Confluence',
+      'Slack',
+      'Teams',
+      'Figma',
+      'Adobe XD',
+      'Sketch',
+      'Postman',
+      'Insomnia',
+      'VS Code',
+      'IntelliJ',
+    ],
   },
   other: {
-    name: "その他",
+    name: 'その他',
     icon: <Package className="h-4 w-4" />,
     skills: [
-      "GraphQL", "REST API", "gRPC", "WebSocket", "OAuth", "JWT", "SAML", 
-      "Microservices", "Serverless", "Machine Learning", "AI", "Blockchain"
-    ]
-  }
+      'GraphQL',
+      'REST API',
+      'gRPC',
+      'WebSocket',
+      'OAuth',
+      'JWT',
+      'SAML',
+      'Microservices',
+      'Serverless',
+      'Machine Learning',
+      'AI',
+      'Blockchain',
+    ],
+  },
 };
 
 export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerModalProps) {
-  const [selectedSkills, setSelectedSkills] = useState<Record<string, { name: string; experienceYears: number }>>({});
+  const [selectedSkills, setSelectedSkills] = useState<
+    Record<string, { name: string; experienceYears: number }>
+  >({});
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [dragActive, setDragActive] = useState(false);
-  
+
   const form = useForm<EngineerFormValues>({
     resolver: zodResolver(engineerSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
+      name: '',
+      email: '',
+      phone: '',
       totalExperience: 0,
-      availability: "available",
-      preferredWorkStyle: "remote",
+      availability: 'available',
+      preferredWorkStyle: 'remote',
       preferredRate: 0,
     },
   });
-  
+
   const handleSubmit = (data: EngineerFormValues) => {
     const skills = Object.entries(selectedSkills).map(([skillName, skillData]) => {
       // スキルがどのカテゴリに属するかを特定
-      const category = Object.entries(skillOptions).find(([_, categoryData]) => 
-        categoryData.skills.includes(skillName)
-      )?.[0] || "other";
-      
+      const category =
+        Object.entries(skillOptions).find(([_, categoryData]) =>
+          categoryData.skills.includes(skillName)
+        )?.[0] || 'other';
+
       return {
         name: skillName,
         category,
         experienceYears: skillData.experienceYears,
       };
     });
-    
+
     onSubmit({ ...data, skills, resumeFiles: uploadedFiles });
     form.reset();
     setSelectedSkills({});
     setUploadedFiles([]);
     onOpenChange(false);
   };
-  
+
   const toggleSkill = (skillName: string) => {
-    setSelectedSkills(prev => {
+    setSelectedSkills((prev) => {
       if (prev[skillName]) {
         const { [skillName]: removed, ...rest } = prev;
         return rest;
       } else {
         return {
           ...prev,
-          [skillName]: { name: skillName, experienceYears: 1 }
+          [skillName]: { name: skillName, experienceYears: 1 },
         };
       }
     });
   };
-  
+
   const updateSkillExperience = (skillName: string, years: number) => {
-    setSelectedSkills(prev => ({
+    setSelectedSkills((prev) => ({
       ...prev,
-      [skillName]: { ...prev[skillName], experienceYears: years }
+      [skillName]: { ...prev[skillName], experienceYears: years },
     }));
   };
-  
+
   const removeSkill = (skillName: string) => {
-    setSelectedSkills(prev => {
+    setSelectedSkills((prev) => {
       const { [skillName]: removed, ...rest } = prev;
       return rest;
     });
@@ -179,33 +276,33 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
   };
 
   const handleFiles = (files: File[]) => {
-    const validFiles = files.filter(file => {
+    const validFiles = files.filter((file) => {
       const validTypes = [
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
         'application/msword', // .doc
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
         'application/vnd.ms-excel', // .xls
         'application/pdf', // .pdf
-        'text/plain' // .txt
+        'text/plain', // .txt
       ];
       const maxSize = 10 * 1024 * 1024; // 10MB
-      
+
       return validTypes.includes(file.type) && file.size <= maxSize;
     });
 
-    setUploadedFiles(prev => [...prev, ...validFiles]);
+    setUploadedFiles((prev) => [...prev, ...validFiles]);
   };
 
   const removeFile = (index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -214,7 +311,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFiles(Array.from(e.dataTransfer.files));
     }
@@ -247,13 +344,13 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
         <DialogHeader>
           <DialogTitle>エンジニアを追加</DialogTitle>
         </DialogHeader>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             {/* 基本情報 */}
             <div className="space-y-4">
               <h3 className="font-medium">基本情報</h3>
-              
+
               <FormField
                 control={form.control}
                 name="name"
@@ -267,7 +364,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   </FormItem>
                 )}
               />
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -282,7 +379,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="phone"
@@ -297,7 +394,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   )}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -312,7 +409,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="preferredRate"
@@ -327,7 +424,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   )}
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -351,7 +448,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="preferredWorkStyle"
@@ -375,7 +472,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   )}
                 />
               </div>
-              
+
               <FormField
                 control={form.control}
                 name="availableFrom"
@@ -390,21 +487,21 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                 )}
               />
             </div>
-            
+
             <Separator />
-            
+
             {/* 職務経歴書アップロード */}
             <div className="space-y-4">
               <h3 className="font-medium flex items-center gap-2">
                 <Upload className="h-4 w-4" />
                 職務経歴書アップロード
               </h3>
-              
+
               {/* ドラッグ&ドロップエリア */}
               <div
                 className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                  dragActive 
-                    ? 'border-primary bg-primary/5' 
+                  dragActive
+                    ? 'border-primary bg-primary/5'
                     : 'border-muted-foreground/25 hover:border-primary/50'
                 }`}
                 onDragEnter={handleDrag}
@@ -439,7 +536,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   ファイルを選択
                 </Button>
               </div>
-              
+
               {/* アップロード済みファイル一覧 */}
               {uploadedFiles.length > 0 && (
                 <div className="space-y-2">
@@ -476,7 +573,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   </div>
                 </div>
               )}
-              
+
               {/* 注意事項 */}
               <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <AlertCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
@@ -490,20 +587,23 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                 </div>
               </div>
             </div>
-            
+
             <Separator />
-            
+
             {/* スキル選択 */}
             <div className="space-y-4">
               <h3 className="font-medium">スキル選択</h3>
-              
+
               {/* 選択済みスキル */}
               {Object.keys(selectedSkills).length > 0 && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">選択済みスキル</h4>
                   <div className="space-y-2">
                     {Object.entries(selectedSkills).map(([skillName, skillData]) => (
-                      <div key={skillName} className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg">
+                      <div
+                        key={skillName}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
                         <Badge variant="secondary" className="flex-shrink-0">
                           {skillName}
                         </Badge>
@@ -514,7 +614,9 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                             min="0.5"
                             step="0.5"
                             value={skillData.experienceYears}
-                            onChange={(e) => updateSkillExperience(skillName, parseFloat(e.target.value) || 1)}
+                            onChange={(e) =>
+                              updateSkillExperience(skillName, parseFloat(e.target.value) || 1)
+                            }
                             className="w-20 h-8"
                           />
                           <span className="text-sm text-muted-foreground">年</span>
@@ -533,7 +635,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                   </div>
                 </div>
               )}
-              
+
               {/* スキルカテゴリ別選択 */}
               <div className="space-y-4">
                 {Object.entries(skillOptions).map(([categoryKey, categoryData]) => (
@@ -543,7 +645,7 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                       {categoryData.name}
                     </h4>
                     <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                      {categoryData.skills.map(skill => (
+                      {categoryData.skills.map((skill) => (
                         <div key={skill} className="flex items-center space-x-2">
                           <Checkbox
                             id={skill}
@@ -563,14 +665,12 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                 ))}
               </div>
             </div>
-            
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 キャンセル
               </Button>
-              <Button type="submit">
-                追加
-              </Button>
+              <Button type="submit">追加</Button>
             </DialogFooter>
           </form>
         </Form>

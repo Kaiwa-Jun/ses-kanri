@@ -1,23 +1,29 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Search, Filter, ArrowUpDown, CalendarClock, Briefcase, Plus, CreditCard, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+  Search,
+  Filter,
+  ArrowUpDown,
+  CalendarClock,
+  Briefcase,
+  Plus,
+  CreditCard,
+  Star,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -25,42 +31,46 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { mockEngineers, Engineer } from "@/lib/data";
-import { AddEngineerModal } from "@/components/engineers/add-engineer-modal";
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { mockEngineers, Engineer } from '@/lib/data';
+import { AddEngineerModal } from '@/components/engineers/add-engineer-modal';
 
 export default function EngineersPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [filterAvailability, setFilterAvailability] = useState<string | undefined>(undefined);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [sortField, setSortField] = useState<"experience" | "rate" | "name">("experience");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortField, setSortField] = useState<'experience' | 'rate' | 'name'>('experience');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const router = useRouter();
-  
-  const filteredEngineers = mockEngineers.filter(engineer => {
-    const matchesSearch = engineer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         engineer.skills.some(skill => skill.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesAvailability = !filterAvailability || filterAvailability === "all" || engineer.availability === filterAvailability;
-    
+
+  const filteredEngineers = mockEngineers.filter((engineer) => {
+    const matchesSearch =
+      engineer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      engineer.skills.some((skill) => skill.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const matchesAvailability =
+      !filterAvailability ||
+      filterAvailability === 'all' ||
+      engineer.availability === filterAvailability;
+
     return matchesSearch && matchesAvailability;
   });
-  
+
   const sortedEngineers = [...filteredEngineers].sort((a, b) => {
     let aValue, bValue;
-    
+
     switch (sortField) {
-      case "experience":
+      case 'experience':
         aValue = a.totalExperience;
         bValue = b.totalExperience;
         break;
-      case "rate":
+      case 'rate':
         aValue = a.preferredRate;
         bValue = b.preferredRate;
         break;
-      case "name":
+      case 'name':
         aValue = a.name;
         bValue = b.name;
         break;
@@ -68,57 +78,69 @@ export default function EngineersPage() {
         aValue = a.totalExperience;
         bValue = b.totalExperience;
     }
-    
-    if (sortOrder === "desc") {
-      return typeof aValue === "string" && typeof bValue === "string" 
-        ? bValue.localeCompare(aValue) 
+
+    if (sortOrder === 'desc') {
+      return typeof aValue === 'string' && typeof bValue === 'string'
+        ? bValue.localeCompare(aValue)
         : (bValue as number) - (aValue as number);
     } else {
-      return typeof aValue === "string" && typeof bValue === "string"
-        ? aValue.localeCompare(bValue) 
+      return typeof aValue === 'string' && typeof bValue === 'string'
+        ? aValue.localeCompare(bValue)
         : (aValue as number) - (bValue as number);
     }
   });
-  
-  const getAvailabilityColor = (availability: Engineer["availability"]) => {
+
+  const getAvailabilityColor = (availability: Engineer['availability']) => {
     switch (availability) {
-      case "available": return "text-green-500 bg-green-100 dark:bg-green-900/30";
-      case "partially": return "text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30";
-      case "unavailable": return "text-red-500 bg-red-100 dark:bg-red-900/30";
-      default: return "";
+      case 'available':
+        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+      case 'partially':
+        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+      case 'unavailable':
+        return 'text-red-500 bg-red-100 dark:bg-red-900/30';
+      default:
+        return '';
     }
   };
-  
-  const getAvailabilityText = (availability: Engineer["availability"]) => {
+
+  const getAvailabilityText = (availability: Engineer['availability']) => {
     switch (availability) {
-      case "available": return "稼働可能";
-      case "partially": return "一部稼働可能";
-      case "unavailable": return "稼働不可";
-      default: return availability;
+      case 'available':
+        return '稼働可能';
+      case 'partially':
+        return '一部稼働可能';
+      case 'unavailable':
+        return '稼働不可';
+      default:
+        return availability;
     }
   };
-  
-  const getWorkStyleText = (workStyle: Engineer["preferredWorkStyle"]) => {
+
+  const getWorkStyleText = (workStyle: Engineer['preferredWorkStyle']) => {
     switch (workStyle) {
-      case "remote": return "リモート";
-      case "onsite": return "常駐";
-      case "hybrid": return "ハイブリッド";
-      default: return workStyle;
+      case 'remote':
+        return 'リモート';
+      case 'onsite':
+        return '常駐';
+      case 'hybrid':
+        return 'ハイブリッド';
+      default:
+        return workStyle;
     }
   };
 
   const handleAddEngineer = (data: any) => {
-    console.log("New engineer data:", data);
+    console.log('New engineer data:', data);
     // 実際のアプリケーションではここでAPIを呼び出してエンジニアを追加
     setIsAddModalOpen(false);
   };
 
-  const handleSort = (field: "experience" | "rate" | "name") => {
+  const handleSort = (field: 'experience' | 'rate' | 'name') => {
     if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortOrder("desc");
+      setSortOrder('desc');
     }
   };
 
@@ -146,7 +168,7 @@ export default function EngineersPage() {
           </Button>
         </div>
       </motion.div>
-      
+
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -175,7 +197,7 @@ export default function EngineersPage() {
           </SelectContent>
         </Select>
       </div>
-      
+
       <Card>
         <CardContent className="p-0">
           <Table>
@@ -183,10 +205,10 @@ export default function EngineersPage() {
               <TableRow>
                 <TableHead>エンジニア</TableHead>
                 <TableHead>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     className="h-auto p-0 font-medium"
-                    onClick={() => handleSort("experience")}
+                    onClick={() => handleSort('experience')}
                   >
                     経験年数
                     <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -194,10 +216,10 @@ export default function EngineersPage() {
                 </TableHead>
                 <TableHead>稼働状況</TableHead>
                 <TableHead>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     className="h-auto p-0 font-medium"
-                    onClick={() => handleSort("rate")}
+                    onClick={() => handleSort('rate')}
                   >
                     希望単価
                     <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -230,7 +252,7 @@ export default function EngineersPage() {
                       </div>
                     </div>
                   </TableCell>
-                  
+
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{engineer.totalExperience}年</span>
@@ -239,44 +261,47 @@ export default function EngineersPage() {
                       )}
                     </div>
                   </TableCell>
-                  
+
                   <TableCell>
-                    <Badge variant="outline" className={`${getAvailabilityColor(engineer.availability)}`}>
+                    <Badge
+                      variant="outline"
+                      className={`${getAvailabilityColor(engineer.availability)}`}
+                    >
                       {getAvailabilityText(engineer.availability)}
                     </Badge>
                   </TableCell>
-                  
+
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <CreditCard className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{engineer.preferredRate}万円</span>
                     </div>
                   </TableCell>
-                  
+
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <Briefcase className="h-4 w-4 text-muted-foreground" />
                       <span>{getWorkStyleText(engineer.preferredWorkStyle)}</span>
                     </div>
                   </TableCell>
-                  
+
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <CalendarClock className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">{engineer.availableFrom || "未定"}</span>
+                      <span className="text-sm">{engineer.availableFrom || '未定'}</span>
                     </div>
                   </TableCell>
-                  
+
                   <TableCell>
                     <div className="flex flex-wrap gap-1 max-w-[200px]">
                       {engineer.skills
                         .sort((a, b) => b.level - a.level)
                         .slice(0, 3)
-                        .map(skill => (
-                        <Badge key={skill.name} variant="secondary" className="text-xs">
-                          {skill.name}
-                        </Badge>
-                      ))}
+                        .map((skill) => (
+                          <Badge key={skill.name} variant="secondary" className="text-xs">
+                            {skill.name}
+                          </Badge>
+                        ))}
                       {engineer.skills.length > 3 && (
                         <Badge variant="secondary" className="text-xs">
                           +{engineer.skills.length - 3}
@@ -288,20 +313,20 @@ export default function EngineersPage() {
               ))}
             </TableBody>
           </Table>
-          
+
           {sortedEngineers.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12">
               <p className="text-muted-foreground mb-4">
-                {searchTerm || filterAvailability ? "検索条件に一致するエンジニアがありません" : "エンジニアが登録されていません"}
+                {searchTerm || filterAvailability
+                  ? '検索条件に一致するエンジニアがありません'
+                  : 'エンジニアが登録されていません'}
               </p>
-              <Button onClick={() => setIsAddModalOpen(true)}>
-                エンジニアを追加する
-              </Button>
+              <Button onClick={() => setIsAddModalOpen(true)}>エンジニアを追加する</Button>
             </div>
           )}
         </CardContent>
       </Card>
-      
+
       <AddEngineerModal
         open={isAddModalOpen}
         onOpenChange={setIsAddModalOpen}

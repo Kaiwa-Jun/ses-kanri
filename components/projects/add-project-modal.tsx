@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,20 +19,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus } from "lucide-react";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { X, Plus } from 'lucide-react';
 
 const projectSchema = z.object({
-  name: z.string().min(1, "プロジェクト名を入力してください"),
-  role: z.string().min(1, "役割を入力してください"),
-  startDate: z.string().min(1, "開始日を入力してください"),
+  name: z.string().min(1, 'プロジェクト名を入力してください'),
+  role: z.string().min(1, '役割を入力してください'),
+  startDate: z.string().min(1, '開始日を入力してください'),
   endDate: z.string().optional(),
-  teamSize: z.coerce.number().min(1, "チーム人数を入力してください"),
-  description: z.string().min(1, "業務概要を入力してください"),
-  responsibilities: z.string().min(1, "担当業務を入力してください"),
+  teamSize: z.coerce.number().min(1, 'チーム人数を入力してください'),
+  description: z.string().min(1, '業務概要を入力してください'),
+  responsibilities: z.string().min(1, '担当業務を入力してください'),
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
@@ -39,37 +45,37 @@ interface AddProjectModalProps {
 
 export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModalProps) {
   const [skills, setSkills] = useState<string[]>([]);
-  const [newSkill, setNewSkill] = useState("");
-  
+  const [newSkill, setNewSkill] = useState('');
+
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      name: "",
-      role: "",
-      startDate: "",
-      endDate: "",
+      name: '',
+      role: '',
+      startDate: '',
+      endDate: '',
       teamSize: 1,
-      description: "",
-      responsibilities: "",
+      description: '',
+      responsibilities: '',
     },
   });
-  
+
   const handleSubmit = (data: ProjectFormValues) => {
     onSubmit({ ...data, skills });
     form.reset();
     setSkills([]);
     onOpenChange(false);
   };
-  
+
   const addSkill = () => {
     if (newSkill && !skills.includes(newSkill)) {
       setSkills([...skills, newSkill]);
-      setNewSkill("");
+      setNewSkill('');
     }
   };
-  
+
   const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter(skill => skill !== skillToRemove));
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
   return (
@@ -78,7 +84,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
         <DialogHeader>
           <DialogTitle>案件を追加</DialogTitle>
         </DialogHeader>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormField
@@ -94,7 +100,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="role"
@@ -108,7 +114,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 </FormItem>
               )}
             />
-            
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -123,7 +129,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="endDate"
@@ -138,7 +144,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 )}
               />
             </div>
-            
+
             <FormField
               control={form.control}
               name="teamSize"
@@ -152,7 +158,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 </FormItem>
               )}
             />
-            
+
             <div>
               <FormLabel>使用技術</FormLabel>
               <div className="flex gap-2 mt-2">
@@ -161,7 +167,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                    if (e.key === 'Enter') {
                       e.preventDefault();
                       addSkill();
                     }
@@ -171,9 +177,9 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               <div className="flex flex-wrap gap-2 mt-3">
-                {skills.map(skill => (
+                {skills.map((skill) => (
                   <Badge key={skill} className="px-2 py-1 gap-1">
                     {skill}
                     <button
@@ -187,7 +193,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 ))}
               </div>
             </div>
-            
+
             <FormField
               control={form.control}
               name="description"
@@ -205,7 +211,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="responsibilities"
@@ -223,7 +229,7 @@ export function AddProjectModal({ open, onOpenChange, onSubmit }: AddProjectModa
                 </FormItem>
               )}
             />
-            
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 キャンセル

@@ -1,13 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { X, Plus, Trash2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { X, Plus, Trash2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -15,29 +21,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const projectSchema = z.object({
-  title: z.string().min(5, "案件名は5文字以上で入力してください"),
-  client: z.string().min(2, "クライアント名を入力してください"),
-  rate: z.coerce.number().positive("単価は正の数を入力してください"),
-  period: z.string().min(1, "期間を入力してください"),
-  workStyle: z.enum(["remote", "onsite", "hybrid"]),
-  status: z.enum(["open", "in_progress", "negotiating", "closed"]),
-  description: z.string().min(10, "説明は10文字以上で入力してください"),
-  startDate: z.string().min(1, "開始日を入力してください"),
-  endDate: z.string().min(1, "終了日を入力してください"),
+  title: z.string().min(5, '案件名は5文字以上で入力してください'),
+  client: z.string().min(2, 'クライアント名を入力してください'),
+  rate: z.coerce.number().positive('単価は正の数を入力してください'),
+  period: z.string().min(1, '期間を入力してください'),
+  workStyle: z.enum(['remote', 'onsite', 'hybrid']),
+  status: z.enum(['open', 'in_progress', 'negotiating', 'closed']),
+  description: z.string().min(10, '説明は10文字以上で入力してください'),
+  startDate: z.string().min(1, '開始日を入力してください'),
+  endDate: z.string().min(1, '終了日を入力してください'),
   location: z.string().optional(),
 });
 
@@ -50,24 +56,24 @@ interface CreateProjectDialogProps {
 
 export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogProps) {
   const [skills, setSkills] = useState<string[]>([]);
-  const [newSkill, setNewSkill] = useState("");
-  
+  const [newSkill, setNewSkill] = useState('');
+
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      title: "",
-      client: "",
+      title: '',
+      client: '',
       rate: 0,
-      period: "",
-      workStyle: "remote",
-      status: "open",
-      description: "",
-      startDate: "",
-      endDate: "",
-      location: "",
+      period: '',
+      workStyle: 'remote',
+      status: 'open',
+      description: '',
+      startDate: '',
+      endDate: '',
+      location: '',
     },
   });
-  
+
   const onSubmit = (data: ProjectFormValues) => {
     console.log({ ...data, skills });
     // 実際には保存処理を行う
@@ -75,16 +81,16 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
     form.reset();
     setSkills([]);
   };
-  
+
   const addSkill = () => {
     if (newSkill && !skills.includes(newSkill)) {
       setSkills([...skills, newSkill]);
-      setNewSkill("");
+      setNewSkill('');
     }
   };
-  
+
   const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter(skill => skill !== skillToRemove));
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
   return (
@@ -93,7 +99,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
         <DialogHeader>
           <DialogTitle>新規案件登録</DialogTitle>
         </DialogHeader>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -110,7 +116,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="client"
@@ -124,7 +130,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="rate"
@@ -138,7 +144,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="period"
@@ -152,17 +158,14 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="workStyle"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>勤務形態</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="勤務形態を選択" />
@@ -178,17 +181,14 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="status"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>ステータス</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="ステータスを選択" />
@@ -205,7 +205,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="startDate"
@@ -219,7 +219,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="endDate"
@@ -233,7 +233,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="location"
@@ -248,9 +248,9 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                 )}
               />
             </div>
-            
+
             <Separator />
-            
+
             <div>
               <FormLabel>必要スキル</FormLabel>
               <div className="flex gap-2 mt-2">
@@ -259,7 +259,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                    if (e.key === 'Enter') {
                       e.preventDefault();
                       addSkill();
                     }
@@ -269,10 +269,10 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              
+
               <div className="flex flex-wrap gap-2 mt-3">
                 <AnimatePresence>
-                  {skills.map(skill => (
+                  {skills.map((skill) => (
                     <motion.div
                       key={skill}
                       initial={{ opacity: 0, scale: 0.8 }}
@@ -295,7 +295,7 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                 </AnimatePresence>
               </div>
             </div>
-            
+
             <FormField
               control={form.control}
               name="description"
@@ -303,17 +303,13 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                 <FormItem>
                   <FormLabel>案件詳細</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="案件の詳細説明を入力してください"
-                      rows={5}
-                      {...field}
-                    />
+                    <Textarea placeholder="案件の詳細説明を入力してください" rows={5} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 キャンセル

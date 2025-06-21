@@ -152,6 +152,28 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
 
               <FormField
                 control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ステータス</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="ステータスを選択" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="open">募集中</SelectItem>
+                        <SelectItem value="closed">終了</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="minRate"
                 render={({ field }) => (
                   <FormItem>
@@ -208,30 +230,6 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                         <SelectItem value="remote">リモート</SelectItem>
                         <SelectItem value="onsite">常駐</SelectItem>
                         <SelectItem value="hybrid">ハイブリッド</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ステータス</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="ステータスを選択" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="open">募集中</SelectItem>
-                        <SelectItem value="in_progress">進行中</SelectItem>
-                        <SelectItem value="negotiating">交渉中</SelectItem>
-                        <SelectItem value="closed">終了</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

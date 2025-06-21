@@ -215,14 +215,36 @@ const domains = [
   'セキュリティ',
 ];
 
+// 資格選択肢
+const certifications = [
+  '基本情報技術者',
+  '応用情報技術者',
+  '情報処理安全確保支援士',
+  'AWS認定ソリューションアーキテクト',
+  'AWS認定デベロッパー',
+  'AWS認定SysOpsアドミニストレーター',
+  'Google Cloud Professional',
+  'Microsoft Azure認定',
+  'Oracle認定Javaプログラマー',
+  'CISSP',
+  'CISA',
+  'PMP',
+  'その他',
+];
+
 export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedSkills, setSelectedSkills] = useState<
     Record<string, { category: string; experienceYears: number }>
   >({});
-  const [selectedPhases, setSelectedPhases] = useState<string[]>([]);
-  const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+  const [selectedPhases, setSelectedPhases] = useState<Record<string, { experienceYears: number }>>(
+    {}
+  );
+  const [selectedPositions, setSelectedPositions] = useState<
+    Record<string, { experienceYears: number }>
+  >({});
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
+  const [selectedCertifications, setSelectedCertifications] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [dragActive, setDragActive] = useState(false);
 
@@ -290,9 +312,10 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
     // フォームをリセット
     form.reset();
     setSelectedSkills({});
-    setSelectedPhases([]);
-    setSelectedPositions([]);
+    setSelectedPhases({});
+    setSelectedPositions({});
     setSelectedDomains([]);
+    setSelectedCertifications([]);
     setUploadedFiles([]);
     setCurrentStep(1);
   };
@@ -331,19 +354,59 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
   };
 
   const togglePhase = (phase: string) => {
-    if (selectedPhases.includes(phase)) {
-      setSelectedPhases(selectedPhases.filter((p) => p !== phase));
+    if (selectedPhases[phase]) {
+      const newPhases = { ...selectedPhases };
+      delete newPhases[phase];
+      setSelectedPhases(newPhases);
     } else {
-      setSelectedPhases([...selectedPhases, phase]);
+      setSelectedPhases({
+        ...selectedPhases,
+        [phase]: { experienceYears: 1 },
+      });
     }
   };
 
-  const togglePosition = (position: string) => {
-    if (selectedPositions.includes(position)) {
-      setSelectedPositions(selectedPositions.filter((p) => p !== position));
-    } else {
-      setSelectedPositions([...selectedPositions, position]);
+  const updatePhaseExperience = (phase: string, years: number) => {
+    if (selectedPhases[phase]) {
+      setSelectedPhases({
+        ...selectedPhases,
+        [phase]: { experienceYears: years },
+      });
     }
+  };
+
+  const removePhase = (phase: string) => {
+    const newPhases = { ...selectedPhases };
+    delete newPhases[phase];
+    setSelectedPhases(newPhases);
+  };
+
+  const togglePosition = (position: string) => {
+    if (selectedPositions[position]) {
+      const newPositions = { ...selectedPositions };
+      delete newPositions[position];
+      setSelectedPositions(newPositions);
+    } else {
+      setSelectedPositions({
+        ...selectedPositions,
+        [position]: { experienceYears: 1 },
+      });
+    }
+  };
+
+  const updatePositionExperience = (position: string, years: number) => {
+    if (selectedPositions[position]) {
+      setSelectedPositions({
+        ...selectedPositions,
+        [position]: { experienceYears: years },
+      });
+    }
+  };
+
+  const removePosition = (position: string) => {
+    const newPositions = { ...selectedPositions };
+    delete newPositions[position];
+    setSelectedPositions(newPositions);
   };
 
   const toggleDomain = (domain: string) => {
@@ -351,6 +414,14 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
       setSelectedDomains(selectedDomains.filter((d) => d !== domain));
     } else {
       setSelectedDomains([...selectedDomains, domain]);
+    }
+  };
+
+  const toggleCertification = (certification: string) => {
+    if (selectedCertifications.includes(certification)) {
+      setSelectedCertifications(selectedCertifications.filter((c) => c !== certification));
+    } else {
+      setSelectedCertifications([...selectedCertifications, certification]);
     }
   };
 
@@ -566,78 +637,133 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
       case 2:
         return (
           <div className="space-y-6">
-            {/* 選択済みスキル */}
-            {Object.keys(selectedSkills).length > 0 && (
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium">選択済みスキル</h4>
-                <div className="space-y-2">
-                  {Object.entries(selectedSkills).map(([skillName, skillData]) => (
-                    <div
-                      key={skillName}
-                      className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
-                    >
-                      <Badge variant="secondary" className="flex-shrink-0">
-                        {skillName}
+            {/* 資格 */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Award className="h-5 w-5" />
+                資格
+              </h3>
+
+              {/* 選択済み資格 */}
+              {selectedCertifications.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">選択済み資格</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCertifications.map((cert) => (
+                      <Badge key={cert} variant="secondary" className="gap-1">
+                        {cert}
+                        <button
+                          type="button"
+                          onClick={() => toggleCertification(cert)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </Badge>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">経験年数:</span>
-                        <Input
-                          type="number"
-                          min="0.5"
-                          step="0.5"
-                          value={skillData.experienceYears}
-                          onChange={(e) =>
-                            updateSkillExperience(skillName, parseFloat(e.target.value) || 1)
-                          }
-                          className="w-20 h-8"
-                        />
-                        <span className="text-sm text-muted-foreground">年</span>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeSkill(skillName)}
-                        className="ml-auto h-8 w-8 p-0"
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 資格選択 */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium">資格選択</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {certifications.map((certification) => (
+                    <div key={certification} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={certification}
+                        checked={selectedCertifications.includes(certification)}
+                        onCheckedChange={() => toggleCertification(certification)}
+                      />
+                      <label
+                        htmlFor={certification}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                       >
-                        <X className="h-4 w-4" />
-                      </Button>
+                        {certification}
+                      </label>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
+            </div>
 
             <Separator />
 
-            {/* スキルカテゴリ別選択 */}
+            {/* スキル選択 */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">技術スキル</h3>
-              {Object.entries(skillOptions).map(([categoryKey, categoryData]) => (
-                <div key={categoryKey} className="space-y-3">
-                  <h4 className="text-sm font-medium flex items-center gap-2">
-                    {categoryData.icon}
-                    {categoryData.name}
-                  </h4>
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-                    {categoryData.skills.map((skill) => (
-                      <div key={skill} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={skill}
-                          checked={!!selectedSkills[skill]}
-                          onCheckedChange={() => toggleSkill(skill)}
-                        />
-                        <label
-                          htmlFor={skill}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              <h3 className="text-lg font-semibold">スキル選択</h3>
+
+              {/* 選択済みスキル */}
+              {Object.keys(selectedSkills).length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">選択済みスキル</h4>
+                  <div className="space-y-2">
+                    {Object.entries(selectedSkills).map(([skillName, skillData]) => (
+                      <div
+                        key={skillName}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
+                        <Badge variant="secondary" className="flex-shrink-0">
+                          {skillName}
+                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">経験年数:</span>
+                          <Input
+                            type="number"
+                            min="0.5"
+                            step="0.5"
+                            value={skillData.experienceYears}
+                            onChange={(e) =>
+                              updateSkillExperience(skillName, parseFloat(e.target.value) || 1)
+                            }
+                            className="w-20 h-8"
+                          />
+                          <span className="text-sm text-muted-foreground">年</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeSkill(skillName)}
+                          className="ml-auto h-8 w-8 p-0"
                         >
-                          {skill}
-                        </label>
+                          <X className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* スキルカテゴリ別選択 */}
+              <div className="space-y-4">
+                {Object.entries(skillOptions).map(([categoryKey, categoryData]) => (
+                  <div key={categoryKey} className="space-y-3">
+                    <h4 className="text-sm font-medium flex items-center gap-2">
+                      {categoryData.icon}
+                      {categoryData.name}
+                    </h4>
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                      {categoryData.skills.map((skill) => (
+                        <div key={skill} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={skill}
+                            checked={!!selectedSkills[skill]}
+                            onCheckedChange={() => toggleSkill(skill)}
+                          />
+                          <label
+                            htmlFor={skill}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {skill}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <Separator />
@@ -648,6 +774,29 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                 <Briefcase className="h-5 w-5" />
                 ドメイン領域
               </h3>
+
+              {/* 選択済みドメイン */}
+              {selectedDomains.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">選択済みドメイン領域</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedDomains.map((domain) => (
+                      <Badge key={domain} variant="secondary" className="gap-1">
+                        {domain}
+                        <button
+                          type="button"
+                          onClick={() => toggleDomain(domain)}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ドメイン選択 */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {domains.map((domain) => (
                   <div key={domain} className="flex items-center space-x-2">
@@ -669,52 +818,131 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
 
             <Separator />
 
-            {/* 参加工程 */}
+            {/* 工程・ポジション */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                参加工程
+                工程・ポジション
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {phases.map((phase) => (
-                  <div key={phase} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={phase}
-                      checked={selectedPhases.includes(phase)}
-                      onCheckedChange={() => togglePhase(phase)}
-                    />
-                    <label
-                      htmlFor={phase}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                    >
-                      {phase}
-                    </label>
+
+              {/* 選択済み工程・ポジション */}
+              {(Object.keys(selectedPhases).length > 0 ||
+                Object.keys(selectedPositions).length > 0) && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">選択済み工程・ポジション</h4>
+                  <div className="space-y-2">
+                    {Object.entries(selectedPhases).map(([phase, data]) => (
+                      <div
+                        key={phase}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
+                        <Badge variant="secondary" className="flex-shrink-0">
+                          {phase}
+                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">経験年数:</span>
+                          <Input
+                            type="number"
+                            min="0.5"
+                            step="0.5"
+                            value={data.experienceYears}
+                            onChange={(e) =>
+                              updatePhaseExperience(phase, parseFloat(e.target.value) || 1)
+                            }
+                            className="w-20 h-8"
+                          />
+                          <span className="text-sm text-muted-foreground">年</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePhase(phase)}
+                          className="ml-auto h-8 w-8 p-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    {Object.entries(selectedPositions).map(([position, data]) => (
+                      <div
+                        key={position}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
+                        <Badge variant="secondary" className="flex-shrink-0">
+                          {position}
+                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">経験年数:</span>
+                          <Input
+                            type="number"
+                            min="0.5"
+                            step="0.5"
+                            value={data.experienceYears}
+                            onChange={(e) =>
+                              updatePositionExperience(position, parseFloat(e.target.value) || 1)
+                            }
+                            className="w-20 h-8"
+                          />
+                          <span className="text-sm text-muted-foreground">年</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePosition(position)}
+                          className="ml-auto h-8 w-8 p-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+              )}
+
+              {/* 参加工程 */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium">参加工程</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {phases.map((phase) => (
+                    <div key={phase} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={phase}
+                        checked={!!selectedPhases[phase]}
+                        onCheckedChange={() => togglePhase(phase)}
+                      />
+                      <label
+                        htmlFor={phase}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {phase}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <Separator />
-
-            {/* ポジション経験 */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">ポジション経験</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {positions.map((position) => (
-                  <div key={position} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={position}
-                      checked={selectedPositions.includes(position)}
-                      onCheckedChange={() => togglePosition(position)}
-                    />
-                    <label
-                      htmlFor={position}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                    >
-                      {position}
-                    </label>
-                  </div>
-                ))}
+              {/* ポジション経験 */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium">ポジション経験</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {positions.map((position) => (
+                    <div key={position} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={position}
+                        checked={!!selectedPositions[position]}
+                        onCheckedChange={() => togglePosition(position)}
+                      />
+                      <label
+                        htmlFor={position}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {position}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

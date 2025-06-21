@@ -1,12 +1,8 @@
 import { mockEngineers } from "@/lib/data";
 import { EngineerProfile } from "@/components/engineers/engineer-profile";
 
-// 静的ページ生成のためのパラメータを生成
-export async function generateStaticParams() {
-  return mockEngineers.map((engineer) => ({
-    id: engineer.id
-  }));
-}
+// 動的レンダリングを強制
+export const dynamic = 'force-dynamic';
 
 export default function EngineerDetailsPage({ params }: { params: { id: string } }) {
   // 実際のアプリでは、APIからデータを取得する

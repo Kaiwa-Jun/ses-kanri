@@ -1,12 +1,8 @@
 import { ContractDetails } from "@/components/contracts/contract-details";
 import { mockContracts } from "@/lib/data";
 
-// 静的パラメータを生成する関数
-export function generateStaticParams() {
-  return mockContracts.map((contract) => ({
-    id: contract.id,
-  }));
-}
+// 動的レンダリングを強制
+export const dynamic = 'force-dynamic';
 
 export default function ContractDetailsPage({ params }: { params: { id: string } }) {
   // IDに基づいて契約データを取得

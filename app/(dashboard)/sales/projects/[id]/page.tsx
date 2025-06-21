@@ -1,13 +1,8 @@
 import { mockProjects, getMatchingEngineers } from "@/lib/data";
 import { ProjectDetails } from "@/components/projects/project-details";
 
-// 静的に生成するページのパラメータを定義
-export async function generateStaticParams() {
-  // mockProjectsから全てのプロジェクトIDを取得
-  return mockProjects.map((project) => ({
-    id: project.id
-  }));
-}
+// 動的レンダリングを強制
+export const dynamic = 'force-dynamic';
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   // 実際のアプリでは、APIからデータを取得する

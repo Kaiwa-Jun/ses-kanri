@@ -1,12 +1,8 @@
 import { mockClients } from "@/lib/data";
 import { ClientDetails } from "@/components/clients/client-details";
 
-// 静的パラメータを生成する関数
-export async function generateStaticParams() {
-  return mockClients.map((client) => ({
-    id: client.id,
-  }));
-}
+// 動的レンダリングを強制
+export const dynamic = 'force-dynamic';
 
 export default function ClientDetailsPage({ params }: { params: { id: string } }) {
   // IDに基づいてクライアントデータを取得

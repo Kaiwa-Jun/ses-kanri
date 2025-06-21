@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# コミットメッセージを取得
+commit_regex='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,100}$'
+commit_message=$(cat "$1")
+
+if ! echo "$commit_message" | grep -qE "$commit_regex"; then
+  echo "❌ コミットメッセージが規約に従っていません！"
+  echo ""
+  echo "📝 正しい形式:"
+  echo "  <type>(<scope>): <subject>"
+  echo ""
+  echo "🏷️  使用可能なtype:"
+  echo "  feat:     新機能"
+  echo "  fix:      バグ修正"
+  echo "  docs:     ドキュメントのみの変更"
+  echo "  style:    フォーマットの変更（コードの動作に影響しない）"
+  echo "  refactor: リファクタリング"
+  echo "  test:     テストの追加・修正"
+  echo "  chore:    ビルドプロセスやツールの変更"
+  echo "  perf:     パフォーマンス改善"
+  echo "  ci:       CI/CDの設定変更"
+  echo "  build:    ビルドシステムの変更"
+  echo "  revert:   以前のコミットの取り消し"
+  echo ""
+  echo "📌 例:"
+  echo "  feat: ユーザー認証機能を追加"
+  echo "  fix(auth): ログイン時のエラーを修正"
+  echo "  docs: READMEにインストール手順を追加"
+  echo ""
+  exit 1
+fi 

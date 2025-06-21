@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.husky
+build
+dist
+coverage
+*.min.js
+package-lock.json 

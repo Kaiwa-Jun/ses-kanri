@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 プッシュ前のチェックを実行中..."
+
+# Lintチェック
+echo "📝 Lintチェック..."
+npm run lint
+
+# TypeScriptの型チェック
+echo "🔎 TypeScriptの型チェック..."
+npm run type-check
+
+# フォーマットチェック
+echo "🎨 フォーマットチェック..."
+npm run format:check
+
+echo "✅ すべてのチェックが完了しました！"
+echo "💡 ヒント: ビルドチェックを実行するには 'npm run validate' を使用してください" 

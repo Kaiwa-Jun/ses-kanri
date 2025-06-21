@@ -5,23 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  Briefcase,
-  BarChart2,
-  Users,
-  User,
-  Calendar,
-  FileText,
-  Home,
-  FileEdit,
-  Bell,
-  Building2,
-  Shield,
-} from 'lucide-react';
-
-type SidebarProps = {
-  role: 'sales' | 'engineer';
-};
+import { Briefcase, BarChart2, Users, FileText, Bell, Building2 } from 'lucide-react';
 
 type NavItem = {
   title: string;
@@ -30,7 +14,7 @@ type NavItem = {
   badge?: number;
 };
 
-export function Sidebar({ role }: SidebarProps) {
+export function Sidebar() {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -83,42 +67,6 @@ export function Sidebar({ role }: SidebarProps) {
     },
   ];
 
-  const engineerNavItems: NavItem[] = [
-    // {
-    //   title: 'マイページ',
-    //   href: '/engineer/dashboard',
-    //   icon: <Home className="h-5 w-5" />,
-    // },
-    // {
-    //   title: '稼働報告(工数入力)',
-    //   href: '/engineer/reports',
-    //   icon: <Calendar className="h-5 w-5" />,
-    // },
-    // {
-    //   title: 'スキル情報',
-    //   href: '/engineer/skills',
-    //   icon: <BarChart2 className="h-5 w-5" />,
-    // },
-    // {
-    //   title: '案件履歴',
-    //   href: '/engineer/history',
-    //   icon: <Briefcase className="h-5 w-5" />,
-    // },
-    // {
-    //   title: '職務経歴入力（初回のみ）',
-    //   href: '/engineer/resume',
-    //   icon: <FileEdit className="h-5 w-5" />,
-    // },
-    // {
-    //   title: '通知',
-    //   href: '/engineer/notifications',
-    //   icon: <Bell className="h-5 w-5" />,
-    //   badge: 3, // エンジニア側の通知数
-    // },
-  ];
-
-  const navItems = role === 'sales' ? salesNavItems : engineerNavItems;
-
   return (
     <>
       {/* ホバートリガーエリア */}
@@ -153,12 +101,10 @@ export function Sidebar({ role }: SidebarProps) {
               <div className="flex flex-col h-full w-full">
                 <div className="px-3 py-2 flex-1">
                   <div className="h-16 flex items-center justify-center border-b">
-                    <h2 className="text-lg font-semibold">
-                      {role === 'sales' ? '営業メニュー' : 'エンジニアメニュー'}
-                    </h2>
+                    <h2 className="text-lg font-semibold">営業メニュー</h2>
                   </div>
                   <div className="space-y-1 py-4">
-                    {navItems.map((item, index) => (
+                    {salesNavItems.map((item, index) => (
                       <motion.div
                         key={item.href}
                         initial={{ opacity: 0, y: 10 }}

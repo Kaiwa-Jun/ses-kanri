@@ -524,39 +524,30 @@ export function EngineerProfile({ engineer: initialEngineer }: EngineerProfilePr
               </div>
             </div>
 
-            {/* 職務経歴書 */}
+            {/* エクスポート */}
             <div className="col-span-1 border-l border-border pl-4">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                職務経歴書
+                <Download className="h-4 w-4" />
+                エクスポート
               </h3>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full text-xs h-7"
+                  className="w-full text-xs h-8 justify-start"
                   onClick={() => handleExportResume('pdf')}
                 >
-                  <Download className="h-3 w-3 mr-1" />
-                  PDF
+                  <Download className="h-3 w-3 mr-2" />
+                  職務経歴書
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full text-xs h-7"
-                  onClick={() => handleExportResume('word')}
+                  className="w-full text-xs h-8 justify-start"
+                  onClick={() => alert('スキルシートをダウンロードします')}
                 >
-                  <Download className="h-3 w-3 mr-1" />
-                  Word
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full text-xs h-7"
-                  onClick={() => handleExportResume('excel')}
-                >
-                  <Download className="h-3 w-3 mr-1" />
-                  Excel
+                  <Download className="h-3 w-3 mr-2" />
+                  スキルシート
                 </Button>
               </div>
             </div>

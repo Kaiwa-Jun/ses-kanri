@@ -11,7 +11,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
   if (!project) {
     return (
-      <div className="container py-6">
+      <div className="px-4 py-6 max-w-none">
         <p>案件が見つかりません</p>
       </div>
     );

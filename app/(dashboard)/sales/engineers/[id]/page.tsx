@@ -10,7 +10,7 @@ export default function EngineerDetailsPage({ params }: { params: { id: string }
 
   if (!engineer) {
     return (
-      <div className="container py-6">
+      <div className="px-4 py-6 max-w-none">
         <p>エンジニアが見つかりません</p>
       </div>
     );

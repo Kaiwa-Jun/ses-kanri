@@ -15,6 +15,8 @@ import {
   ArrowUpDown,
   Building2,
   Calendar,
+  Edit,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,7 +63,8 @@ export default function ProjectsPage() {
   });
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
-    let aValue, bValue;
+    let aValue: any;
+    let bValue: any;
 
     switch (sortField) {
       case 'title':
@@ -73,39 +76,34 @@ export default function ProjectsPage() {
         bValue = b.client;
         break;
       case 'rate':
-        aValue = a.rate;
-        bValue = b.rate;
+        aValue = a.minRate;
+        bValue = b.minRate;
         break;
       case 'startDate':
-        aValue = new Date(a.startDate).getTime();
-        bValue = new Date(b.startDate).getTime();
+        aValue = new Date(a.startDate);
+        bValue = new Date(b.startDate);
         break;
       default:
-        aValue = new Date(a.startDate).getTime();
-        bValue = new Date(b.startDate).getTime();
+        return 0;
     }
 
-    if (sortOrder === 'desc') {
-      return typeof aValue === 'string' && typeof bValue === 'string'
-        ? bValue.localeCompare(aValue)
-        : (bValue as number) - (aValue as number);
+    if (sortOrder === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
     } else {
-      return typeof aValue === 'string' && typeof bValue === 'string'
-        ? aValue.localeCompare(bValue)
-        : (aValue as number) - (bValue as number);
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
     }
   });
 
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'open':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+        return 'text-green-500 bg-green-100';
       case 'in_progress':
-        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
+        return 'text-blue-500 bg-blue-100';
       case 'negotiating':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+        return 'text-yellow-500 bg-yellow-100';
       case 'closed':
-        return 'text-gray-500 bg-gray-100 dark:bg-gray-800';
+        return 'text-gray-500 bg-gray-100';
       default:
         return '';
     }
@@ -144,7 +142,7 @@ export default function ProjectsPage() {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortOrder('desc');
+      setSortOrder('asc');
     }
   };
 
@@ -153,7 +151,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -162,9 +160,6 @@ export default function ProjectsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">案件一覧</h1>
-          <p className="text-muted-foreground">
-            全ての案件を管理・閲覧できます（{sortedProjects.length}件）
-          </p>
         </div>
         <Button onClick={() => setIsCreateDialogOpen(true)} size="sm" className="gap-2">
           <Plus className="h-4 w-4" />
@@ -235,27 +230,27 @@ export default function ProjectsPage() {
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead className="w-[250px]">期間・勤務形態</TableHead>
+                <TableHead className="w-[150px]">期間・勤務形態</TableHead>
+                <TableHead className="w-[120px]">勤務地</TableHead>
                 <TableHead className="w-[120px]">
                   <Button
                     variant="ghost"
                     className="h-auto p-0 font-medium"
                     onClick={() => handleSort('startDate')}
                   >
-                    開始日
+                    稼働開始日
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </Button>
                 </TableHead>
-                <TableHead className="w-[200px]">必要スキル</TableHead>
+                <TableHead className="w-[120px]">稼働終了予定日</TableHead>
+                <TableHead className="w-[180px]">必要スキル</TableHead>
+                <TableHead className="w-[120px]">アクション</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {sortedProjects.map((project, index) => (
-                <motion.tr
+                <TableRow
                   key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.02 }}
                   className="group hover:bg-muted/50 transition-colors cursor-pointer"
                   onClick={() => handleRowClick(project.id)}
                 >
@@ -281,12 +276,13 @@ export default function ProjectsPage() {
 
                   <TableCell className="w-[120px]">
                     <div className="flex items-center gap-1 whitespace-nowrap">
-                      <CreditCard className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                      <span className="font-medium">{project.rate}万円</span>
+                      <span className="font-medium">
+                        {project.minRate.toLocaleString()}円 ~ {project.maxRate.toLocaleString()}円
+                      </span>
                     </div>
                   </TableCell>
 
-                  <TableCell className="w-[250px]">
+                  <TableCell className="w-[150px]">
                     <div className="space-y-1">
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
@@ -295,14 +291,14 @@ export default function ProjectsPage() {
                       <div className="flex items-center gap-1">
                         <Briefcase className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                         <span className="text-sm">{getWorkStyleText(project.workStyle)}</span>
-                        {project.location && (
-                          <>
-                            <span className="text-muted-foreground mx-1">•</span>
-                            <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                            <span className="text-sm truncate">{project.location}</span>
-                          </>
-                        )}
                       </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="w-[120px]">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="text-sm truncate">{project.location || '未設定'}</span>
                     </div>
                   </TableCell>
 
@@ -313,9 +309,16 @@ export default function ProjectsPage() {
                     </div>
                   </TableCell>
 
-                  <TableCell className="w-[200px]">
+                  <TableCell className="w-[120px]">
+                    <div className="flex items-center gap-1 whitespace-nowrap">
+                      <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="text-sm">{project.endDate}</span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="w-[180px]">
                     <div className="flex flex-wrap gap-1">
-                      {project.skills.slice(0, 3).map((skill) => (
+                      {project.skills.slice(0, 2).map((skill) => (
                         <Badge
                           key={skill}
                           variant="secondary"
@@ -324,14 +327,41 @@ export default function ProjectsPage() {
                           {skill}
                         </Badge>
                       ))}
-                      {project.skills.length > 3 && (
+                      {project.skills.length > 2 && (
                         <Badge variant="secondary" className="text-xs whitespace-nowrap">
-                          +{project.skills.length - 3}
+                          +{project.skills.length - 2}
                         </Badge>
                       )}
                     </div>
                   </TableCell>
-                </motion.tr>
+
+                  <TableCell className="w-[120px]">
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRowClick(project.id);
+                        }}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // TODO: 削除処理
+                        }}
+                        className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))}
             </TableBody>
           </Table>

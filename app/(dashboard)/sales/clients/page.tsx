@@ -130,7 +130,7 @@ export default function ClientsPage() {
   };
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -139,7 +139,6 @@ export default function ClientsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">クライアント一覧</h1>
-          <p className="text-muted-foreground">取引先企業の管理（{sortedClients.length}社）</p>
         </div>
         <Button size="sm" className="gap-2">
           <Plus className="h-4 w-4" />

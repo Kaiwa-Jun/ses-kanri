@@ -10,7 +10,7 @@ export default function ClientDetailsPage({ params }: { params: { id: string } }
 
   if (!client) {
     return (
-      <div className="container py-6">
+      <div className="px-4 py-6 max-w-none">
         <p>クライアントが見つかりません</p>
       </div>
     );

@@ -13,8 +13,6 @@ import {
   Plus,
   CreditCard,
   Star,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +34,14 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { mockEngineers, Engineer } from '@/lib/data';
 import { AddEngineerModal } from '@/components/engineers/add-engineer-modal';
 
@@ -337,61 +343,41 @@ export default function EngineersPage() {
 
       {/* ページネーション */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            {totalItems}件中 {startIndex + 1}-{Math.min(endIndex, totalItems)}件を表示
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              前へ
-            </Button>
+        <div className="flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  className={
+                    currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
 
-            <div className="flex items-center space-x-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                // 現在のページの前後2ページまで表示
-                if (
-                  page === 1 ||
-                  page === totalPages ||
-                  (page >= currentPage - 2 && page <= currentPage + 2)
-                ) {
-                  return (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className="w-8 h-8 p-0"
-                    >
-                      {page}
-                    </Button>
-                  );
-                } else if (page === currentPage - 3 || page === currentPage + 3) {
-                  return (
-                    <span key={page} className="text-muted-foreground">
-                      ...
-                    </span>
-                  );
-                }
-                return null;
-              })}
-            </div>
+              {/* ページ番号を表示 */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                <PaginationItem key={pageNumber}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(pageNumber)}
+                    isActive={pageNumber === currentPage}
+                    className="cursor-pointer"
+                  >
+                    {pageNumber}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              次へ
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  className={
+                    currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
 

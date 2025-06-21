@@ -162,9 +162,6 @@ export default function ProjectsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">案件一覧</h1>
-          <p className="text-muted-foreground">
-            全ての案件を管理・閲覧できます（{sortedProjects.length}件）
-          </p>
         </div>
         <Button onClick={() => setIsCreateDialogOpen(true)} size="sm" className="gap-2">
           <Plus className="h-4 w-4" />

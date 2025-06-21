@@ -425,7 +425,7 @@ export function ProjectDetails({
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5" />
-                  アサイン済みエンジニア
+                  提案予定エンジニア
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -488,7 +488,7 @@ export function ProjectDetails({
                   onClick={handleAssign}
                   disabled={selectedEngineers.length === 0 || project.status === 'closed'}
                 >
-                  アサイン
+                  提案予定に追加
                 </Button>
               </div>
             </CardHeader>

@@ -35,11 +35,11 @@ export function Sidebar({ role }: SidebarProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   const salesNavItems: NavItem[] = [
-    {
-      title: 'ダッシュボード',
-      href: '/sales/dashboard',
-      icon: <Home className="h-5 w-5" />,
-    },
+    // {
+    //   title: 'ダッシュボード',
+    //   href: '/sales/dashboard',
+    //   icon: <Home className="h-5 w-5" />,
+    // },
     {
       title: '案件一覧',
       href: '/sales/projects',
@@ -70,11 +70,11 @@ export function Sidebar({ role }: SidebarProps) {
       href: '/sales/teams',
       icon: <Building2 className="h-5 w-5" />,
     },
-    {
-      title: '権限管理',
-      href: '/sales/permissions',
-      icon: <Shield className="h-5 w-5" />,
-    },
+    // {
+    //   title: '権限管理',
+    //   href: '/sales/permissions',
+    //   icon: <Shield className="h-5 w-5" />,
+    // },
     {
       title: '通知',
       href: '/sales/notifications',
@@ -84,37 +84,37 @@ export function Sidebar({ role }: SidebarProps) {
   ];
 
   const engineerNavItems: NavItem[] = [
-    {
-      title: 'マイページ',
-      href: '/engineer/dashboard',
-      icon: <Home className="h-5 w-5" />,
-    },
-    {
-      title: '稼働報告(工数入力)',
-      href: '/engineer/reports',
-      icon: <Calendar className="h-5 w-5" />,
-    },
-    {
-      title: 'スキル情報',
-      href: '/engineer/skills',
-      icon: <BarChart2 className="h-5 w-5" />,
-    },
-    {
-      title: '案件履歴',
-      href: '/engineer/history',
-      icon: <Briefcase className="h-5 w-5" />,
-    },
-    {
-      title: '職務経歴入力（初回のみ）',
-      href: '/engineer/resume',
-      icon: <FileEdit className="h-5 w-5" />,
-    },
-    {
-      title: '通知',
-      href: '/engineer/notifications',
-      icon: <Bell className="h-5 w-5" />,
-      badge: 3, // エンジニア側の通知数
-    },
+    // {
+    //   title: 'マイページ',
+    //   href: '/engineer/dashboard',
+    //   icon: <Home className="h-5 w-5" />,
+    // },
+    // {
+    //   title: '稼働報告(工数入力)',
+    //   href: '/engineer/reports',
+    //   icon: <Calendar className="h-5 w-5" />,
+    // },
+    // {
+    //   title: 'スキル情報',
+    //   href: '/engineer/skills',
+    //   icon: <BarChart2 className="h-5 w-5" />,
+    // },
+    // {
+    //   title: '案件履歴',
+    //   href: '/engineer/history',
+    //   icon: <Briefcase className="h-5 w-5" />,
+    // },
+    // {
+    //   title: '職務経歴入力（初回のみ）',
+    //   href: '/engineer/resume',
+    //   icon: <FileEdit className="h-5 w-5" />,
+    // },
+    // {
+    //   title: '通知',
+    //   href: '/engineer/notifications',
+    //   icon: <Bell className="h-5 w-5" />,
+    //   badge: 3, // エンジニア側の通知数
+    // },
   ];
 
   const navItems = role === 'sales' ? salesNavItems : engineerNavItems;

@@ -31,11 +31,11 @@ export function MobileNav({ role }: MobileNavProps) {
   const pathname = usePathname();
 
   const salesNavItems: NavItem[] = [
-    {
-      title: 'ホーム',
-      href: '/sales/dashboard',
-      icon: <Home className="h-5 w-5" />,
-    },
+    // {
+    //   title: 'ホーム',
+    //   href: '/sales/dashboard',
+    //   icon: <Home className="h-5 w-5" />,
+    // },
     {
       title: '案件',
       href: '/sales/projects',
@@ -54,33 +54,33 @@ export function MobileNav({ role }: MobileNavProps) {
   ];
 
   const engineerNavItems: NavItem[] = [
-    {
-      title: 'ホーム',
-      href: '/engineer/dashboard',
-      icon: <Home className="h-5 w-5" />,
-    },
-    {
-      title: '報告',
-      href: '/engineer/reports',
-      icon: <Calendar className="h-5 w-5" />,
-    },
-    {
-      title: 'スキル',
-      href: '/engineer/skills',
-      icon: <BarChart2 className="h-5 w-5" />,
-    },
-    {
-      title: '通知',
-      href: '/engineer/notifications',
-      icon: <Bell className="h-5 w-5" />,
-    },
+    // {
+    //   title: 'ホーム',
+    //   href: '/engineer/dashboard',
+    //   icon: <Home className="h-5 w-5" />,
+    // },
+    // {
+    //   title: '報告',
+    //   href: '/engineer/reports',
+    //   icon: <Calendar className="h-5 w-5" />,
+    // },
+    // {
+    //   title: 'スキル',
+    //   href: '/engineer/skills',
+    //   icon: <BarChart2 className="h-5 w-5" />,
+    // },
+    // {
+    //   title: '通知',
+    //   href: '/engineer/notifications',
+    //   icon: <Bell className="h-5 w-5" />,
+    // },
   ];
 
   const navItems = role === 'sales' ? salesNavItems : engineerNavItems;
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 border-t bg-background z-50">
-      <div className="grid grid-cols-4 h-16">
+      <div className={cn('grid h-16', role === 'sales' ? 'grid-cols-3' : 'grid-cols-4')}>
         {navItems.map((item) => (
           <Link
             key={item.href}

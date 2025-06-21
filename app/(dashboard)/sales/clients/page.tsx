@@ -36,12 +36,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { mockClients } from '@/lib/data';
+import { CreateClientDialog } from '@/components/clients/create-client-dialog';
 
 export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string | undefined>(undefined);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [sortField, setSortField] = useState<'name'>('name');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const router = useRouter();
 
   const filteredClients = mockClients.filter((client) => {
@@ -116,6 +118,12 @@ export default function ClientsPage() {
     router.push(`/sales/clients/${clientId}`);
   };
 
+  const handleCreateClient = (data: any) => {
+    console.log('新規クライアント登録:', data);
+    // 実際にはAPIを呼び出してクライアントを作成
+    setCreateDialogOpen(false);
+  };
+
   return (
     <div className="px-4 py-6 space-y-6 max-w-none">
       <motion.div
@@ -127,7 +135,7 @@ export default function ClientsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">クライアント一覧</h1>
         </div>
-        <Button size="sm" className="gap-2">
+        <Button size="sm" className="gap-2" onClick={() => setCreateDialogOpen(true)}>
           <Plus className="h-4 w-4" />
           新規クライアント登録
         </Button>
@@ -255,11 +263,17 @@ export default function ClientsPage() {
                   ? '検索条件に一致するクライアントがありません'
                   : 'クライアントが登録されていません'}
               </p>
-              <Button>新規クライアントを登録する</Button>
+              <Button onClick={() => setCreateDialogOpen(true)}>新規クライアントを登録する</Button>
             </div>
           )}
         </CardContent>
       </Card>
+
+      <CreateClientDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        onSubmit={handleCreateClient}
+      />
     </div>
   );
 }

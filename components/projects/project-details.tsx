@@ -34,6 +34,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { mockClients } from '@/lib/data';
 
 export function ProjectDetails({
   project: initialProject,
@@ -46,17 +56,15 @@ export function ProjectDetails({
   const [isEditing, setIsEditing] = useState(false);
   const [selectedEngineers, setSelectedEngineers] = useState<string[]>([]);
   const [assignedEngineers, setAssignedEngineers] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // 1ページあたりの表示件数
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'open':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
-      case 'in_progress':
-        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
-      case 'negotiating':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+        return 'text-green-500 bg-green-100';
       case 'closed':
-        return 'text-gray-500 bg-gray-100 dark:bg-gray-800';
+        return 'text-gray-500 bg-gray-100';
       default:
         return '';
     }
@@ -66,10 +74,6 @@ export function ProjectDetails({
     switch (status) {
       case 'open':
         return '募集中';
-      case 'in_progress':
-        return '進行中';
-      case 'negotiating':
-        return '交渉中';
       case 'closed':
         return '終了';
       default:
@@ -123,6 +127,21 @@ export function ProjectDetails({
     setIsEditing(false);
   };
 
+  // ページネーション用のロジック
+  const availableEngineers = matchingEngineers.filter(
+    ({ engineer }) => !assignedEngineers.some((assigned) => assigned.engineer.id === engineer.id)
+  );
+
+  const totalPages = Math.ceil(availableEngineers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEngineers = availableEngineers.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectedEngineers([]); // ページ変更時に選択をクリア
+  };
+
   return (
     <div className="container py-6">
       <div className="mb-6">
@@ -155,8 +174,6 @@ export function ProjectDetails({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="open">募集中</SelectItem>
-                        <SelectItem value="in_progress">進行中</SelectItem>
-                        <SelectItem value="negotiating">交渉中</SelectItem>
                         <SelectItem value="closed">終了</SelectItem>
                       </SelectContent>
                     </Select>
@@ -181,10 +198,28 @@ export function ProjectDetails({
                     onChange={(e) => setProject({ ...project, title: e.target.value })}
                     className="text-2xl font-bold"
                   />
-                  <Input
+                  <Select
                     value={project.client}
-                    onChange={(e) => setProject({ ...project, client: e.target.value })}
-                  />
+                    onValueChange={(value) => setProject({ ...project, client: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockClients.map((client) => (
+                        <SelectItem key={client.id} value={client.name}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                      {/* 現在のクライアント名がmockClientsに存在しない場合の対応 */}
+                      {!mockClients.some((client) => client.name === project.client) &&
+                        project.client && (
+                          <SelectItem key="current" value={project.client}>
+                            {project.client}
+                          </SelectItem>
+                        )}
+                    </SelectContent>
+                  </Select>
                 </div>
               ) : (
                 <>
@@ -194,21 +229,43 @@ export function ProjectDetails({
               )}
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground mb-1 flex items-center gap-1">
                     <CreditCard className="h-4 w-4" />
-                    単価
+                    単価（下限）
                   </p>
                   {isEditing ? (
                     <Input
                       type="number"
-                      value={project.rate}
-                      onChange={(e) => setProject({ ...project, rate: parseInt(e.target.value) })}
+                      value={project.minRate}
+                      onChange={(e) =>
+                        setProject({ ...project, minRate: parseInt(e.target.value) })
+                      }
                       className="font-medium"
+                      placeholder="800000"
                     />
                   ) : (
-                    <p className="font-medium">{project.rate}万円</p>
+                    <p className="font-medium">{project.minRate.toLocaleString()}円</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-muted-foreground mb-1 flex items-center gap-1">
+                    <CreditCard className="h-4 w-4" />
+                    単価（上限）
+                  </p>
+                  {isEditing ? (
+                    <Input
+                      type="number"
+                      value={project.maxRate}
+                      onChange={(e) =>
+                        setProject({ ...project, maxRate: parseInt(e.target.value) })
+                      }
+                      className="font-medium"
+                      placeholder="1000000"
+                    />
+                  ) : (
+                    <p className="font-medium">{project.maxRate.toLocaleString()}円</p>
                   )}
                 </div>
                 <div>
@@ -267,7 +324,7 @@ export function ProjectDetails({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground mb-1 flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
@@ -300,6 +357,9 @@ export function ProjectDetails({
                     <p className="font-medium">{project.endDate}</p>
                   )}
                 </div>
+                <div></div>
+                <div></div>
+                <div></div>
               </div>
 
               <Separator />
@@ -381,7 +441,7 @@ export function ProjectDetails({
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5" />
-                  アサイン済みエンジニア
+                  提案予定エンジニア
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -444,89 +504,125 @@ export function ProjectDetails({
                   onClick={handleAssign}
                   disabled={selectedEngineers.length === 0 || project.status === 'closed'}
                 >
-                  アサイン
+                  提案予定に追加
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <TooltipProvider>
-                {matchingEngineers
-                  .filter(
-                    ({ engineer }) =>
-                      !assignedEngineers.some((assigned) => assigned.engineer.id === engineer.id)
-                  )
-                  .map(({ engineer, score }, index) => (
-                    <motion.div
-                      key={engineer.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+                {currentEngineers.map(({ engineer, score }, index) => (
+                  <motion.div
+                    key={engineer.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+                  >
+                    <div
+                      className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                      onClick={() => toggleEngineer(engineer.id)}
                     >
-                      <div
-                        className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
-                        onClick={() => toggleEngineer(engineer.id)}
-                      >
-                        <Checkbox
-                          checked={selectedEngineers.includes(engineer.id)}
-                          onCheckedChange={() => toggleEngineer(engineer.id)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="flex items-center gap-3 flex-1">
-                          <Avatar>
-                            <AvatarImage src={engineer.imageUrl} />
-                            <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex justify-between items-center">
-                              <p className="font-medium truncate">{engineer.name}</p>
-                              <p className={`text-sm font-semibold ${getMatchColor(score)}`}>
-                                {score}%
-                              </p>
+                      <Checkbox
+                        checked={selectedEngineers.includes(engineer.id)}
+                        onCheckedChange={() => toggleEngineer(engineer.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div className="flex items-center gap-3 flex-1">
+                        <Avatar>
+                          <AvatarImage src={engineer.imageUrl} />
+                          <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center">
+                            <p className="font-medium truncate">{engineer.name}</p>
+                            <p className={`text-sm font-semibold ${getMatchColor(score)}`}>
+                              {score}%
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Progress value={score} className="h-1.5" />
+                                </TooltipTrigger>
+                                <TooltipContent>マッチ度: {score}%</TooltipContent>
+                              </Tooltip>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <div className="flex-1">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Progress value={score} className="h-1.5" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>マッチ度: {score}%</TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <p className="text-xs text-muted-foreground whitespace-nowrap">
-                                {engineer.totalExperience}年
-                              </p>
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {engineer.skills.slice(0, 3).map((skill: any) => (
-                                <Badge key={skill.name} variant="outline" className="text-xs py-0">
-                                  {skill.name}
-                                </Badge>
-                              ))}
-                              {engineer.skills.length > 3 && (
-                                <Badge variant="outline" className="text-xs py-0">
-                                  +{engineer.skills.length - 3}
-                                </Badge>
-                              )}
-                            </div>
+                            <p className="text-xs text-muted-foreground whitespace-nowrap">
+                              {engineer.totalExperience}年
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {engineer.skills.slice(0, 3).map((skill: any) => (
+                              <Badge key={skill.name} variant="outline" className="text-xs py-0">
+                                {skill.name}
+                              </Badge>
+                            ))}
+                            {engineer.skills.length > 3 && (
+                              <Badge variant="outline" className="text-xs py-0">
+                                +{engineer.skills.length - 3}
+                              </Badge>
+                            )}
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Link href={`/sales/engineers/${engineer.id}`}>
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            詳細
-                          </Link>
-                        </Button>
                       </div>
-                      {index < matchingEngineers.length - 1 && <Separator className="my-2" />}
-                    </motion.div>
-                  ))}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        asChild
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Link href={`/sales/engineers/${engineer.id}`}>
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          詳細
+                        </Link>
+                      </Button>
+                    </div>
+                    {index < currentEngineers.length - 1 && <Separator className="my-2" />}
+                  </motion.div>
+                ))}
               </TooltipProvider>
             </CardContent>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center py-4 border-t">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                        className={
+                          currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                        }
+                      />
+                    </PaginationItem>
+
+                    {/* ページ番号を表示 */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                      <PaginationItem key={pageNumber}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(pageNumber)}
+                          isActive={pageNumber === currentPage}
+                          className="cursor-pointer"
+                        >
+                          {pageNumber}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                        className={
+                          currentPage === totalPages
+                            ? 'pointer-events-none opacity-50'
+                            : 'cursor-pointer'
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
           </Card>
         </motion.div>
       </div>

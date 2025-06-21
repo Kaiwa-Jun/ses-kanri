@@ -4,10 +4,11 @@ export type Project = {
   title: string;
   client: string;
   skills: string[];
-  rate: number; // 単価（万円）
+  minRate: number; // 単価下限（円）
+  maxRate: number; // 単価上限（円）
   period: string;
   workStyle: 'remote' | 'onsite' | 'hybrid';
-  status: 'open' | 'in_progress' | 'negotiating' | 'closed';
+  status: 'open' | 'closed';
   description: string;
   startDate: string;
   endDate: string;
@@ -480,7 +481,8 @@ export const mockProjects: Project[] = [
     title: '大手ECサイトリニューアル案件',
     client: '〇〇商事株式会社',
     skills: ['React', 'TypeScript', 'Next.js', 'GraphQL'],
-    rate: 80,
+    minRate: 800000,
+    maxRate: 1000000,
     period: '6ヶ月',
     workStyle: 'remote',
     status: 'open',
@@ -494,12 +496,13 @@ export const mockProjects: Project[] = [
   {
     id: 'p2',
     title: '金融システム保守運用',
-    client: '〇〇銀行',
+    client: '◇◇フィナンシャル株式会社',
     skills: ['Java', 'Spring Boot', 'Oracle', 'AWS'],
-    rate: 75,
+    minRate: 750000,
+    maxRate: 900000,
     period: '12ヶ月',
     workStyle: 'hybrid',
-    status: 'in_progress',
+    status: 'open',
     description: '既存金融システムの保守運用および機能追加案件。',
     startDate: '2023-04-01',
     endDate: '2024-03-31',
@@ -509,12 +512,13 @@ export const mockProjects: Project[] = [
   {
     id: 'p3',
     title: 'スマートファクトリー構築支援',
-    client: '〇〇製造株式会社',
+    client: '☆☆テクノロジー株式会社',
     skills: ['Python', 'IoT', 'Docker', 'Kubernetes', 'TensorFlow'],
-    rate: 90,
+    minRate: 850000,
+    maxRate: 1000000,
     period: '9ヶ月',
     workStyle: 'onsite',
-    status: 'negotiating',
+    status: 'open',
     description:
       '製造業向けIoTプラットフォームの構築案件。AI/ML技術を活用した予知保全システムの開発。',
     startDate: '2023-08-01',
@@ -525,9 +529,10 @@ export const mockProjects: Project[] = [
   {
     id: 'p4',
     title: '医療系アプリケーション開発',
-    client: '〇〇メディカル株式会社',
+    client: '□□メディカル株式会社',
     skills: ['Swift', 'Kotlin', 'Firebase', 'Flutter'],
-    rate: 85,
+    minRate: 800000,
+    maxRate: 900000,
     period: '5ヶ月',
     workStyle: 'remote',
     status: 'open',
@@ -539,9 +544,10 @@ export const mockProjects: Project[] = [
   {
     id: 'p5',
     title: '決済システム連携開発',
-    client: '〇〇ペイメント株式会社',
+    client: '△△システムズ株式会社',
     skills: ['Node.js', 'Express', 'MongoDB', 'Redis', 'AWS'],
-    rate: 78,
+    minRate: 700000,
+    maxRate: 800000,
     period: '4ヶ月',
     workStyle: 'hybrid',
     status: 'closed',
@@ -865,6 +871,192 @@ export const mockEngineers: Engineer[] = [
     imageUrl:
       'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
   },
+  {
+    id: 'e6',
+    name: '高橋健太',
+    email: 'takahashi@example.com',
+    phone: '090-6789-0123',
+    skills: [
+      { name: 'Go', category: 'language', level: 5, experienceYears: 4 },
+      { name: 'Rust', category: 'language', level: 4, experienceYears: 2 },
+      { name: 'JavaScript', category: 'language', level: 4, experienceYears: 6 },
+      { name: 'TypeScript', category: 'language', level: 4, experienceYears: 4 },
+      { name: 'Gin', category: 'framework', level: 4, experienceYears: 3 },
+      { name: 'Echo', category: 'framework', level: 4, experienceYears: 3 },
+      { name: 'React', category: 'framework', level: 4, experienceYears: 5 },
+      { name: 'PostgreSQL', category: 'database', level: 4, experienceYears: 5 },
+      { name: 'Redis', category: 'database', level: 4, experienceYears: 4 },
+      { name: 'Docker', category: 'infrastructure', level: 5, experienceYears: 5 },
+      { name: 'Kubernetes', category: 'infrastructure', level: 4, experienceYears: 3 },
+      { name: 'AWS', category: 'infrastructure', level: 4, experienceYears: 4 },
+      { name: 'Terraform', category: 'tool', level: 4, experienceYears: 3 },
+    ],
+    projects: [
+      {
+        id: 'ep12',
+        name: 'マイクロサービス基盤構築',
+        role: 'バックエンドエンジニア',
+        description: 'Go言語を使ったマイクロサービスアーキテクチャの構築',
+        startDate: '2022-08-01',
+        endDate: '2023-07-31',
+        skills: ['Go', 'Docker', 'Kubernetes', 'PostgreSQL'],
+        responsibilities: 'API設計・実装\nコンテナ化\nCI/CD構築',
+      },
+    ],
+    availability: 'available',
+    availableFrom: '2023-09-15',
+    preferredWorkStyle: 'hybrid',
+    preferredRate: 88,
+    totalExperience: 6,
+    imageUrl:
+      'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+  },
+  {
+    id: 'e7',
+    name: '中村由美',
+    email: 'nakamura@example.com',
+    phone: '090-7890-1234',
+    skills: [
+      { name: 'PHP', category: 'language', level: 5, experienceYears: 8 },
+      { name: 'JavaScript', category: 'language', level: 4, experienceYears: 7 },
+      { name: 'TypeScript', category: 'language', level: 3, experienceYears: 3 },
+      { name: 'Laravel', category: 'framework', level: 5, experienceYears: 6 },
+      { name: 'Symfony', category: 'framework', level: 4, experienceYears: 4 },
+      { name: 'Vue.js', category: 'framework', level: 4, experienceYears: 4 },
+      { name: 'MySQL', category: 'database', level: 5, experienceYears: 8 },
+      { name: 'PostgreSQL', category: 'database', level: 3, experienceYears: 3 },
+      { name: 'AWS', category: 'infrastructure', level: 3, experienceYears: 4 },
+      { name: 'Docker', category: 'infrastructure', level: 3, experienceYears: 3 },
+    ],
+    projects: [
+      {
+        id: 'ep13',
+        name: 'CMS開発プロジェクト',
+        role: 'フルスタックエンジニア',
+        description: 'Laravel + Vue.jsを使ったCMSの開発',
+        startDate: '2022-01-01',
+        endDate: '2023-06-30',
+        skills: ['PHP', 'Laravel', 'Vue.js', 'MySQL'],
+        responsibilities: 'バックエンド設計\nフロントエンド実装\nDB設計',
+      },
+    ],
+    availability: 'partially',
+    availableFrom: '2023-11-01',
+    preferredWorkStyle: 'remote',
+    preferredRate: 72,
+    totalExperience: 8,
+    imageUrl:
+      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+  },
+  {
+    id: 'e8',
+    name: '小林誠',
+    email: 'kobayashi@example.com',
+    phone: '090-8901-2345',
+    skills: [
+      { name: 'Ruby', category: 'language', level: 5, experienceYears: 7 },
+      { name: 'JavaScript', category: 'language', level: 4, experienceYears: 5 },
+      { name: 'TypeScript', category: 'language', level: 3, experienceYears: 2 },
+      { name: 'Ruby on Rails', category: 'framework', level: 5, experienceYears: 7 },
+      { name: 'React', category: 'framework', level: 4, experienceYears: 4 },
+      { name: 'PostgreSQL', category: 'database', level: 4, experienceYears: 6 },
+      { name: 'Redis', category: 'database', level: 4, experienceYears: 5 },
+      { name: 'AWS', category: 'infrastructure', level: 4, experienceYears: 5 },
+      { name: 'Docker', category: 'infrastructure', level: 4, experienceYears: 4 },
+      { name: 'Heroku', category: 'infrastructure', level: 4, experienceYears: 6 },
+    ],
+    projects: [
+      {
+        id: 'ep14',
+        name: 'SaaS製品開発',
+        role: 'バックエンドエンジニア',
+        description: 'Ruby on Railsを使ったSaaS製品の開発',
+        startDate: '2021-10-01',
+        endDate: '2023-03-31',
+        skills: ['Ruby', 'Ruby on Rails', 'PostgreSQL', 'AWS'],
+        responsibilities: 'API設計・実装\nパフォーマンス最適化\nセキュリティ対応',
+      },
+    ],
+    availability: 'available',
+    availableFrom: '2023-08-15',
+    preferredWorkStyle: 'remote',
+    preferredRate: 78,
+    totalExperience: 7,
+    imageUrl:
+      'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+  },
+  {
+    id: 'e9',
+    name: '森田あかり',
+    email: 'morita@example.com',
+    phone: '090-9012-3456',
+    skills: [
+      { name: 'Flutter', category: 'framework', level: 5, experienceYears: 4 },
+      { name: 'Dart', category: 'language', level: 5, experienceYears: 4 },
+      { name: 'Swift', category: 'language', level: 4, experienceYears: 3 },
+      { name: 'Kotlin', category: 'language', level: 4, experienceYears: 3 },
+      { name: 'React Native', category: 'framework', level: 3, experienceYears: 2 },
+      { name: 'Firebase', category: 'infrastructure', level: 4, experienceYears: 4 },
+      { name: 'SQLite', category: 'database', level: 4, experienceYears: 4 },
+      { name: 'Git', category: 'tool', level: 5, experienceYears: 5 },
+    ],
+    projects: [
+      {
+        id: 'ep15',
+        name: 'モバイルアプリ開発',
+        role: 'モバイルアプリエンジニア',
+        description: 'Flutterを使ったクロスプラットフォームアプリの開発',
+        startDate: '2022-04-01',
+        endDate: '2023-08-31',
+        skills: ['Flutter', 'Dart', 'Firebase', 'SQLite'],
+        responsibilities: 'UI実装\n状態管理\nネイティブ連携',
+      },
+    ],
+    availability: 'available',
+    availableFrom: '2023-09-01',
+    preferredWorkStyle: 'hybrid',
+    preferredRate: 75,
+    totalExperience: 5,
+    imageUrl:
+      'https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+  },
+  {
+    id: 'e10',
+    name: '渡辺大輔',
+    email: 'watanabe@example.com',
+    phone: '090-0123-4567',
+    skills: [
+      { name: 'Angular', category: 'framework', level: 5, experienceYears: 6 },
+      { name: 'TypeScript', category: 'language', level: 5, experienceYears: 6 },
+      { name: 'JavaScript', category: 'language', level: 5, experienceYears: 8 },
+      { name: 'RxJS', category: 'framework', level: 4, experienceYears: 5 },
+      { name: 'NgRx', category: 'framework', level: 4, experienceYears: 4 },
+      { name: 'Node.js', category: 'framework', level: 4, experienceYears: 5 },
+      { name: 'Express', category: 'framework', level: 4, experienceYears: 5 },
+      { name: 'MongoDB', category: 'database', level: 4, experienceYears: 5 },
+      { name: 'PostgreSQL', category: 'database', level: 3, experienceYears: 3 },
+      { name: 'AWS', category: 'infrastructure', level: 3, experienceYears: 4 },
+    ],
+    projects: [
+      {
+        id: 'ep16',
+        name: '企業向けダッシュボード開発',
+        role: 'フロントエンドエンジニア',
+        description: 'Angularを使った企業向けダッシュボードの開発',
+        startDate: '2021-07-01',
+        endDate: '2023-05-31',
+        skills: ['Angular', 'TypeScript', 'RxJS', 'NgRx'],
+        responsibilities: 'UI/UX実装\n状態管理\nパフォーマンス最適化',
+      },
+    ],
+    availability: 'partially',
+    availableFrom: '2023-10-15',
+    preferredWorkStyle: 'onsite',
+    preferredRate: 82,
+    totalExperience: 8,
+    imageUrl:
+      'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+  },
 ];
 
 // モック勤怠データ
@@ -926,11 +1118,11 @@ export const getMatchingScore = (projectId: string, engineerId: string): number 
   // 実際の実装では、スキルの一致度や希望条件などを元に計算する
   // ここではモック用にランダムな値を返す
   const scores: Record<string, Record<string, number>> = {
-    p1: { e1: 92, e2: 45, e3: 67, e4: 78, e5: 52 },
-    p2: { e1: 58, e2: 89, e3: 42, e4: 35, e5: 71 },
-    p3: { e1: 63, e2: 51, e3: 94, e4: 38, e5: 60 },
-    p4: { e1: 70, e2: 43, e3: 56, e4: 91, e5: 49 },
-    p5: { e1: 75, e2: 81, e3: 53, e4: 66, e5: 85 },
+    p1: { e1: 92, e2: 45, e3: 67, e4: 78, e5: 52, e6: 83, e7: 61, e8: 74, e9: 56, e10: 69 },
+    p2: { e1: 58, e2: 89, e3: 42, e4: 35, e5: 71, e6: 65, e7: 77, e8: 54, e9: 48, e10: 82 },
+    p3: { e1: 63, e2: 51, e3: 94, e4: 38, e5: 60, e6: 72, e7: 46, e8: 59, e9: 41, e10: 76 },
+    p4: { e1: 70, e2: 43, e3: 56, e4: 91, e5: 49, e6: 64, e7: 58, e8: 67, e9: 85, e10: 53 },
+    p5: { e1: 75, e2: 81, e3: 53, e4: 66, e5: 85, e6: 79, e7: 87, e8: 71, e9: 62, e10: 88 },
   };
 
   return scores[projectId]?.[engineerId] || Math.floor(Math.random() * 50) + 50;

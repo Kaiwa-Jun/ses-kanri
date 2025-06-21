@@ -33,19 +33,26 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { mockClients } from '@/lib/data';
 
-const projectSchema = z.object({
-  title: z.string().min(5, '案件名は5文字以上で入力してください'),
-  client: z.string().min(2, 'クライアント名を入力してください'),
-  rate: z.coerce.number().positive('単価は正の数を入力してください'),
-  period: z.string().min(1, '期間を入力してください'),
-  workStyle: z.enum(['remote', 'onsite', 'hybrid']),
-  status: z.enum(['open', 'in_progress', 'negotiating', 'closed']),
-  description: z.string().min(10, '説明は10文字以上で入力してください'),
-  startDate: z.string().min(1, '開始日を入力してください'),
-  endDate: z.string().min(1, '終了日を入力してください'),
-  location: z.string().optional(),
-});
+const projectSchema = z
+  .object({
+    title: z.string().min(5, '案件名は5文字以上で入力してください'),
+    client: z.string().min(2, 'クライアント名を入力してください'),
+    minRate: z.coerce.number().positive('単価（下限）は正の数を入力してください'),
+    maxRate: z.coerce.number().positive('単価（上限）は正の数を入力してください'),
+    period: z.string().min(1, '期間を入力してください'),
+    workStyle: z.enum(['remote', 'onsite', 'hybrid']),
+    status: z.enum(['open', 'closed']),
+    description: z.string().min(10, '説明は10文字以上で入力してください'),
+    startDate: z.string().min(1, '開始日を入力してください'),
+    endDate: z.string().min(1, '終了日を入力してください'),
+    location: z.string().optional(),
+  })
+  .refine((data) => data.maxRate >= data.minRate, {
+    message: '単価（上限）は単価（下限）以上である必要があります',
+    path: ['maxRate'],
+  });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
 
@@ -63,7 +70,8 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
     defaultValues: {
       title: '',
       client: '',
-      rate: 0,
+      minRate: 0,
+      maxRate: 0,
       period: '',
       workStyle: 'remote',
       status: 'open',
@@ -123,8 +131,33 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>クライアント名</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="クライアントを選択" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {mockClients.map((client) => (
+                          <SelectItem key={client.id} value={client.name}>
+                            {client.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="minRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>単価（下限）（円）</FormLabel>
                     <FormControl>
-                      <Input placeholder="クライアント名" {...field} />
+                      <Input type="number" placeholder="800000" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,12 +166,12 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
 
               <FormField
                 control={form.control}
-                name="rate"
+                name="maxRate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>単価（万円）</FormLabel>
+                    <FormLabel>単価（上限）（円）</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="80" {...field} />
+                      <Input type="number" placeholder="1000000" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -196,8 +229,6 @@ export function CreateProjectDialog({ open, onOpenChange }: CreateProjectDialogP
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="open">募集中</SelectItem>
-                        <SelectItem value="in_progress">進行中</SelectItem>
-                        <SelectItem value="negotiating">交渉中</SelectItem>
                         <SelectItem value="closed">終了</SelectItem>
                       </SelectContent>
                     </Select>

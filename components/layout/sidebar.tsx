@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Briefcase, BarChart2, Users, FileText, Bell, Building2 } from 'lucide-react';
 
@@ -16,7 +15,6 @@ type NavItem = {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [isVisible, setIsVisible] = useState(false);
 
   const salesNavItems: NavItem[] = [
     // {
@@ -68,86 +66,52 @@ export function Sidebar() {
   ];
 
   return (
-    <>
-      {/* ホバートリガーエリア */}
-      <div
-        className="hidden md:block fixed left-0 top-16 bottom-0 w-4 z-40"
-        onMouseEnter={() => setIsVisible(true)}
-      />
-
-      {/* サイドバー */}
-      <AnimatePresence>
-        {isVisible && (
-          <>
-            {/* オーバーレイ */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="hidden md:block fixed inset-0 bg-black/20 z-40"
-              onClick={() => setIsVisible(false)}
-            />
-
-            {/* サイドバー本体 */}
-            <motion.div
-              initial={{ opacity: 0, x: -280 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -280 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-background border-r shadow-lg z-50"
-              onMouseLeave={() => setIsVisible(false)}
-            >
-              <div className="flex flex-col h-full w-full">
-                <div className="px-3 py-2 flex-1">
-                  <div className="h-16 flex items-center justify-center border-b">
-                    <h2 className="text-lg font-semibold">営業メニュー</h2>
-                  </div>
-                  <div className="space-y-1 py-4">
-                    {salesNavItems.map((item, index) => (
-                      <motion.div
-                        key={item.href}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05, duration: 0.2 }}
-                      >
-                        <Link
-                          href={item.href}
-                          className={cn(
-                            'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-all relative',
-                            pathname === item.href
-                              ? 'bg-accent text-accent-foreground'
-                              : 'text-muted-foreground'
-                          )}
-                          onClick={() => setIsVisible(false)}
-                        >
-                          {item.icon}
-                          {item.title}
-                          {item.badge && item.badge > 0 && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{
-                                delay: 0.2,
-                                type: 'spring',
-                                stiffness: 500,
-                                damping: 30,
-                              }}
-                              className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm"
-                            >
-                              {item.badge > 99 ? '99+' : item.badge}
-                            </motion.div>
-                          )}
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+    <div className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-background border-r shadow-sm z-30">
+      <div className="flex flex-col h-full w-full">
+        <div className="px-3 py-2 flex-1">
+          <div className="h-16 flex items-center justify-center border-b">
+            <h2 className="text-lg font-semibold">営業メニュー</h2>
+          </div>
+          <div className="space-y-1 py-4">
+            {salesNavItems.map((item, index) => (
+              <motion.div
+                key={item.href}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.2 }}
+              >
+                <Link
+                  href={item.href}
+                  className={cn(
+                    'group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-all relative',
+                    pathname === item.href
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground'
+                  )}
+                >
+                  {item.icon}
+                  {item.title}
+                  {item.badge && item.badge > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{
+                        delay: 0.2,
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 30,
+                      }}
+                      className="ml-auto flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm"
+                    >
+                      {item.badge > 99 ? '99+' : item.badge}
+                    </motion.div>
+                  )}
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

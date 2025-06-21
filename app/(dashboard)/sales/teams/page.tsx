@@ -552,7 +552,7 @@ export default function TeamsPage() {
   };
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -561,7 +561,6 @@ export default function TeamsPage() {
       >
         <div>
           <h1 className="text-3xl font-bold tracking-tight">営業チーム管理</h1>
-          <p className="text-muted-foreground">営業チームの担当状況と実績を管理</p>
         </div>
       </motion.div>
 

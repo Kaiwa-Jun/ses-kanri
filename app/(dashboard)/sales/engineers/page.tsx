@@ -149,7 +149,7 @@ export default function EngineersPage() {
   };
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -158,9 +158,6 @@ export default function EngineersPage() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">エンジニア一覧</h1>
-            <p className="text-muted-foreground">
-              所属エンジニアの情報一覧（{sortedEngineers.length}名）
-            </p>
           </div>
           <Button onClick={() => setIsAddModalOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />

@@ -93,9 +93,9 @@ export default function EngineersPage() {
   const getAvailabilityColor = (availability: Engineer['availability']) => {
     switch (availability) {
       case 'available':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+        return 'text-gray-500 bg-gray-100 dark:bg-gray-900/30';
       case 'unavailable':
-        return 'text-red-500 bg-red-100 dark:bg-red-900/30';
+        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
       default:
         return '';
     }

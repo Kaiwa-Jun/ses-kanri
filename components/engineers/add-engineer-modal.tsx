@@ -49,7 +49,7 @@ const engineerSchema = z.object({
   email: z.string().email('有効なメールアドレスを入力してください'),
   phone: z.string().min(1, '電話番号を入力してください'),
   totalExperience: z.coerce.number().min(0, '経験年数を入力してください'),
-  availability: z.enum(['available', 'partially', 'unavailable']),
+  availability: z.enum(['available', 'unavailable']),
   availableFrom: z.string().optional(),
   preferredWorkStyle: z.enum(['remote', 'onsite', 'hybrid']),
   preferredRate: z.coerce.number().min(0, '希望単価を入力してください'),
@@ -439,9 +439,8 @@ export function AddEngineerModal({ open, onOpenChange, onSubmit }: AddEngineerMo
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="available">稼働可能</SelectItem>
-                          <SelectItem value="partially">一部稼働可能</SelectItem>
-                          <SelectItem value="unavailable">稼働不可</SelectItem>
+                          <SelectItem value="available">空き</SelectItem>
+                          <SelectItem value="unavailable">稼働中</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

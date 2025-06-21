@@ -94,8 +94,6 @@ export default function EngineersPage() {
     switch (availability) {
       case 'available':
         return 'text-green-500 bg-green-100 dark:bg-green-900/30';
-      case 'partially':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
       case 'unavailable':
         return 'text-red-500 bg-red-100 dark:bg-red-900/30';
       default:
@@ -106,11 +104,9 @@ export default function EngineersPage() {
   const getAvailabilityText = (availability: Engineer['availability']) => {
     switch (availability) {
       case 'available':
-        return '稼働可能';
-      case 'partially':
-        return '一部稼働可能';
+        return '空き';
       case 'unavailable':
-        return '稼働不可';
+        return '稼働中';
       default:
         return availability;
     }
@@ -188,9 +184,8 @@ export default function EngineersPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全ての稼働状況</SelectItem>
-            <SelectItem value="available">稼働可能</SelectItem>
-            <SelectItem value="partially">一部稼働可能</SelectItem>
-            <SelectItem value="unavailable">稼働不可</SelectItem>
+            <SelectItem value="available">空き</SelectItem>
+            <SelectItem value="unavailable">稼働中</SelectItem>
           </SelectContent>
         </Select>
       </div>

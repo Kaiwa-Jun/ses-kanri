@@ -24,7 +24,7 @@ export type Engineer = {
   phone: string;
   skills: Skill[];
   projects: EngineerProject[];
-  availability: 'available' | 'partially' | 'unavailable';
+  availability: 'available' | 'unavailable';
   availableFrom?: string;
   preferredWorkStyle: 'remote' | 'onsite' | 'hybrid';
   preferredRate: number; // 希望単価（万円）
@@ -678,7 +678,7 @@ export const mockEngineers: Engineer[] = [
         responsibilities: 'パフォーマンス最適化\nキャッシュ戦略\nチームマネジメント',
       },
     ],
-    availability: 'partially',
+    availability: 'unavailable',
     availableFrom: '2023-10-01',
     preferredWorkStyle: 'hybrid',
     preferredRate: 75,
@@ -863,7 +863,7 @@ export const mockEngineers: Engineer[] = [
         responsibilities: 'フロントエンド開発\nバックエンド開発\nDB設計',
       },
     ],
-    availability: 'partially',
+    availability: 'available',
     availableFrom: '2023-11-01',
     preferredWorkStyle: 'onsite',
     preferredRate: 90,
@@ -940,7 +940,7 @@ export const mockEngineers: Engineer[] = [
         responsibilities: 'バックエンド設計\nフロントエンド実装\nDB設計',
       },
     ],
-    availability: 'partially',
+    availability: 'unavailable',
     availableFrom: '2023-11-01',
     preferredWorkStyle: 'remote',
     preferredRate: 72,
@@ -1049,7 +1049,7 @@ export const mockEngineers: Engineer[] = [
         responsibilities: 'UI/UX実装\n状態管理\nパフォーマンス最適化',
       },
     ],
-    availability: 'partially',
+    availability: 'available',
     availableFrom: '2023-10-15',
     preferredWorkStyle: 'onsite',
     preferredRate: 82,

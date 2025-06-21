@@ -34,6 +34,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { mockClients } from '@/lib/data';
 
 export function ProjectDetails({
@@ -47,6 +56,8 @@ export function ProjectDetails({
   const [isEditing, setIsEditing] = useState(false);
   const [selectedEngineers, setSelectedEngineers] = useState<string[]>([]);
   const [assignedEngineers, setAssignedEngineers] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // 1ページあたりの表示件数
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -122,6 +133,21 @@ export function ProjectDetails({
   const handleSave = () => {
     // 実際のアプリではここでAPIを呼び出して保存
     setIsEditing(false);
+  };
+
+  // ページネーション用のロジック
+  const availableEngineers = matchingEngineers.filter(
+    ({ engineer }) => !assignedEngineers.some((assigned) => assigned.engineer.id === engineer.id)
+  );
+
+  const totalPages = Math.ceil(availableEngineers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEngineers = availableEngineers.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectedEngineers([]); // ページ変更時に選択をクリア
   };
 
   return (
@@ -493,83 +519,173 @@ export function ProjectDetails({
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
+                <span>
+                  {availableEngineers.length}件中 {startIndex + 1}-
+                  {Math.min(endIndex, availableEngineers.length)}件を表示
+                </span>
+                <span>
+                  ページ {currentPage} / {totalPages}
+                </span>
+              </div>
+
               <TooltipProvider>
-                {matchingEngineers
-                  .filter(
-                    ({ engineer }) =>
-                      !assignedEngineers.some((assigned) => assigned.engineer.id === engineer.id)
-                  )
-                  .map(({ engineer, score }, index) => (
-                    <motion.div
-                      key={engineer.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+                {currentEngineers.map(({ engineer, score }, index) => (
+                  <motion.div
+                    key={engineer.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
+                  >
+                    <div
+                      className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                      onClick={() => toggleEngineer(engineer.id)}
                     >
-                      <div
-                        className="flex items-center gap-3 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
-                        onClick={() => toggleEngineer(engineer.id)}
-                      >
-                        <Checkbox
-                          checked={selectedEngineers.includes(engineer.id)}
-                          onCheckedChange={() => toggleEngineer(engineer.id)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="flex items-center gap-3 flex-1">
-                          <Avatar>
-                            <AvatarImage src={engineer.imageUrl} />
-                            <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex justify-between items-center">
-                              <p className="font-medium truncate">{engineer.name}</p>
-                              <p className={`text-sm font-semibold ${getMatchColor(score)}`}>
-                                {score}%
-                              </p>
+                      <Checkbox
+                        checked={selectedEngineers.includes(engineer.id)}
+                        onCheckedChange={() => toggleEngineer(engineer.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div className="flex items-center gap-3 flex-1">
+                        <Avatar>
+                          <AvatarImage src={engineer.imageUrl} />
+                          <AvatarFallback>{engineer.name.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center">
+                            <p className="font-medium truncate">{engineer.name}</p>
+                            <p className={`text-sm font-semibold ${getMatchColor(score)}`}>
+                              {score}%
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Progress value={score} className="h-1.5" />
+                                </TooltipTrigger>
+                                <TooltipContent>マッチ度: {score}%</TooltipContent>
+                              </Tooltip>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <div className="flex-1">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Progress value={score} className="h-1.5" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>マッチ度: {score}%</TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <p className="text-xs text-muted-foreground whitespace-nowrap">
-                                {engineer.totalExperience}年
-                              </p>
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {engineer.skills.slice(0, 3).map((skill: any) => (
-                                <Badge key={skill.name} variant="outline" className="text-xs py-0">
-                                  {skill.name}
-                                </Badge>
-                              ))}
-                              {engineer.skills.length > 3 && (
-                                <Badge variant="outline" className="text-xs py-0">
-                                  +{engineer.skills.length - 3}
-                                </Badge>
-                              )}
-                            </div>
+                            <p className="text-xs text-muted-foreground whitespace-nowrap">
+                              {engineer.totalExperience}年
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {engineer.skills.slice(0, 3).map((skill: any) => (
+                              <Badge key={skill.name} variant="outline" className="text-xs py-0">
+                                {skill.name}
+                              </Badge>
+                            ))}
+                            {engineer.skills.length > 3 && (
+                              <Badge variant="outline" className="text-xs py-0">
+                                +{engineer.skills.length - 3}
+                              </Badge>
+                            )}
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Link href={`/sales/engineers/${engineer.id}`}>
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            詳細
-                          </Link>
-                        </Button>
                       </div>
-                      {index < matchingEngineers.length - 1 && <Separator className="my-2" />}
-                    </motion.div>
-                  ))}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        asChild
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Link href={`/sales/engineers/${engineer.id}`}>
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          詳細
+                        </Link>
+                      </Button>
+                    </div>
+                    {index < currentEngineers.length - 1 && <Separator className="my-2" />}
+                  </motion.div>
+                ))}
               </TooltipProvider>
+
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                          className={
+                            currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                          }
+                        />
+                      </PaginationItem>
+
+                      {/* 最初のページ */}
+                      {currentPage > 3 && (
+                        <>
+                          <PaginationItem>
+                            <PaginationLink
+                              onClick={() => handlePageChange(1)}
+                              className="cursor-pointer"
+                            >
+                              1
+                            </PaginationLink>
+                          </PaginationItem>
+                          {currentPage > 4 && (
+                            <PaginationItem>
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          )}
+                        </>
+                      )}
+
+                      {/* 現在のページ周辺 */}
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        const pageNumber =
+                          Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
+                        if (pageNumber > totalPages) return null;
+
+                        return (
+                          <PaginationItem key={pageNumber}>
+                            <PaginationLink
+                              onClick={() => handlePageChange(pageNumber)}
+                              isActive={pageNumber === currentPage}
+                              className="cursor-pointer"
+                            >
+                              {pageNumber}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      })}
+
+                      {/* 最後のページ */}
+                      {currentPage < totalPages - 2 && (
+                        <>
+                          {currentPage < totalPages - 3 && (
+                            <PaginationItem>
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          )}
+                          <PaginationItem>
+                            <PaginationLink
+                              onClick={() => handlePageChange(totalPages)}
+                              className="cursor-pointer"
+                            >
+                              {totalPages}
+                            </PaginationLink>
+                          </PaginationItem>
+                        </>
+                      )}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                          className={
+                            currentPage === totalPages
+                              ? 'pointer-events-none opacity-50'
+                              : 'cursor-pointer'
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -13,6 +13,8 @@ import {
   Plus,
   CreditCard,
   Star,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +45,8 @@ export default function EngineersPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [sortField, setSortField] = useState<'experience' | 'rate' | 'name'>('experience');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const router = useRouter();
 
   const filteredEngineers = mockEngineers.filter((engineer) => {
@@ -89,6 +93,18 @@ export default function EngineersPage() {
         : (aValue as number) - (bValue as number);
     }
   });
+
+  // ページネーション用の計算
+  const totalItems = sortedEngineers.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEngineers = sortedEngineers.slice(startIndex, endIndex);
+
+  // 検索やフィルターが変更されたときにページを1に戻す
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterAvailability]);
 
   const getAvailabilityColor = (availability: Engineer['availability']) => {
     switch (availability) {
@@ -223,7 +239,7 @@ export default function EngineersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedEngineers.map((engineer, index) => (
+              {currentEngineers.map((engineer, index) => (
                 <motion.tr
                   key={engineer.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -318,6 +334,66 @@ export default function EngineersPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* ページネーション */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
+            {totalItems}件中 {startIndex + 1}-{Math.min(endIndex, totalItems)}件を表示
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              前へ
+            </Button>
+
+            <div className="flex items-center space-x-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                // 現在のページの前後2ページまで表示
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  (page >= currentPage - 2 && page <= currentPage + 2)
+                ) {
+                  return (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="w-8 h-8 p-0"
+                    >
+                      {page}
+                    </Button>
+                  );
+                } else if (page === currentPage - 3 || page === currentPage + 3) {
+                  return (
+                    <span key={page} className="text-muted-foreground">
+                      ...
+                    </span>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              次へ
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       <AddEngineerModal
         open={isAddModalOpen}

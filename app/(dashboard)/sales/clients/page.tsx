@@ -13,7 +13,6 @@ import {
   FileText,
   Mail,
   Phone,
-  Star,
   ArrowUpDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -41,8 +40,8 @@ import { mockClients } from '@/lib/data';
 export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string | undefined>(undefined);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [sortField, setSortField] = useState<'rating' | 'projects' | 'name'>('rating');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortField, setSortField] = useState<'name'>('name');
   const router = useRouter();
 
   const filteredClients = mockClients.filter((client) => {
@@ -62,31 +61,19 @@ export default function ClientsPage() {
     let aValue, bValue;
 
     switch (sortField) {
-      case 'rating':
-        aValue = a.rating;
-        bValue = b.rating;
-        break;
-      case 'projects':
-        aValue = a.totalProjects;
-        bValue = b.totalProjects;
-        break;
       case 'name':
         aValue = a.name;
         bValue = b.name;
         break;
       default:
-        aValue = a.rating;
-        bValue = b.rating;
+        aValue = a.name;
+        bValue = b.name;
     }
 
     if (sortOrder === 'desc') {
-      return typeof aValue === 'string' && typeof bValue === 'string'
-        ? bValue.localeCompare(aValue)
-        : (bValue as number) - (aValue as number);
+      return bValue.localeCompare(aValue);
     } else {
-      return typeof aValue === 'string' && typeof bValue === 'string'
-        ? aValue.localeCompare(bValue)
-        : (aValue as number) - (bValue as number);
+      return aValue.localeCompare(bValue);
     }
   });
 
@@ -116,12 +103,12 @@ export default function ClientsPage() {
     }
   };
 
-  const handleSort = (field: 'rating' | 'projects' | 'name') => {
+  const handleSort = (field: 'name') => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortOrder('desc');
+      setSortOrder('asc');
     }
   };
 
@@ -177,29 +164,18 @@ export default function ClientsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>企業情報</TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-medium"
+                    onClick={() => handleSort('name')}
+                  >
+                    企業情報
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
                 <TableHead>担当者</TableHead>
                 <TableHead>ステータス</TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-medium"
-                    onClick={() => handleSort('rating')}
-                  >
-                    評価
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-medium"
-                    onClick={() => handleSort('projects')}
-                  >
-                    案件数
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
                 <TableHead>次回接触</TableHead>
                 <TableHead>求められるスキル</TableHead>
               </TableRow>
@@ -243,30 +219,6 @@ export default function ClientsPage() {
                     <Badge variant="outline" className={getStatusColor(client.status)}>
                       {getStatusText(client.status)}
                     </Badge>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < Math.floor(client.rating)
-                              ? 'text-yellow-500 fill-yellow-500'
-                              : 'text-muted-foreground'
-                          }`}
-                        />
-                      ))}
-                      <span className="text-sm font-medium ml-1">{client.rating}</span>
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">{client.activeProjects}</span>
-                      <span className="text-muted-foreground">/ {client.totalProjects}</span>
-                    </div>
                   </TableCell>
 
                   <TableCell>

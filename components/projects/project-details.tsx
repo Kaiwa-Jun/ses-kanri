@@ -519,16 +519,6 @@ export function ProjectDetails({
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
-                <span>
-                  {availableEngineers.length}件中 {startIndex + 1}-
-                  {Math.min(endIndex, availableEngineers.length)}件を表示
-                </span>
-                <span>
-                  ページ {currentPage} / {totalPages}
-                </span>
-              </div>
-
               <TooltipProvider>
                 {currentEngineers.map(({ engineer, score }, index) => (
                   <motion.div
@@ -601,92 +591,48 @@ export function ProjectDetails({
                   </motion.div>
                 ))}
               </TooltipProvider>
-
-              {totalPages > 1 && (
-                <div className="flex justify-center mt-6">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                          className={
-                            currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                          }
-                        />
-                      </PaginationItem>
-
-                      {/* 最初のページ */}
-                      {currentPage > 3 && (
-                        <>
-                          <PaginationItem>
-                            <PaginationLink
-                              onClick={() => handlePageChange(1)}
-                              className="cursor-pointer"
-                            >
-                              1
-                            </PaginationLink>
-                          </PaginationItem>
-                          {currentPage > 4 && (
-                            <PaginationItem>
-                              <PaginationEllipsis />
-                            </PaginationItem>
-                          )}
-                        </>
-                      )}
-
-                      {/* 現在のページ周辺 */}
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        const pageNumber =
-                          Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
-                        if (pageNumber > totalPages) return null;
-
-                        return (
-                          <PaginationItem key={pageNumber}>
-                            <PaginationLink
-                              onClick={() => handlePageChange(pageNumber)}
-                              isActive={pageNumber === currentPage}
-                              className="cursor-pointer"
-                            >
-                              {pageNumber}
-                            </PaginationLink>
-                          </PaginationItem>
-                        );
-                      })}
-
-                      {/* 最後のページ */}
-                      {currentPage < totalPages - 2 && (
-                        <>
-                          {currentPage < totalPages - 3 && (
-                            <PaginationItem>
-                              <PaginationEllipsis />
-                            </PaginationItem>
-                          )}
-                          <PaginationItem>
-                            <PaginationLink
-                              onClick={() => handlePageChange(totalPages)}
-                              className="cursor-pointer"
-                            >
-                              {totalPages}
-                            </PaginationLink>
-                          </PaginationItem>
-                        </>
-                      )}
-
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                          className={
-                            currentPage === totalPages
-                              ? 'pointer-events-none opacity-50'
-                              : 'cursor-pointer'
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
             </CardContent>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center py-4 border-t">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                        className={
+                          currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                        }
+                      />
+                    </PaginationItem>
+
+                    {/* ページ番号を表示 */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                      <PaginationItem key={pageNumber}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(pageNumber)}
+                          isActive={pageNumber === currentPage}
+                          className="cursor-pointer"
+                        >
+                          {pageNumber}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                        className={
+                          currentPage === totalPages
+                            ? 'pointer-events-none opacity-50'
+                            : 'cursor-pointer'
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
           </Card>
         </motion.div>
       </div>

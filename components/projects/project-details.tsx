@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { mockClients } from '@/lib/data';
 
 export function ProjectDetails({
   project: initialProject,
@@ -181,10 +182,28 @@ export function ProjectDetails({
                     onChange={(e) => setProject({ ...project, title: e.target.value })}
                     className="text-2xl font-bold"
                   />
-                  <Input
+                  <Select
                     value={project.client}
-                    onChange={(e) => setProject({ ...project, client: e.target.value })}
-                  />
+                    onValueChange={(value) => setProject({ ...project, client: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockClients.map((client) => (
+                        <SelectItem key={client.id} value={client.name}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                      {/* 現在のクライアント名がmockClientsに存在しない場合の対応 */}
+                      {!mockClients.some((client) => client.name === project.client) &&
+                        project.client && (
+                          <SelectItem key="current" value={project.client}>
+                            {project.client}
+                          </SelectItem>
+                        )}
+                    </SelectContent>
+                  </Select>
                 </div>
               ) : (
                 <>
@@ -194,21 +213,43 @@ export function ProjectDetails({
               )}
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground mb-1 flex items-center gap-1">
                     <CreditCard className="h-4 w-4" />
-                    単価
+                    単価（下限）
                   </p>
                   {isEditing ? (
                     <Input
                       type="number"
-                      value={project.rate}
-                      onChange={(e) => setProject({ ...project, rate: parseInt(e.target.value) })}
+                      value={project.minRate}
+                      onChange={(e) =>
+                        setProject({ ...project, minRate: parseInt(e.target.value) })
+                      }
                       className="font-medium"
+                      placeholder="800000"
                     />
                   ) : (
-                    <p className="font-medium">{project.rate}万円</p>
+                    <p className="font-medium">{project.minRate.toLocaleString()}円</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-muted-foreground mb-1 flex items-center gap-1">
+                    <CreditCard className="h-4 w-4" />
+                    単価（上限）
+                  </p>
+                  {isEditing ? (
+                    <Input
+                      type="number"
+                      value={project.maxRate}
+                      onChange={(e) =>
+                        setProject({ ...project, maxRate: parseInt(e.target.value) })
+                      }
+                      className="font-medium"
+                      placeholder="1000000"
+                    />
+                  ) : (
+                    <p className="font-medium">{project.maxRate.toLocaleString()}円</p>
                   )}
                 </div>
                 <div>
@@ -267,7 +308,7 @@ export function ProjectDetails({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground mb-1 flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
@@ -300,6 +341,9 @@ export function ProjectDetails({
                     <p className="font-medium">{project.endDate}</p>
                   )}
                 </div>
+                <div></div>
+                <div></div>
+                <div></div>
               </div>
 
               <Separator />

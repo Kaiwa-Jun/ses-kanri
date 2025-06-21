@@ -4,7 +4,8 @@ export type Project = {
   title: string;
   client: string;
   skills: string[];
-  rate: number; // 単価（万円）
+  minRate: number; // 単価下限（円）
+  maxRate: number; // 単価上限（円）
   period: string;
   workStyle: 'remote' | 'onsite' | 'hybrid';
   status: 'open' | 'in_progress' | 'negotiating' | 'closed';
@@ -480,7 +481,8 @@ export const mockProjects: Project[] = [
     title: '大手ECサイトリニューアル案件',
     client: '〇〇商事株式会社',
     skills: ['React', 'TypeScript', 'Next.js', 'GraphQL'],
-    rate: 80,
+    minRate: 800000,
+    maxRate: 1000000,
     period: '6ヶ月',
     workStyle: 'remote',
     status: 'open',
@@ -494,9 +496,10 @@ export const mockProjects: Project[] = [
   {
     id: 'p2',
     title: '金融システム保守運用',
-    client: '〇〇銀行',
+    client: '◇◇フィナンシャル株式会社',
     skills: ['Java', 'Spring Boot', 'Oracle', 'AWS'],
-    rate: 75,
+    minRate: 750000,
+    maxRate: 900000,
     period: '12ヶ月',
     workStyle: 'hybrid',
     status: 'in_progress',
@@ -509,9 +512,10 @@ export const mockProjects: Project[] = [
   {
     id: 'p3',
     title: 'スマートファクトリー構築支援',
-    client: '〇〇製造株式会社',
+    client: '☆☆テクノロジー株式会社',
     skills: ['Python', 'IoT', 'Docker', 'Kubernetes', 'TensorFlow'],
-    rate: 90,
+    minRate: 850000,
+    maxRate: 1000000,
     period: '9ヶ月',
     workStyle: 'onsite',
     status: 'negotiating',
@@ -525,9 +529,10 @@ export const mockProjects: Project[] = [
   {
     id: 'p4',
     title: '医療系アプリケーション開発',
-    client: '〇〇メディカル株式会社',
+    client: '□□メディカル株式会社',
     skills: ['Swift', 'Kotlin', 'Firebase', 'Flutter'],
-    rate: 85,
+    minRate: 800000,
+    maxRate: 900000,
     period: '5ヶ月',
     workStyle: 'remote',
     status: 'open',
@@ -539,9 +544,10 @@ export const mockProjects: Project[] = [
   {
     id: 'p5',
     title: '決済システム連携開発',
-    client: '〇〇ペイメント株式会社',
+    client: '△△システムズ株式会社',
     skills: ['Node.js', 'Express', 'MongoDB', 'Redis', 'AWS'],
-    rate: 78,
+    minRate: 700000,
+    maxRate: 800000,
     period: '4ヶ月',
     workStyle: 'hybrid',
     status: 'closed',

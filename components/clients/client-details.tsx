@@ -65,7 +65,7 @@ export function ClientDetails({ client: initialClient }: ClientDetailsProps) {
   };
 
   return (
-    <div className="container py-6">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <div className="mb-6">
         <Link href="/sales/clients">
           <Button variant="ghost" size="sm" className="gap-1">

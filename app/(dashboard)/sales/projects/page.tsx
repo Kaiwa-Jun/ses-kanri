@@ -99,13 +99,13 @@ export default function ProjectsPage() {
   const getStatusColor = (status: Project['status']) => {
     switch (status) {
       case 'open':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
+        return 'text-green-500 bg-green-100';
       case 'in_progress':
-        return 'text-blue-500 bg-blue-100 dark:bg-blue-900/30';
+        return 'text-blue-500 bg-blue-100';
       case 'negotiating':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+        return 'text-yellow-500 bg-yellow-100';
       case 'closed':
-        return 'text-gray-500 bg-gray-100 dark:bg-gray-800';
+        return 'text-gray-500 bg-gray-100';
       default:
         return '';
     }
@@ -251,11 +251,8 @@ export default function ProjectsPage() {
             </TableHeader>
             <TableBody>
               {sortedProjects.map((project, index) => (
-                <motion.tr
+                <TableRow
                   key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.02 }}
                   className="group hover:bg-muted/50 transition-colors cursor-pointer"
                   onClick={() => handleRowClick(project.id)}
                 >
@@ -331,7 +328,7 @@ export default function ProjectsPage() {
                       )}
                     </div>
                   </TableCell>
-                </motion.tr>
+                </TableRow>
               ))}
             </TableBody>
           </Table>

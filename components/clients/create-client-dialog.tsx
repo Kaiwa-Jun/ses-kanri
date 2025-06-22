@@ -91,16 +91,29 @@ const industries = [
   'その他',
 ];
 
-// 営業担当者選択肢
+// 営業担当者選択肢（部署情報付き）
 const salesPersons = [
-  '鈴木健太',
-  '田中美咲',
-  '佐藤太郎',
-  '高橋花子',
-  '伊藤次郎',
-  '山田恵子',
-  '中村大輔',
-  '小林真理',
+  { name: '鈴木健太', department: '第1営業部' },
+  { name: '田中美咲', department: '第1営業部' },
+  { name: '高橋誠', department: '第1営業部' },
+  { name: '佐藤一郎', department: '第2営業部' },
+  { name: '山田花子', department: '第2営業部' },
+];
+
+// 案件選択肢（クライアント名付き）
+const projectOptions = [
+  { id: 'project1', name: '大手ECサイトリニューアル案件', client: '〇〇商事株式会社' },
+  { id: 'project2', name: '金融システム保守運用', client: '◇◇銀行' },
+  { id: 'project3', name: 'スマートファクトリー構築', client: '△△製造株式会社' },
+  { id: 'project4', name: '医療系アプリケーション開発', client: '□□メディカル株式会社' },
+];
+
+// エンジニア選択肢（スキル情報付き）
+const engineerOptions = [
+  { id: 'engineer1', name: '山田太郎', skills: 'React, TypeScript, Node.js' },
+  { id: 'engineer2', name: '佐藤花子', skills: 'Java, Spring Boot, Oracle' },
+  { id: 'engineer3', name: '鈴木一郎', skills: 'Python, TensorFlow, Docker' },
+  { id: 'engineer4', name: '田中美咲', skills: 'Swift, Kotlin, Flutter' },
 ];
 
 // スキル候補データ（エンジニア追加モーダルと同じ）
@@ -462,8 +475,13 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                       </FormControl>
                       <SelectContent>
                         {salesPersons.map((person) => (
-                          <SelectItem key={person} value={person}>
-                            {person}
+                          <SelectItem key={person.name} value={person.name}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{person.name}</span>
+                              <span className="text-sm text-muted-foreground">
+                                （{person.department}）
+                              </span>
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -496,11 +514,16 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="project1">大手ECサイトリニューアル案件</SelectItem>
-                        <SelectItem value="project2">金融システム保守運用</SelectItem>
-                        <SelectItem value="project3">医療系アプリケーション開発</SelectItem>
-                        <SelectItem value="project4">Webアプリケーション開発</SelectItem>
-                        <SelectItem value="project5">システム設計支援</SelectItem>
+                        {projectOptions.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{project.name}</span>
+                              <span className="text-sm text-muted-foreground">
+                                {project.client}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <div className="text-xs text-muted-foreground mt-1">
@@ -524,11 +547,16 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="engineer1">山田太郎</SelectItem>
-                        <SelectItem value="engineer2">佐藤花子</SelectItem>
-                        <SelectItem value="engineer3">鈴木一郎</SelectItem>
-                        <SelectItem value="engineer4">田中美咲</SelectItem>
-                        <SelectItem value="engineer5">高橋健太</SelectItem>
+                        {engineerOptions.map((engineer) => (
+                          <SelectItem key={engineer.id} value={engineer.id}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{engineer.name}</span>
+                              <span className="text-sm text-muted-foreground">
+                                {engineer.skills}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <div className="text-xs text-muted-foreground mt-1">

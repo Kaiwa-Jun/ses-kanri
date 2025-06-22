@@ -30,7 +30,8 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Target, DollarSign, Calendar, TrendingUp, Users } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Target, DollarSign, Calendar, TrendingUp, Users, User, Plus } from 'lucide-react';
 
 const targetSchema = z.object({
   period: z.string().min(1, '期間を選択してください'),
@@ -42,6 +43,21 @@ const targetSchema = z.object({
 });
 
 type TargetFormValues = z.infer<typeof targetSchema>;
+
+// 営業担当者のモックデータ
+const salesPersons = [
+  { id: 's1', name: '鈴木健太', department: '第一営業部' },
+  { id: 's2', name: '田中美咲', department: '第一営業部' },
+  { id: 's3', name: '高橋誠', department: '第一営業部' },
+  { id: 's4', name: '佐藤一郎', department: '第二営業部' },
+  { id: 's5', name: '山田花子', department: '第二営業部' },
+  { id: 's6', name: '伊藤健一', department: '第二営業部' },
+];
+
+interface IndividualTarget {
+  salesPersonId: string;
+  targetAmount: number;
+}
 
 interface SalesTargetModalProps {
   open: boolean;
@@ -58,6 +74,10 @@ export function SalesTargetModal({
   currentData,
   onSave,
 }: SalesTargetModalProps) {
+  const [individualTargets, setIndividualTargets] = useState<IndividualTarget[]>([]);
+  const [selectedSalesPerson, setSelectedSalesPerson] = useState<string>('');
+  const [individualTargetAmount, setIndividualTargetAmount] = useState<string>('0');
+
   const form = useForm<TargetFormValues>({
     resolver: zodResolver(targetSchema),
     defaultValues: {
@@ -89,6 +109,49 @@ export function SalesTargetModal({
   const handleSubmit = (data: TargetFormValues) => {
     onSave(data);
     onOpenChange(false);
+  };
+
+  const handleAddIndividualTarget = () => {
+    if (selectedSalesPerson && individualTargetAmount && parseFloat(individualTargetAmount) > 0) {
+      const existingIndex = individualTargets.findIndex(
+        (target) => target.salesPersonId === selectedSalesPerson
+      );
+
+      if (existingIndex >= 0) {
+        // 既存の目標を更新
+        const updatedTargets = [...individualTargets];
+        updatedTargets[existingIndex].targetAmount = parseFloat(individualTargetAmount);
+        setIndividualTargets(updatedTargets);
+      } else {
+        // 新しい目標を追加
+        setIndividualTargets([
+          ...individualTargets,
+          {
+            salesPersonId: selectedSalesPerson,
+            targetAmount: parseFloat(individualTargetAmount),
+          },
+        ]);
+      }
+
+      setSelectedSalesPerson('');
+      setIndividualTargetAmount('0');
+    }
+  };
+
+  const handleRemoveIndividualTarget = (salesPersonId: string) => {
+    setIndividualTargets(
+      individualTargets.filter((target) => target.salesPersonId !== salesPersonId)
+    );
+  };
+
+  const getSalesPersonName = (id: string) => {
+    return salesPersons.find((person) => person.id === id)?.name || '';
+  };
+
+  const getAvailableSalesPersons = () => {
+    return salesPersons.filter(
+      (person) => !individualTargets.some((target) => target.salesPersonId === person.id)
+    );
   };
 
   const getPeriodOptions = () => {
@@ -258,6 +321,123 @@ export function SalesTargetModal({
                   </FormItem>
                 )}
               />
+            </div>
+
+            <Separator />
+
+            {/* 営業個人の目標設定 */}
+            <div className="space-y-4">
+              <h3 className="font-medium flex items-center gap-2">
+                <User className="h-4 w-4" />
+                営業個人の目標設定
+              </h3>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">営業担当者</label>
+                    <Select value={selectedSalesPerson} onValueChange={setSelectedSalesPerson}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="担当者を選択">
+                          {selectedSalesPerson && (
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage src="" />
+                                <AvatarFallback className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+                                  {getSalesPersonName(selectedSalesPerson).slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{getSalesPersonName(selectedSalesPerson)}</span>
+                            </div>
+                          )}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableSalesPersons().map((person) => (
+                          <SelectItem key={person.id} value={person.id}>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage src="" />
+                                <AvatarFallback className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+                                  {person.name.slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{person.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">目標金額（万円）</label>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      value={individualTargetAmount}
+                      onChange={(e) => setIndividualTargetAmount(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={handleAddIndividualTarget}
+                  disabled={
+                    !selectedSalesPerson ||
+                    !individualTargetAmount ||
+                    parseFloat(individualTargetAmount) <= 0
+                  }
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  追加
+                </Button>
+
+                {individualTargets.length === 0 ? (
+                  <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+                    <p className="text-muted-foreground">
+                      営業担当者の個人目標が設定されていません
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {individualTargets.map((target) => (
+                      <div
+                        key={target.salesPersonId}
+                        className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 flex items-center justify-center text-sm font-medium">
+                            {getSalesPersonName(target.salesPersonId).slice(0, 2)}
+                          </div>
+                          <span className="font-medium">
+                            {getSalesPersonName(target.salesPersonId)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className="bg-blue-100 text-blue-700 dark:bg-blue-900/30"
+                          >
+                            {target.targetAmount}万円
+                          </Badge>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveIndividualTarget(target.salesPersonId)}
+                            className="h-8 w-8 p-0"
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <Separator />

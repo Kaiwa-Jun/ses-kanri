@@ -1017,8 +1017,28 @@ export default function TeamsPage() {
                 <TableBody>
                   {mockEngineerAssignments.map((assignment) => (
                     <TableRow key={assignment.engineerId}>
-                      <TableCell>{assignment.engineerName}</TableCell>
-                      <TableCell>{assignment.salesName}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src="" />
+                            <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                              {assignment.engineerName.slice(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span>{assignment.engineerName}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src="" />
+                            <AvatarFallback className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                              {assignment.salesName.slice(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span>{assignment.salesName}</span>
+                        </div>
+                      </TableCell>
                       <TableCell>{assignment.teamName}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="outline" size="sm">
@@ -1047,7 +1067,24 @@ export default function TeamsPage() {
                     <TableRow key={assignment.projectId}>
                       <TableCell>{assignment.projectName}</TableCell>
                       <TableCell>{assignment.clientName}</TableCell>
-                      <TableCell>{assignment.salesNames.join(', ')}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="flex -space-x-2">
+                            {assignment.salesNames.map((salesName, index) => (
+                              <Avatar
+                                key={index}
+                                className="h-8 w-8 border-2 border-white dark:border-gray-800"
+                              >
+                                <AvatarImage src="" />
+                                <AvatarFallback className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+                                  {salesName.slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                            ))}
+                          </div>
+                          <span>{assignment.salesNames.join(', ')}</span>
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={getStatusColor(assignment.status)}>
                           {getStatusText(assignment.status)}
@@ -1078,7 +1115,24 @@ export default function TeamsPage() {
                   {mockClientAssignments.map((assignment) => (
                     <TableRow key={assignment.clientId}>
                       <TableCell>{assignment.clientName}</TableCell>
-                      <TableCell>{assignment.salesNames.join(', ')}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="flex -space-x-2">
+                            {assignment.salesNames.map((salesName, index) => (
+                              <Avatar
+                                key={index}
+                                className="h-8 w-8 border-2 border-white dark:border-gray-800"
+                              >
+                                <AvatarImage src="" />
+                                <AvatarFallback className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs">
+                                  {salesName.slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                            ))}
+                          </div>
+                          <span>{assignment.salesNames.join(', ')}</span>
+                        </div>
+                      </TableCell>
                       <TableCell>{assignment.notes}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="outline" size="sm">

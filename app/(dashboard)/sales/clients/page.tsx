@@ -123,14 +123,14 @@ export default function ClientsPage() {
     industry: string;
     description: string;
     salesPerson: string;
-    pastProjects?: string;
-    preferredEngineers?: string;
     memo?: string;
     preferredSkills: string[];
     domains: string[];
     certifications: string[];
     phases: string[];
     positions: string[];
+    pastProjects: string[];
+    preferredEngineers: string[];
   }) => {
     console.log('新規クライアント登録:', data);
     // 実際にはAPIを呼び出してクライアントを作成

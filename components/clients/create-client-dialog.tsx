@@ -54,8 +54,6 @@ const clientSchema = z.object({
   industry: z.string().min(1, '業界を選択してください'),
   description: z.string().min(10, '企業概要は10文字以上で入力してください'),
   salesPerson: z.string().min(1, '担当営業を選択してください'),
-  pastProjects: z.string().optional(),
-  preferredEngineers: z.string().optional(),
   memo: z.string().optional(),
 });
 
@@ -71,6 +69,8 @@ interface CreateClientDialogProps {
       certifications: string[];
       phases: string[];
       positions: string[];
+      pastProjects: string[];
+      preferredEngineers: string[];
     }
   ) => void;
 }
@@ -279,6 +279,8 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
   const [selectedCertifications, setSelectedCertifications] = useState<string[]>([]);
   const [selectedPhases, setSelectedPhases] = useState<string[]>([]);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [selectedEngineers, setSelectedEngineers] = useState<string[]>([]);
 
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(clientSchema),
@@ -287,8 +289,6 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
       industry: '',
       description: '',
       salesPerson: '',
-      pastProjects: '',
-      preferredEngineers: '',
       memo: '',
     },
   });
@@ -328,6 +328,8 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
       certifications: selectedCertifications,
       phases: selectedPhases,
       positions: selectedPositions,
+      pastProjects: selectedProjects,
+      preferredEngineers: selectedEngineers,
     });
 
     // フォームをリセット
@@ -337,6 +339,8 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
     setSelectedCertifications([]);
     setSelectedPhases([]);
     setSelectedPositions([]);
+    setSelectedProjects([]);
+    setSelectedEngineers([]);
     setCurrentStep(1);
   };
 
@@ -377,6 +381,22 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
       setSelectedPositions(selectedPositions.filter((p) => p !== position));
     } else {
       setSelectedPositions([...selectedPositions, position]);
+    }
+  };
+
+  const toggleProject = (projectId: string) => {
+    if (selectedProjects.includes(projectId)) {
+      setSelectedProjects(selectedProjects.filter((p) => p !== projectId));
+    } else {
+      setSelectedProjects([...selectedProjects, projectId]);
+    }
+  };
+
+  const toggleEngineer = (engineerId: string) => {
+    if (selectedEngineers.includes(engineerId)) {
+      setSelectedEngineers(selectedEngineers.filter((e) => e !== engineerId));
+    } else {
+      setSelectedEngineers([...selectedEngineers, engineerId]);
     }
   };
 
@@ -501,71 +521,129 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                 条件・エンジニア情報
               </h3>
 
-              <FormField
-                control={form.control}
-                name="pastProjects"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>過去の案件（複数選択可）</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="案件を選択してください" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {projectOptions.map((project) => (
-                          <SelectItem key={project.id} value={project.id}>
-                            <div className="flex flex-col">
-                              <span className="font-medium">{project.name}</span>
-                              <span className="text-sm text-muted-foreground">
-                                {project.client}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      このクライアントで過去に実施した案件を選択してください
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* 過去の案件（複数選択可） */}
+              <div className="space-y-3">
+                <FormLabel>過去の案件（複数選択可）</FormLabel>
 
-              <FormField
-                control={form.control}
-                name="preferredEngineers"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>好評だったエンジニア（複数選択可）</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="エンジニアを選択してください" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {engineerOptions.map((engineer) => (
-                          <SelectItem key={engineer.id} value={engineer.id}>
-                            <div className="flex flex-col">
-                              <span className="font-medium">{engineer.name}</span>
-                              <span className="text-sm text-muted-foreground">
-                                {engineer.skills}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      このクライアントから高評価を得たエンジニアを選択してください
+                {/* 選択済み案件 */}
+                {selectedProjects.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium">選択済み案件</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProjects.map((projectId) => {
+                        const project = projectOptions.find((p) => p.id === projectId);
+                        return project ? (
+                          <Badge key={projectId} variant="secondary" className="gap-1">
+                            {project.name}
+                            <button
+                              type="button"
+                              onClick={() => toggleProject(projectId)}
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ) : null;
+                      })}
                     </div>
-                    <FormMessage />
-                  </FormItem>
+                  </div>
                 )}
-              />
+
+                {/* 案件選択 */}
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">案件選択</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    {projectOptions.map((project) => (
+                      <div
+                        key={project.id}
+                        className="flex items-start space-x-3 p-3 border rounded-lg"
+                      >
+                        <Checkbox
+                          id={project.id}
+                          checked={selectedProjects.includes(project.id)}
+                          onCheckedChange={() => toggleProject(project.id)}
+                        />
+                        <div className="flex flex-col">
+                          <label
+                            htmlFor={project.id}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {project.name}
+                          </label>
+                          <span className="text-sm text-muted-foreground mt-1">
+                            {project.client}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    このクライアントで過去に実施した案件を選択してください
+                  </div>
+                </div>
+              </div>
+
+              {/* 好評だったエンジニア（複数選択可） */}
+              <div className="space-y-3">
+                <FormLabel>好評だったエンジニア（複数選択可）</FormLabel>
+
+                {/* 選択済みエンジニア */}
+                {selectedEngineers.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium">選択済みエンジニア</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedEngineers.map((engineerId) => {
+                        const engineer = engineerOptions.find((e) => e.id === engineerId);
+                        return engineer ? (
+                          <Badge key={engineerId} variant="secondary" className="gap-1">
+                            {engineer.name}
+                            <button
+                              type="button"
+                              onClick={() => toggleEngineer(engineerId)}
+                              className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ) : null;
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* エンジニア選択 */}
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">エンジニア選択</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    {engineerOptions.map((engineer) => (
+                      <div
+                        key={engineer.id}
+                        className="flex items-start space-x-3 p-3 border rounded-lg"
+                      >
+                        <Checkbox
+                          id={engineer.id}
+                          checked={selectedEngineers.includes(engineer.id)}
+                          onCheckedChange={() => toggleEngineer(engineer.id)}
+                        />
+                        <div className="flex flex-col">
+                          <label
+                            htmlFor={engineer.id}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {engineer.name}
+                          </label>
+                          <span className="text-sm text-muted-foreground mt-1">
+                            {engineer.skills}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    このクライアントから高評価を得たエンジニアを選択してください
+                  </div>
+                </div>
+              </div>
             </div>
 
             <Separator />

@@ -29,6 +29,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { Upload } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const contractSchema = z.object({
   clientName: z.string().min(1, 'クライアント名を入力してください'),
@@ -43,11 +46,16 @@ const contractSchema = z.object({
   workingDaysUnit: z.enum(['週', '月']),
   workingDaysCount: z.string().min(1, '日数を選択してください'),
   rate: z.coerce.number().positive('単価を入力してください'),
+  originalRate: z.coerce.number().optional(),
   workload: z.coerce.number().positive('契約工数を入力してください'),
   minHours: z.coerce.number().positive('最小稼働時間を入力してください'),
   maxHours: z.coerce.number().positive('最大稼働時間を入力してください'),
-  overtimeRule: z.string().min(1, '超過／控除ルールを入力してください'),
+  overtimeRule: z.string().min(1, '超過／控除ルールを選択してください'),
   paymentTerms: z.string().min(1, '支払条件を選択してください'),
+  engineerId: z.string().min(1, 'エンジニアを選択してください'),
+  projectId: z.string().optional(),
+  engineerNote: z.string().optional(),
+  contractFile: z.any().optional(),
 });
 
 type ContractFormValues = z.infer<typeof contractSchema>;
@@ -84,8 +92,26 @@ const workingDaysOptions = Array.from({ length: 7 }, (_, i) => ({
   label: `${i + 1}日`,
 }));
 
+// ダミーのエンジニアデータ
+const engineers = [
+  { id: 'e1', name: '鈴木一郎' },
+  { id: 'e2', name: '田中太郎' },
+  { id: 'e3', name: '佐藤花子' },
+  { id: 'e4', name: '山田次郎' },
+];
+
+// ダミーの案件データ
+const projects = [
+  { id: 'p1', name: '大手ECサイトリニューアル案件', client: '〇〇商事株式会社' },
+  { id: 'p2', name: '金融システム保守運用', client: '〇〇銀行' },
+  { id: 'p3', name: 'スマートファクトリー構築', client: '〇〇製造株式会社' },
+  { id: 'p4', name: '医療系アプリケーション開発', client: '〇〇メディカル株式会社' },
+  { id: 'p5', name: 'AI画像認識システム開発', client: '〇〇テクノロジー株式会社' },
+];
+
 export function CreateContractDialog({ open, onOpenChange }: CreateContractDialogProps) {
   const timeOptions = generateTimeOptions();
+  const [uploadedFileName, setUploadedFileName] = useState<string>('');
 
   const form = useForm<ContractFormValues>({
     resolver: zodResolver(contractSchema),
@@ -94,7 +120,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
       contractType: '準委任',
       startDate: '',
       endDate: '',
-      workStyle: 'remote',
+      workStyle: 'リモート',
       workLocation: '',
       workingHoursStart: '09:00',
       workingHoursEnd: '18:00',
@@ -102,11 +128,15 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
       workingDaysUnit: '週',
       workingDaysCount: '5',
       rate: 0,
+      originalRate: 0,
       workload: 160,
       minHours: 140,
       maxHours: 180,
-      overtimeRule: '1時間単位で精算（基準単価の1.25倍）',
+      overtimeRule: '',
       paymentTerms: '月末締め翌月末払い',
+      engineerId: '',
+      projectId: '',
+      engineerNote: '',
     },
   });
 
@@ -115,6 +145,15 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
     // 実際には保存処理を行う
     onOpenChange(false);
     form.reset();
+    setUploadedFileName('');
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedFileName(file.name);
+      form.setValue('contractFile', file);
+    }
   };
 
   return (
@@ -243,9 +282,9 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="remote">リモート</SelectItem>
-                          <SelectItem value="onsite">常駐</SelectItem>
-                          <SelectItem value="hybrid">ハイブリッド</SelectItem>
+                          <SelectItem value="リモート">リモート</SelectItem>
+                          <SelectItem value="常駐">常駐</SelectItem>
+                          <SelectItem value="ハイブリッド">ハイブリッド</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -405,7 +444,7 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                     <FormItem>
                       <FormLabel>単価（円／月）</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="800000" {...field} />
+                        <Input type="number" placeholder="900000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -414,12 +453,12 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
 
                 <FormField
                   control={form.control}
-                  name="workload"
+                  name="originalRate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>契約工数（h/月）</FormLabel>
+                      <FormLabel>原価（円／月）</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="160" {...field} />
+                        <Input type="number" placeholder="700000" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -455,19 +494,147 @@ export function CreateContractDialog({ open, onOpenChange }: CreateContractDialo
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="overtimeRule"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel>
+                        超過／控除ルール <span className="text-red-500">【必須】</span>
+                      </FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="案件を選択してください" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1時間単位で精算">1時間単位で精算</SelectItem>
+                          <SelectItem value="15分単位で精算">15分単位で精算</SelectItem>
+                          <SelectItem value="30分単位で精算">30分単位で精算</SelectItem>
+                          <SelectItem value="固定（精算なし）">固定（精算なし）</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="workload"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>契約工数（h/月）</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="160" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="overtimeRule"
+                name="engineerId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>超過／控除ルール</FormLabel>
-                    <FormControl>
-                      <Input placeholder="1時間単位で精算" {...field} />
-                    </FormControl>
+                    <FormLabel>
+                      契約対象のエンジニア <span className="text-red-500">【必須】</span>
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="エンジニアを選択してください" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {engineers.map((engineer) => (
+                          <SelectItem key={engineer.id} value={engineer.id}>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage src="" />
+                                <AvatarFallback className="text-xs">
+                                  {engineer.name.slice(0, 2)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{engineer.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                    <p className="text-xs text-muted-foreground">
+                      契約対象のエンジニアを1人選択してください
+                    </p>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="projectId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>案件を紐づける</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="案件を選択してください" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            <div>
+                              <div className="font-medium">{project.name}</div>
+                              <div className="text-sm text-muted-foreground">{project.client}</div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* 契約書アップロード */}
+              <div className="space-y-2">
+                <FormLabel>契約書アップロード</FormLabel>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <input
+                    type="file"
+                    id="contract-file"
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    onChange={handleFileUpload}
+                  />
+                  <label htmlFor="contract-file" className="cursor-pointer">
+                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                    <p className="mt-2 text-sm text-gray-600">
+                      ファイルをドラッグ&ドロップまたは
+                      <span className="text-primary font-medium">クリックして選択</span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      対応形式: Word (.doc, .docx), Excel (.xls, .xlsx), PDF (.pdf), テキスト (.txt)
+                    </p>
+                    <p className="text-xs text-gray-500">最大ファイルサイズ: 50MB</p>
+                  </label>
+                  {uploadedFileName && (
+                    <p className="mt-2 text-sm text-green-600">
+                      アップロード済み: {uploadedFileName}
+                    </p>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  <Upload className="inline h-3 w-3 mr-1" />
+                  ファイルを選択
+                </p>
+              </div>
             </div>
 
             <DialogFooter>

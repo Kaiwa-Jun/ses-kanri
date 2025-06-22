@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
@@ -42,6 +43,7 @@ import {
   Package,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Building2,
   User,
   Award,
@@ -525,6 +527,45 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
               <div className="space-y-3">
                 <FormLabel>過去の案件（複数選択可）</FormLabel>
 
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" className="w-full justify-between">
+                      {selectedProjects.length > 0
+                        ? `${selectedProjects.length}件選択済み`
+                        : '案件を選択してください'}
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0" align="start">
+                    <div className="max-h-60 overflow-auto p-4 space-y-3">
+                      {projectOptions.map((project) => (
+                        <div
+                          key={project.id}
+                          className="flex items-start space-x-3 p-2 hover:bg-muted rounded-lg cursor-pointer"
+                          onClick={() => toggleProject(project.id)}
+                        >
+                          <Checkbox
+                            id={project.id}
+                            checked={selectedProjects.includes(project.id)}
+                            onCheckedChange={() => toggleProject(project.id)}
+                          />
+                          <div className="flex flex-col">
+                            <label
+                              htmlFor={project.id}
+                              className="text-sm font-medium leading-none cursor-pointer"
+                            >
+                              {project.name}
+                            </label>
+                            <span className="text-sm text-muted-foreground mt-1">
+                              {project.client}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
                 {/* 選択済み案件 */}
                 {selectedProjects.length > 0 && (
                   <div className="space-y-2">
@@ -549,43 +590,53 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                   </div>
                 )}
 
-                {/* 案件選択 */}
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium">案件選択</h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    {projectOptions.map((project) => (
-                      <div
-                        key={project.id}
-                        className="flex items-start space-x-3 p-3 border rounded-lg"
-                      >
-                        <Checkbox
-                          id={project.id}
-                          checked={selectedProjects.includes(project.id)}
-                          onCheckedChange={() => toggleProject(project.id)}
-                        />
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor={project.id}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                          >
-                            {project.name}
-                          </label>
-                          <span className="text-sm text-muted-foreground mt-1">
-                            {project.client}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    このクライアントで過去に実施した案件を選択してください
-                  </div>
+                <div className="text-xs text-muted-foreground">
+                  このクライアントで過去に実施した案件を選択してください
                 </div>
               </div>
 
               {/* 好評だったエンジニア（複数選択可） */}
               <div className="space-y-3">
                 <FormLabel>好評だったエンジニア（複数選択可）</FormLabel>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" className="w-full justify-between">
+                      {selectedEngineers.length > 0
+                        ? `${selectedEngineers.length}名選択済み`
+                        : 'エンジニアを選択してください'}
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0" align="start">
+                    <div className="max-h-60 overflow-auto p-4 space-y-3">
+                      {engineerOptions.map((engineer) => (
+                        <div
+                          key={engineer.id}
+                          className="flex items-start space-x-3 p-2 hover:bg-muted rounded-lg cursor-pointer"
+                          onClick={() => toggleEngineer(engineer.id)}
+                        >
+                          <Checkbox
+                            id={engineer.id}
+                            checked={selectedEngineers.includes(engineer.id)}
+                            onCheckedChange={() => toggleEngineer(engineer.id)}
+                          />
+                          <div className="flex flex-col">
+                            <label
+                              htmlFor={engineer.id}
+                              className="text-sm font-medium leading-none cursor-pointer"
+                            >
+                              {engineer.name}
+                            </label>
+                            <span className="text-sm text-muted-foreground mt-1">
+                              {engineer.skills}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
 
                 {/* 選択済みエンジニア */}
                 {selectedEngineers.length > 0 && (
@@ -611,37 +662,8 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                   </div>
                 )}
 
-                {/* エンジニア選択 */}
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium">エンジニア選択</h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    {engineerOptions.map((engineer) => (
-                      <div
-                        key={engineer.id}
-                        className="flex items-start space-x-3 p-3 border rounded-lg"
-                      >
-                        <Checkbox
-                          id={engineer.id}
-                          checked={selectedEngineers.includes(engineer.id)}
-                          onCheckedChange={() => toggleEngineer(engineer.id)}
-                        />
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor={engineer.id}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                          >
-                            {engineer.name}
-                          </label>
-                          <span className="text-sm text-muted-foreground mt-1">
-                            {engineer.skills}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    このクライアントから高評価を得たエンジニアを選択してください
-                  </div>
+                <div className="text-xs text-muted-foreground">
+                  このクライアントから高評価を得たエンジニアを選択してください
                 </div>
               </div>
             </div>

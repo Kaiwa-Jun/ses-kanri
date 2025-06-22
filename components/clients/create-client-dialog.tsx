@@ -53,10 +53,9 @@ const clientSchema = z.object({
   name: z.string().min(1, '企業名を入力してください'),
   industry: z.string().min(1, '業界を選択してください'),
   description: z.string().min(10, '企業概要は10文字以上で入力してください'),
-  contactName: z.string().min(1, '担当者名を入力してください'),
-  contactPosition: z.string().min(1, '担当者役職を入力してください'),
-  contactEmail: z.string().email('有効なメールアドレスを入力してください'),
-  contactPhone: z.string().min(1, '電話番号を入力してください'),
+  salesPerson: z.string().min(1, '担当営業を選択してください'),
+  pastProjects: z.string().optional(),
+  preferredEngineers: z.string().optional(),
   memo: z.string().optional(),
 });
 
@@ -90,6 +89,18 @@ const industries = [
   '公共・自治体',
   'コンサルティング',
   'その他',
+];
+
+// 営業担当者選択肢
+const salesPersons = [
+  '鈴木健太',
+  '田中美咲',
+  '佐藤太郎',
+  '高橋花子',
+  '伊藤次郎',
+  '山田恵子',
+  '中村大輔',
+  '小林真理',
 ];
 
 // スキル候補データ（エンジニア追加モーダルと同じ）
@@ -262,10 +273,9 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
       name: '',
       industry: '',
       description: '',
-      contactName: '',
-      contactPosition: '',
-      contactEmail: '',
-      contactPhone: '',
+      salesPerson: '',
+      pastProjects: '',
+      preferredEngineers: '',
       memo: '',
     },
   });
@@ -275,7 +285,7 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
       id: 1,
       title: '基本情報・担当者',
       icon: <Building2 className="h-4 w-4" />,
-      description: '企業情報と担当者情報',
+      description: '企業情報と担当営業',
     },
     {
       id: 2,
@@ -440,57 +450,90 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
 
               <FormField
                 control={form.control}
-                name="contactName"
+                name="salesPerson"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>担当者名</FormLabel>
-                    <FormControl>
-                      <Input placeholder="担当者名を選択してください" {...field} />
-                    </FormControl>
+                    <FormLabel>担当営業</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="担当営業を選択してください" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {salesPersons.map((person) => (
+                          <SelectItem key={person} value={person}>
+                            {person}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <Separator />
+
+            {/* 条件・エンジニア情報 */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <User className="h-5 w-5" />
+                条件・エンジニア情報
+              </h3>
+
+              <FormField
+                control={form.control}
+                name="pastProjects"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>過去の案件（複数選択可）</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="案件を選択してください" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="project1">大手ECサイトリニューアル案件</SelectItem>
+                        <SelectItem value="project2">金融システム保守運用</SelectItem>
+                        <SelectItem value="project3">医療系アプリケーション開発</SelectItem>
+                        <SelectItem value="project4">Webアプリケーション開発</SelectItem>
+                        <SelectItem value="project5">システム設計支援</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      このクライアントで過去に実施した案件を選択してください
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="contactPosition"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>役職</FormLabel>
-                      <FormControl>
-                        <Input placeholder="部長、課長など" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="contactEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>メールアドレス</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="email@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
               <FormField
                 control={form.control}
-                name="contactPhone"
+                name="preferredEngineers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>電話番号</FormLabel>
-                    <FormControl>
-                      <Input placeholder="03-1234-5678" {...field} />
-                    </FormControl>
+                    <FormLabel>好評だったエンジニア（複数選択可）</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="エンジニアを選択してください" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="engineer1">山田太郎</SelectItem>
+                        <SelectItem value="engineer2">佐藤花子</SelectItem>
+                        <SelectItem value="engineer3">鈴木一郎</SelectItem>
+                        <SelectItem value="engineer4">田中美咲</SelectItem>
+                        <SelectItem value="engineer5">高橋健太</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      このクライアントから高評価を得たエンジニアを選択してください
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

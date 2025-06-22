@@ -276,11 +276,17 @@ const certifications = [
 
 export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClientDialogProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<
+    Record<string, { category: string; experienceYears: number }>
+  >({});
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
   const [selectedCertifications, setSelectedCertifications] = useState<string[]>([]);
-  const [selectedPhases, setSelectedPhases] = useState<string[]>([]);
-  const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+  const [selectedPhases, setSelectedPhases] = useState<Record<string, { experienceYears: number }>>(
+    {}
+  );
+  const [selectedPositions, setSelectedPositions] = useState<
+    Record<string, { experienceYears: number }>
+  >({});
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [selectedEngineers, setSelectedEngineers] = useState<string[]>([]);
 
@@ -325,33 +331,58 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
   const handleSubmit = (data: ClientFormValues) => {
     onSubmit({
       ...data,
-      preferredSkills: selectedSkills,
+      preferredSkills: Object.keys(selectedSkills),
       domains: selectedDomains,
       certifications: selectedCertifications,
-      phases: selectedPhases,
-      positions: selectedPositions,
+      phases: Object.keys(selectedPhases),
+      positions: Object.keys(selectedPositions),
       pastProjects: selectedProjects,
       preferredEngineers: selectedEngineers,
     });
 
     // フォームをリセット
     form.reset();
-    setSelectedSkills([]);
+    setSelectedSkills({});
     setSelectedDomains([]);
     setSelectedCertifications([]);
-    setSelectedPhases([]);
-    setSelectedPositions([]);
+    setSelectedPhases({});
+    setSelectedPositions({});
     setSelectedProjects([]);
     setSelectedEngineers([]);
     setCurrentStep(1);
   };
 
   const toggleSkill = (skillName: string) => {
-    if (selectedSkills.includes(skillName)) {
-      setSelectedSkills(selectedSkills.filter((skill) => skill !== skillName));
+    const category =
+      Object.entries(skillOptions).find(([_, categoryData]) =>
+        categoryData.skills.includes(skillName)
+      )?.[0] || 'other';
+
+    if (selectedSkills[skillName]) {
+      const newSkills = { ...selectedSkills };
+      delete newSkills[skillName];
+      setSelectedSkills(newSkills);
     } else {
-      setSelectedSkills([...selectedSkills, skillName]);
+      setSelectedSkills({
+        ...selectedSkills,
+        [skillName]: { category, experienceYears: 1 },
+      });
     }
+  };
+
+  const updateSkillExperience = (skillName: string, years: number) => {
+    if (selectedSkills[skillName]) {
+      setSelectedSkills({
+        ...selectedSkills,
+        [skillName]: { ...selectedSkills[skillName], experienceYears: years },
+      });
+    }
+  };
+
+  const removeSkill = (skillName: string) => {
+    const newSkills = { ...selectedSkills };
+    delete newSkills[skillName];
+    setSelectedSkills(newSkills);
   };
 
   const toggleDomain = (domain: string) => {
@@ -371,19 +402,59 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
   };
 
   const togglePhase = (phase: string) => {
-    if (selectedPhases.includes(phase)) {
-      setSelectedPhases(selectedPhases.filter((p) => p !== phase));
+    if (selectedPhases[phase]) {
+      const newPhases = { ...selectedPhases };
+      delete newPhases[phase];
+      setSelectedPhases(newPhases);
     } else {
-      setSelectedPhases([...selectedPhases, phase]);
+      setSelectedPhases({
+        ...selectedPhases,
+        [phase]: { experienceYears: 1 },
+      });
     }
   };
 
-  const togglePosition = (position: string) => {
-    if (selectedPositions.includes(position)) {
-      setSelectedPositions(selectedPositions.filter((p) => p !== position));
-    } else {
-      setSelectedPositions([...selectedPositions, position]);
+  const updatePhaseExperience = (phase: string, years: number) => {
+    if (selectedPhases[phase]) {
+      setSelectedPhases({
+        ...selectedPhases,
+        [phase]: { experienceYears: years },
+      });
     }
+  };
+
+  const removePhase = (phase: string) => {
+    const newPhases = { ...selectedPhases };
+    delete newPhases[phase];
+    setSelectedPhases(newPhases);
+  };
+
+  const togglePosition = (position: string) => {
+    if (selectedPositions[position]) {
+      const newPositions = { ...selectedPositions };
+      delete newPositions[position];
+      setSelectedPositions(newPositions);
+    } else {
+      setSelectedPositions({
+        ...selectedPositions,
+        [position]: { experienceYears: 1 },
+      });
+    }
+  };
+
+  const updatePositionExperience = (position: string, years: number) => {
+    if (selectedPositions[position]) {
+      setSelectedPositions({
+        ...selectedPositions,
+        [position]: { experienceYears: years },
+      });
+    }
+  };
+
+  const removePosition = (position: string) => {
+    const newPositions = { ...selectedPositions };
+    delete newPositions[position];
+    setSelectedPositions(newPositions);
   };
 
   const toggleProject = (projectId: string) => {
@@ -756,21 +827,42 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
               <h3 className="text-lg font-semibold">スキル選択</h3>
 
               {/* 選択済みスキル */}
-              {selectedSkills.length > 0 && (
+              {Object.keys(selectedSkills).length > 0 && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">選択済みスキル</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSkills.map((skill) => (
-                      <Badge key={skill} variant="secondary" className="gap-1">
-                        {skill}
-                        <button
+                  <div className="space-y-2">
+                    {Object.entries(selectedSkills).map(([skillName, skillData]) => (
+                      <div
+                        key={skillName}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
+                        <Badge variant="secondary" className="flex-shrink-0">
+                          {skillName}
+                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">経験年数:</span>
+                          <Input
+                            type="number"
+                            min="0.5"
+                            step="0.5"
+                            value={skillData.experienceYears}
+                            onChange={(e) =>
+                              updateSkillExperience(skillName, parseFloat(e.target.value) || 1)
+                            }
+                            className="w-20 h-8"
+                          />
+                          <span className="text-sm text-muted-foreground">年</span>
+                        </div>
+                        <Button
                           type="button"
-                          onClick={() => toggleSkill(skill)}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeSkill(skillName)}
+                          className="ml-auto h-8 w-8 p-0"
                         >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -789,7 +881,7 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                         <div key={skill} className="flex items-center space-x-2">
                           <Checkbox
                             id={skill}
-                            checked={selectedSkills.includes(skill)}
+                            checked={!!selectedSkills[skill]}
                             onCheckedChange={() => toggleSkill(skill)}
                           />
                           <label
@@ -866,33 +958,76 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
               </h3>
 
               {/* 選択済み工程・ポジション */}
-              {(selectedPhases.length > 0 || selectedPositions.length > 0) && (
+              {(Object.keys(selectedPhases).length > 0 ||
+                Object.keys(selectedPositions).length > 0) && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">選択済み工程・ポジション</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPhases.map((phase) => (
-                      <Badge key={phase} variant="secondary" className="gap-1">
-                        {phase}
-                        <button
+                  <div className="space-y-2">
+                    {Object.entries(selectedPhases).map(([phase, data]) => (
+                      <div
+                        key={phase}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
+                        <Badge variant="secondary" className="flex-shrink-0">
+                          {phase}
+                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">経験年数:</span>
+                          <Input
+                            type="number"
+                            min="0.5"
+                            step="0.5"
+                            value={data.experienceYears}
+                            onChange={(e) =>
+                              updatePhaseExperience(phase, parseFloat(e.target.value) || 1)
+                            }
+                            className="w-20 h-8"
+                          />
+                          <span className="text-sm text-muted-foreground">年</span>
+                        </div>
+                        <Button
                           type="button"
-                          onClick={() => togglePhase(phase)}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePhase(phase)}
+                          className="ml-auto h-8 w-8 p-0"
                         >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))}
-                    {selectedPositions.map((position) => (
-                      <Badge key={position} variant="secondary" className="gap-1">
-                        {position}
-                        <button
+                    {Object.entries(selectedPositions).map(([position, data]) => (
+                      <div
+                        key={position}
+                        className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                      >
+                        <Badge variant="secondary" className="flex-shrink-0">
+                          {position}
+                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground">経験年数:</span>
+                          <Input
+                            type="number"
+                            min="0.5"
+                            step="0.5"
+                            value={data.experienceYears}
+                            onChange={(e) =>
+                              updatePositionExperience(position, parseFloat(e.target.value) || 1)
+                            }
+                            className="w-20 h-8"
+                          />
+                          <span className="text-sm text-muted-foreground">年</span>
+                        </div>
+                        <Button
                           type="button"
-                          onClick={() => togglePosition(position)}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removePosition(position)}
+                          className="ml-auto h-8 w-8 p-0"
                         >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -906,7 +1041,7 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                     <div key={phase} className="flex items-center space-x-2">
                       <Checkbox
                         id={phase}
-                        checked={selectedPhases.includes(phase)}
+                        checked={!!selectedPhases[phase]}
                         onCheckedChange={() => togglePhase(phase)}
                       />
                       <label
@@ -928,7 +1063,7 @@ export function CreateClientDialog({ open, onOpenChange, onSubmit }: CreateClien
                     <div key={position} className="flex items-center space-x-2">
                       <Checkbox
                         id={position}
-                        checked={selectedPositions.includes(position)}
+                        checked={!!selectedPositions[position]}
                         onCheckedChange={() => togglePosition(position)}
                       />
                       <label

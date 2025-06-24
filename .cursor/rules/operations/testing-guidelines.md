@@ -34,13 +34,14 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
   collectCoverageFrom: [
     'components/**/*.{js,jsx,ts,tsx}',
     'pages/**/*.{js,jsx,ts,tsx}',
     'lib/**/*.{js,jsx,ts,tsx}',
+    'hooks/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
@@ -74,21 +75,37 @@ afterAll(() => server.close());
 ### テストファイル命名規則
 
 ```
-src/
+プロジェクトルート/
 ├── components/
-│   ├── UserCard.tsx
-│   └── __tests__/
-│       └── UserCard.test.tsx
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── badge.tsx
+│   │   ├── card.tsx
+│   │   └── __tests__/
+│   │       ├── button.test.tsx
+│   │       ├── badge.test.tsx
+│   │       └── card.test.tsx
+│   └── layout/
+│       ├── Header.tsx
+│       └── __tests__/
+│           └── Header.test.tsx
 ├── hooks/
+│   ├── use-toast.ts
 │   ├── useUsers.ts
 │   └── __tests__/
+│       ├── use-toast.test.ts
 │       └── useUsers.test.ts
 └── lib/
+    ├── utils.ts
     ├── api/
     │   ├── users.ts
     │   └── __tests__/
     │       └── users.test.ts
+    └── __tests__/
+        └── utils.test.ts
 ```
+
+**重要**: 各ディレクトリ内に`__tests__`フォルダを配置することで、関連するファイルとテストファイルを近くに配置し、保守性を向上させます。
 
 ### コンポーネントテストのベストプラクティス
 
@@ -148,6 +165,100 @@ describe('UserCard', () => {
 ### カスタムフックテスト
 
 ```typescript
+// hooks/__tests__/use-toast.test.ts
+import { renderHook, act } from '@testing-library/react';
+import { useToast, toast, reducer } from '../use-toast';
+
+describe('useToast', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.resetModules();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('初期状態では空のtoasts配列を返す', () => {
+    const { result } = renderHook(() => useToast());
+
+    expect(result.current.toasts).toEqual([]);
+  });
+
+  it('toastを追加できる', () => {
+    const { result } = renderHook(() => useToast());
+
+    act(() => {
+      result.current.toast({
+        title: 'テストタイトル',
+        description: 'テスト説明',
+      });
+    });
+
+    expect(result.current.toasts).toHaveLength(1);
+    expect(result.current.toasts[0].title).toBe('テストタイトル');
+    expect(result.current.toasts[0].description).toBe('テスト説明');
+    expect(result.current.toasts[0].open).toBe(true);
+  });
+
+  it('toastを手動で削除できる', () => {
+    const { result } = renderHook(() => useToast());
+
+    act(() => {
+      result.current.toast({ title: 'テストtoast' });
+    });
+
+    expect(result.current.toasts).toHaveLength(1);
+    const toastId = result.current.toasts[0].id;
+
+    act(() => {
+      result.current.dismiss(toastId);
+    });
+
+    expect(result.current.toasts[0].open).toBe(false);
+  });
+});
+
+describe('reducer', () => {
+  const initialState = { toasts: [] };
+
+  it('ADD_TOASTアクションでtoastを追加する', () => {
+    const toast = {
+      id: '1',
+      title: 'テスト',
+      open: true,
+    };
+
+    const newState = reducer(initialState, {
+      type: 'ADD_TOAST',
+      toast,
+    });
+
+    expect(newState.toasts).toHaveLength(1);
+    expect(newState.toasts[0]).toEqual(toast);
+  });
+
+  it('DISMISS_TOASTアクションでtoastを非表示にする', () => {
+    const initialStateWithToast = {
+      toasts: [
+        {
+          id: '1',
+          title: 'テスト',
+          open: true,
+        },
+      ],
+    };
+
+    const newState = reducer(initialStateWithToast, {
+      type: 'DISMISS_TOAST',
+      toastId: '1',
+    });
+
+    expect(newState.toasts[0].open).toBe(false);
+  });
+});
+
+// hooks/__tests__/useUsers.test.ts (API連携フックの例)
 import { renderHook, waitFor } from '@testing-library/react';
 import { useUsers } from '../useUsers';
 
@@ -501,13 +612,20 @@ test.describe('Users API', () => {
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --maxWorkers=2 --bail=1",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "pre-push": "npm run lint && npm run type-check && npm run format:check && npm run test:ci"
   }
 }
 ```
+
+**スクリプト説明**:
+
+- `test:ci`: CI環境向けの最適化されたテスト実行（カバレッジ付き、並列実行制限、初回失敗で停止）
+- `pre-push`: Git push前の品質チェック（Lint、型チェック、フォーマットチェック、テスト実行）
 
 ### GitHub Actions統合
 
@@ -532,7 +650,7 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      - run: npm run test:coverage
+      - run: npm run test:ci
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

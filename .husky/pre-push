@@ -12,5 +12,9 @@ npm run type-check
 echo "🎨 フォーマットチェック..."
 npm run format:check
 
+# テスト実行
+echo "🧪 テスト実行..."
+npm run test:ci
+
 echo "✅ すべてのチェックが完了しました！"
-echo "💡 ヒント: ビルドチェックを実行するには 'npm run validate' を使用してください" 
+echo "💡 ヒント: 統合チェックを実行するには 'npm run pre-push' を使用してください" 

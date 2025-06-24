@@ -34,13 +34,14 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
   collectCoverageFrom: [
     'components/**/*.{js,jsx,ts,tsx}',
     'pages/**/*.{js,jsx,ts,tsx}',
     'lib/**/*.{js,jsx,ts,tsx}',
+    'hooks/**/*.{js,jsx,ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
@@ -74,21 +75,37 @@ afterAll(() => server.close());
 ### テストファイル命名規則
 
 ```
-src/
+プロジェクトルート/
 ├── components/
-│   ├── UserCard.tsx
-│   └── __tests__/
-│       └── UserCard.test.tsx
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── badge.tsx
+│   │   ├── card.tsx
+│   │   └── __tests__/
+│   │       ├── button.test.tsx
+│   │       ├── badge.test.tsx
+│   │       └── card.test.tsx
+│   └── layout/
+│       ├── Header.tsx
+│       └── __tests__/
+│           └── Header.test.tsx
 ├── hooks/
+│   ├── use-toast.ts
 │   ├── useUsers.ts
 │   └── __tests__/
+│       ├── use-toast.test.ts
 │       └── useUsers.test.ts
 └── lib/
+    ├── utils.ts
     ├── api/
     │   ├── users.ts
     │   └── __tests__/
     │       └── users.test.ts
+    └── __tests__/
+        └── utils.test.ts
 ```
+
+**重要**: 各ディレクトリ内に`__tests__`フォルダを配置することで、関連するファイルとテストファイルを近くに配置し、保守性を向上させます。
 
 ### コンポーネントテストのベストプラクティス
 
@@ -148,6 +165,100 @@ describe('UserCard', () => {
 ### カスタムフックテスト
 
 ```typescript
+// hooks/__tests__/use-toast.test.ts
+import { renderHook, act } from '@testing-library/react';
+import { useToast, toast, reducer } from '../use-toast';
+
+describe('useToast', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.resetModules();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('初期状態では空のtoasts配列を返す', () => {
+    const { result } = renderHook(() => useToast());
+
+    expect(result.current.toasts).toEqual([]);
+  });
+
+  it('toastを追加できる', () => {
+    const { result } = renderHook(() => useToast());
+
+    act(() => {
+      result.current.toast({
+        title: 'テストタイトル',
+        description: 'テスト説明',
+      });
+    });
+
+    expect(result.current.toasts).toHaveLength(1);
+    expect(result.current.toasts[0].title).toBe('テストタイトル');
+    expect(result.current.toasts[0].description).toBe('テスト説明');
+    expect(result.current.toasts[0].open).toBe(true);
+  });
+
+  it('toastを手動で削除できる', () => {
+    const { result } = renderHook(() => useToast());
+
+    act(() => {
+      result.current.toast({ title: 'テストtoast' });
+    });
+
+    expect(result.current.toasts).toHaveLength(1);
+    const toastId = result.current.toasts[0].id;
+
+    act(() => {
+      result.current.dismiss(toastId);
+    });
+
+    expect(result.current.toasts[0].open).toBe(false);
+  });
+});
+
+describe('reducer', () => {
+  const initialState = { toasts: [] };
+
+  it('ADD_TOASTアクションでtoastを追加する', () => {
+    const toast = {
+      id: '1',
+      title: 'テスト',
+      open: true,
+    };
+
+    const newState = reducer(initialState, {
+      type: 'ADD_TOAST',
+      toast,
+    });
+
+    expect(newState.toasts).toHaveLength(1);
+    expect(newState.toasts[0]).toEqual(toast);
+  });
+
+  it('DISMISS_TOASTアクションでtoastを非表示にする', () => {
+    const initialStateWithToast = {
+      toasts: [
+        {
+          id: '1',
+          title: 'テスト',
+          open: true,
+        },
+      ],
+    };
+
+    const newState = reducer(initialStateWithToast, {
+      type: 'DISMISS_TOAST',
+      toastId: '1',
+    });
+
+    expect(newState.toasts[0].open).toBe(false);
+  });
+});
+
+// hooks/__tests__/useUsers.test.ts (API連携フックの例)
 import { renderHook, waitFor } from '@testing-library/react';
 import { useUsers } from '../useUsers';
 
@@ -501,13 +612,20 @@ test.describe('Users API', () => {
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --maxWorkers=2 --bail=1",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "pre-push": "npm run lint && npm run type-check && npm run format:check && npm run test:ci"
   }
 }
 ```
+
+**スクリプト説明**:
+
+- `test:ci`: CI環境向けの最適化されたテスト実行（カバレッジ付き、並列実行制限、初回失敗で停止）
+- `pre-push`: Git push前の品質チェック（Lint、型チェック、フォーマットチェック、テスト実行）
 
 ### GitHub Actions統合
 
@@ -532,7 +650,7 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      - run: npm run test:coverage
+      - run: npm run test:ci
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -559,3 +677,138 @@ jobs:
           name: playwright-report
           path: playwright-report/
 ```
+
+## テスト運用ガイドライン
+
+### Pre-pushフックの運用方針
+
+現在の設定では、`git push`時に以下のチェックが自動実行されます：
+
+1. **Lintチェック** (`npm run lint`)
+2. **TypeScript型チェック** (`npm run type-check`)
+3. **フォーマットチェック** (`npm run format:check`)
+4. **ユニットテスト** (`npm run test:ci`)
+5. **基本E2Eテスト** (`npm run e2e:basic`) - 約16秒
+
+#### E2Eテストの柔軟な制御
+
+```bash
+# 通常のpush（全チェック実行）
+git push
+
+# E2Eテストをスキップしたい場合
+SKIP_E2E=true git push
+
+# 手動で全テスト実行
+npm run pre-push:full
+```
+
+### 今後の調整指針
+
+#### 📈 プロジェクト成長に応じた段階的調整
+
+**フェーズ1: 現在（開発初期）**
+
+- ✅ 基本E2EテストをPre-pushに含める（16秒程度）
+- ✅ スキップオプションで柔軟性を確保
+- ✅ 重要な機能の回帰防止を優先
+
+**フェーズ2: チーム拡大時**
+
+- E2Eテスト実行時間が1分を超えたらスキップをデフォルトに変更
+- 重要な機能（認証、決済など）のみをPre-pushに残す
+- CI/CDで包括的なテストを実行
+
+**フェーズ3: 大規模運用時**
+
+- テスト分類を細分化（smoke, regression, full）
+- 並列実行による高速化
+- テスト結果のキャッシュ活用
+
+#### 🔄 継続的改善のチェックポイント
+
+**月次レビュー項目**:
+
+- [ ] Pre-push実行時間の測定（目標: 2分以内）
+- [ ] テスト失敗率の分析
+- [ ] 開発者フィードバックの収集
+- [ ] カバレッジ目標の見直し
+
+**調整トリガー**:
+
+- Pre-push時間が3分を超える → E2Eテストのスキップ化検討
+- テスト失敗率が20%を超える → テストの安定性改善
+- 開発者からスキップ要求が頻発 → 設定見直し
+
+#### 🎯 品質と効率のバランス調整
+
+**品質重視の場合**:
+
+```bash
+# .husky/pre-push（厳格版）
+npm run lint && npm run type-check && npm run format:check && npm run test:ci && npm run e2e
+```
+
+**効率重視の場合**:
+
+```bash
+# .husky/pre-push（高速版）
+npm run lint && npm run type-check && npm run test:ci
+# E2EテストはCI/CDのみで実行
+```
+
+#### 📊 メトリクス監視
+
+定期的に以下を監視し、設定を調整：
+
+1. **実行時間メトリクス**
+
+   - Pre-push平均実行時間
+   - E2Eテスト実行時間の推移
+   - 開発者の待機時間
+
+2. **品質メトリクス**
+
+   - テストカバレッジ率
+   - 本番環境でのバグ発生率
+   - 回帰バグの検出率
+
+3. **開発効率メトリクス**
+   - 1日あたりのpush回数
+   - テストスキップ使用頻度
+   - 開発者満足度
+
+#### 🛠️ 設定変更の手順
+
+**E2Eテストをデフォルトでスキップに変更する場合**:
+
+```bash
+# .husky/pre-push を以下に変更
+if [ "$RUN_E2E" = "true" ]; then
+  echo "🌐 基本E2Eテスト実行..."
+  npm run e2e:basic
+else
+  echo "⏭️  E2Eテストをスキップしました（RUN_E2E=true で実行可能）"
+fi
+```
+
+**重要な機能のみのE2Eテストに限定する場合**:
+
+```bash
+# package.json に追加
+"e2e:critical": "playwright test --grep='@critical'"
+
+# .husky/pre-push で使用
+npm run e2e:critical
+```
+
+### チーム運用のベストプラクティス
+
+1. **設定変更は必ずチーム合意を取る**
+2. **変更前後のメトリクスを比較測定**
+3. **段階的な導入（1週間トライアル → 本格運用）**
+4. **定期的な振り返りとフィードバック収集**
+
+---
+
+**💡 重要**: この運用ガイドラインは生きた文書です。プロジェクトの成長とチームの状況に応じて継続的に更新してください。

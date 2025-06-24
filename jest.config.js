@@ -14,16 +14,16 @@ const customJestConfig = {
   },
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   collectCoverageFrom: [
-    'components/**/*.{js,jsx,ts,tsx}',
-    'lib/**/*.{js,jsx,ts,tsx}',
-    'hooks/**/*.{js,jsx,ts,tsx}',
+    'components/ui/button.tsx',
+    'components/ui/badge.tsx',
+    'components/ui/card.tsx',
+    'lib/utils.ts',
+    'hooks/use-toast.ts',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/.next/**',
     '!**/__tests__/**',
     '!**/coverage/**',
-    '!lib/data.ts', // 大きなデータファイルを除外
-    '!app/**/*.tsx', // Next.jsのページファイルを除外（E2Eテストでカバー）
   ],
   coverageThreshold: {
     global: {

@@ -4,10 +4,11 @@ import { ProjectDetails } from '@/components/projects/project-details';
 // 動的レンダリングを強制
 export const dynamic = 'force-dynamic';
 
-export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
+export default async function ProjectDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   // 実際のアプリでは、APIからデータを取得する
-  const project = mockProjects.find((p) => p.id === params.id);
-  const matchingEngineers = getMatchingEngineers(params.id);
+  const { id } = await params;
+  const project = mockProjects.find((p) => p.id === id);
+  const matchingEngineers = getMatchingEngineers(id);
 
   if (!project) {
     return (

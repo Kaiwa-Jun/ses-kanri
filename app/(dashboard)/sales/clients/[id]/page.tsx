@@ -4,9 +4,10 @@ import { ClientDetails } from '@/components/clients/client-details';
 // 動的レンダリングを強制
 export const dynamic = 'force-dynamic';
 
-export default function ClientDetailsPage({ params }: { params: { id: string } }) {
+export default async function ClientDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   // IDに基づいてクライアントデータを取得
-  const client = mockClients.find((c) => c.id === params.id);
+  const { id } = await params;
+  const client = mockClients.find((c) => c.id === id);
 
   if (!client) {
     return (

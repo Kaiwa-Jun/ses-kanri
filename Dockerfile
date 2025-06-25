@@ -1,5 +1,5 @@
 # Node.js公式イメージをベースに使用
-FROM node:18-alpine
+FROM node:22-alpine
 
 # 作業ディレクトリの設定
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 依存関係のインストール
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # アプリケーションのソースコードをコピー
 COPY . .

@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import StoresPage from '../page';
 
@@ -161,7 +162,7 @@ describe('StoresPage', () => {
 
     // 全ての行のチェックボックスが選択される
     const allCheckboxes = screen.getAllByRole('checkbox');
-    allCheckboxes.slice(1).forEach((checkbox) => {
+    allCheckboxes.slice(1).forEach((checkbox: HTMLElement) => {
       expect(checkbox).toBeChecked();
     });
   });

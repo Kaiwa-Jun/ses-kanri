@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit",
     "validate": "npm run lint && npm run type-check && npm run build",
     "postinstall": "npx update-browserslist-db@latest",
+    "install:legacy": "npm install --legacy-peer-deps",
     "prepare": "husky",
     "test": "jest",
     "test:watch": "jest --watch",

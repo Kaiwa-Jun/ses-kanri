@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Camera } from 'lucide-react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -105,9 +106,11 @@ export function AddSalesModal({ isOpen, onClose }: AddSalesModalProps) {
                     {/* プロフィール画像プレビュー */}
                     <div className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
                       {profileImage ? (
-                        <img
+                        <Image
                           src={profileImage}
                           alt="プロフィール"
+                          width={80}
+                          height={80}
                           className="w-full h-full object-cover"
                         />
                       ) : (

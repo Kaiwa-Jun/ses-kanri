@@ -561,11 +561,8 @@ export default function StoresPage() {
               </TableHeader>
               <TableBody>
                 {currentStores.map((store, index) => (
-                  <motion.tr
+                  <TableRow
                     key={store.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.02 }}
                     className={`group hover:bg-muted/50 transition-colors ${
                       selectedStores.includes(store.id) ? 'bg-blue-50 dark:bg-blue-900/10' : ''
                     }`}
@@ -632,7 +629,7 @@ export default function StoresPage() {
                         </Button>
                       </div>
                     </TableCell>
-                  </motion.tr>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>

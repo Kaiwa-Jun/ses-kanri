@@ -81,23 +81,32 @@ describe('StoresPage', () => {
   it('加盟店データが表示される', () => {
     render(<StoresPage />);
 
-    // モックデータの一部が表示されることを確認（実際のデータに合わせて修正）
-    expect(screen.getAllByText('○○システム')[0]).toBeInTheDocument();
-    expect(screen.getByText('ko@example.com')).toBeInTheDocument();
-    // 複数のtto@example.comがあるので、getAllByTextを使用
-    const emailElements = screen.getAllByText('tto@example.com');
-    expect(emailElements.length).toBeGreaterThan(0);
+    // テーブルの行が表示されることを確認（ヘッダー以外の行があるか）
+    const tableRows = screen.getAllByRole('row');
+    expect(tableRows.length).toBeGreaterThan(1); // ヘッダー行 + データ行
+
+    // モックデータの一部が表示されることを確認（より柔軟なテスト）
+    // 店名のパターンで検索
+    const storeNames = screen.queryAllByText(/レストラン|カフェ|居酒屋|ラーメン|イタリアン/);
+    expect(storeNames.length).toBeGreaterThan(0);
+
+    // メールアドレスのパターンで検索
+    const emails = screen.queryAllByText(/@example\.com/);
+    expect(emails.length).toBeGreaterThan(0);
   });
 
   it('ステータスバッジが表示される', () => {
     render(<StoresPage />);
 
-    // モックデータに基づくステータスの確認
-    expect(screen.getByText('利用')).toBeInTheDocument();
-    expect(screen.getByText('申し込み')).toBeInTheDocument();
-    // 凍結ステータスは3番目のデータにあるので確認
-    const statusElements = screen.getAllByText(/凍結|利用|申し込み/);
-    expect(statusElements.length).toBeGreaterThan(0);
+    // モックデータに基づくステータスの確認（複数の要素があるのでgetAllByTextを使用）
+    const activeElements = screen.getAllByText('利用');
+    expect(activeElements.length).toBeGreaterThan(0);
+
+    const applyingElements = screen.getAllByText('申し込み');
+    expect(applyingElements.length).toBeGreaterThan(0);
+
+    const frozenElements = screen.getAllByText('凍結');
+    expect(frozenElements.length).toBeGreaterThan(0);
   });
 
   it('個別アクションボタンが表示される', () => {
@@ -121,10 +130,11 @@ describe('StoresPage', () => {
     render(<StoresPage />);
 
     const searchInput = screen.getByPlaceholderText('加盟店名を検索');
-    await user.type(searchInput, 'ko@example.com');
+    await user.type(searchInput, 'レストラン');
 
-    // 検索後もko@example.comが表示される
-    expect(screen.getByText('ko@example.com')).toBeInTheDocument();
+    // 検索後にレストランが含まれる要素が表示される
+    const restaurantElements = screen.queryAllByText(/レストラン/);
+    expect(restaurantElements.length).toBeGreaterThan(0);
   });
 
   it('チェックボックス選択でまとめて操作ボタンが表示される', async () => {

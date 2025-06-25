@@ -15,24 +15,36 @@ test.describe('基本的なE2Eテスト', () => {
     await page.goto('/sales/projects');
     await page.waitForLoadState('networkidle');
 
+    // Next.js 15のハイドレーション完了を待つ
+    await page.waitForTimeout(1000);
+
     // ページが読み込まれることを確認
     await expect(page.locator('body')).toBeVisible();
 
-    // 何らかのコンテンツが表示されることを確認
-    const content = page.locator('main, [role="main"], div');
-    await expect(content.first()).toBeVisible();
+    // メインコンテンツエリアの確認
+    await expect(page.locator('main')).toBeVisible({ timeout: 10000 });
+
+    // 案件一覧のタイトルが表示されることを確認
+    await expect(page.getByRole('heading', { name: '案件一覧' })).toBeVisible({ timeout: 10000 });
   });
 
   test('クライアント一覧ページに正常にアクセスできる', async ({ page }) => {
     await page.goto('/sales/clients');
     await page.waitForLoadState('networkidle');
 
+    // Next.js 15のハイドレーション完了を待つ
+    await page.waitForTimeout(1000);
+
     // ページが読み込まれることを確認
     await expect(page.locator('body')).toBeVisible();
 
-    // 何らかのコンテンツが表示されることを確認
-    const content = page.locator('main, [role="main"], div');
-    await expect(content.first()).toBeVisible();
+    // メインコンテンツエリアの確認
+    await expect(page.locator('main')).toBeVisible({ timeout: 10000 });
+
+    // クライアント一覧のタイトルが表示されることを確認
+    await expect(page.getByRole('heading', { name: 'クライアント一覧' })).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('存在しないページで適切に処理される', async ({ page }) => {
@@ -56,6 +68,9 @@ test.describe('基本的なE2Eテスト', () => {
     await page.goto('/sales/projects');
     await page.waitForLoadState('networkidle');
 
+    // ハイドレーション完了を待つ
+    await page.waitForTimeout(2000);
+
     // JavaScriptエラーが発生していないことを確認
     expect(errors).toHaveLength(0);
   });
@@ -73,11 +88,17 @@ test.describe('基本的なE2Eテスト', () => {
     await page.goto('/sales/projects');
     await page.waitForLoadState('networkidle');
 
+    // ハイドレーション完了を待つ
+    await page.waitForTimeout(2000);
+
     // 重要なコンソールエラーが発生していないことを確認
     // 一部のエラーは許容する（開発環境特有のもの）
     const criticalErrors = consoleErrors.filter(
       (error) =>
-        !error.includes('favicon') && !error.includes('manifest') && !error.includes('DevTools')
+        !error.includes('favicon') &&
+        !error.includes('manifest') &&
+        !error.includes('DevTools') &&
+        !error.includes('Warning:') // React 19の開発モード警告を除外
     );
 
     expect(criticalErrors).toHaveLength(0);
@@ -88,6 +109,7 @@ test.describe('基本的なE2Eテスト', () => {
     await page.setViewportSize({ width: 1200, height: 800 });
     await page.goto('/sales/projects');
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(1000);
     await expect(page.locator('body')).toBeVisible();
 
     // タブレットサイズ
@@ -102,6 +124,7 @@ test.describe('基本的なE2Eテスト', () => {
   test('基本的なキーボードナビゲーションが動作する', async ({ page }) => {
     await page.goto('/sales/projects');
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(1000);
 
     // Tabキーでフォーカス移動
     await page.keyboard.press('Tab');

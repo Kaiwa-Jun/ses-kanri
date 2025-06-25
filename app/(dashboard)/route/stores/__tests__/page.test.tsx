@@ -86,11 +86,9 @@ describe('StoresPage', () => {
     expect(tableRows.length).toBeGreaterThan(1); // ヘッダー行 + データ行
 
     // モックデータの一部が表示されることを確認（より柔軟なテスト）
-    // 人名のパターンで検索
-    const userNames = screen.queryAllByText(
-      /田中|山田|佐藤|鈴木|高橋|伊藤|渡辺|小林|加藤|吉田|松本|井上|木村|林|清水|森田|池田|橋本|斎藤|中村|岡田|藤田|野口|村上|前田/
-    );
-    expect(userNames.length).toBeGreaterThan(0);
+    // システム名のパターンで検索
+    const systemNames = screen.queryAllByText(/〇〇システム\d+/);
+    expect(systemNames.length).toBeGreaterThan(0);
 
     // メールアドレスのパターンで検索
     const emails = screen.queryAllByText(/@example\.com/);
@@ -111,18 +109,18 @@ describe('StoresPage', () => {
     expect(frozenElements.length).toBeGreaterThan(0);
   });
 
-  it('個別アクションボタンが表示される', () => {
+  it('個別アクションボタンがステータスに応じて表示される', () => {
     render(<StoresPage />);
 
-    // 複数の凍結ボタンが表示される（各行に1つ）
-    const freezeButtons = screen.getAllByText('凍結');
-    expect(freezeButtons.length).toBeGreaterThan(0);
-
-    // 複数の凍結解除ボタンが表示される
-    const unfreezeButtons = screen.getAllByText('凍結解除');
+    // 凍結ステータスの行には凍結解除ボタンが表示される
+    const unfreezeButtons = screen.queryAllByText('凍結解除');
     expect(unfreezeButtons.length).toBeGreaterThan(0);
 
-    // 複数の削除ボタンが表示される
+    // 申し込み・利用ステータスの行には凍結ボタンが表示される
+    const freezeButtons = screen.queryAllByText('凍結');
+    expect(freezeButtons.length).toBeGreaterThan(0);
+
+    // 全ての行に削除ボタンが表示される
     const deleteButtons = screen.getAllByText('削除');
     expect(deleteButtons.length).toBeGreaterThan(0);
   });
@@ -132,10 +130,10 @@ describe('StoresPage', () => {
     render(<StoresPage />);
 
     const searchInput = screen.getByPlaceholderText('加盟店名を検索');
-    await user.type(searchInput, '田中太郎');
+    await user.type(searchInput, 'システム1');
 
-    // 検索後に田中太郎が含まれる要素が表示される
-    const searchResults = screen.queryAllByText(/田中太郎/);
+    // 検索後にシステム1が含まれる要素が表示される
+    const searchResults = screen.queryAllByText(/〇〇システム1/);
     expect(searchResults.length).toBeGreaterThan(0);
   });
 
@@ -172,11 +170,21 @@ describe('StoresPage', () => {
     const user = userEvent.setup();
     render(<StoresPage />);
 
-    const freezeButtons = screen.getAllByText('凍結');
-    await user.click(freezeButtons[0]);
+    // 凍結ボタンが存在する場合のみテスト実行
+    const freezeButtons = screen.queryAllByText('凍結');
+    if (freezeButtons.length > 0) {
+      await user.click(freezeButtons[0]);
 
-    // 凍結確認モーダルが表示される
-    expect(screen.getByText('凍結の確認')).toBeInTheDocument();
+      // 凍結確認モーダルが表示される
+      expect(screen.getByText('凍結の確認')).toBeInTheDocument();
+    } else {
+      // 凍結ボタンがない場合は、凍結解除ボタンで代替テスト
+      const unfreezeButtons = screen.getAllByText('凍結解除');
+      await user.click(unfreezeButtons[0]);
+
+      // 凍結確認モーダルが表示される（凍結解除も同じモーダルを使用）
+      expect(screen.getByText('凍結の確認')).toBeInTheDocument();
+    }
   });
 
   it('個別削除ボタンをクリックするとモーダルが開く', async () => {
@@ -252,10 +260,11 @@ describe('StoresPage', () => {
     expect(screen.getByRole('button', { name: 'まとめて凍結' })).toBeInTheDocument();
   });
 
-  it('凍結解除ボタンが表示される', async () => {
+  it('凍結解除ボタンが凍結ステータスの行に表示される', async () => {
     render(<StoresPage />);
 
-    const unfreezeButtons = screen.getAllByText('凍結解除');
+    // 凍結ステータスの行にのみ凍結解除ボタンが表示される
+    const unfreezeButtons = screen.queryAllByText('凍結解除');
     expect(unfreezeButtons.length).toBeGreaterThan(0);
   });
 

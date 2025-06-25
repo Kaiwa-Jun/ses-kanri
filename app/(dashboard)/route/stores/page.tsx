@@ -47,7 +47,7 @@ import { DeleteConfirmationModal } from '@/components/route/delete-confirmation-
 const mockStores = [
   {
     id: '1',
-    name: '田中太郎',
+    name: '〇〇システム1',
     email: 'tanaka@example.com',
     contractStartDate: '2024/01/01',
     lastLogin: '2025/01/01',
@@ -56,7 +56,7 @@ const mockStores = [
   },
   {
     id: '2',
-    name: '山田花子',
+    name: '〇〇システム2',
     email: 'yamada@example.com',
     contractStartDate: '2024/01/01',
     lastLogin: '2025/01/01',
@@ -65,7 +65,7 @@ const mockStores = [
   },
   {
     id: '3',
-    name: '佐藤次郎',
+    name: '〇〇システム3',
     email: 'sato@example.com',
     contractStartDate: '2024/01/01',
     lastLogin: '2025/01/01',
@@ -74,7 +74,7 @@ const mockStores = [
   },
   {
     id: '4',
-    name: '鈴木一郎',
+    name: '〇〇システム4',
     email: 'suzuki@example.com',
     contractStartDate: '2024/01/15',
     lastLogin: '2025/01/02',
@@ -83,7 +83,7 @@ const mockStores = [
   },
   {
     id: '5',
-    name: '高橋美咲',
+    name: '〇〇システム5',
     email: 'takahashi@example.com',
     contractStartDate: '2024/02/01',
     lastLogin: '2024/12/30',
@@ -92,7 +92,7 @@ const mockStores = [
   },
   {
     id: '6',
-    name: '伊藤健太',
+    name: '〇〇システム6',
     email: 'ito@example.com',
     contractStartDate: '2024/02/15',
     lastLogin: '2025/01/03',
@@ -101,7 +101,7 @@ const mockStores = [
   },
   {
     id: '7',
-    name: '渡辺智子',
+    name: '〇〇システム7',
     email: 'watanabe@example.com',
     contractStartDate: '2024/03/01',
     lastLogin: '2024/12/15',
@@ -110,7 +110,7 @@ const mockStores = [
   },
   {
     id: '8',
-    name: '小林雄大',
+    name: '〇〇システム8',
     email: 'kobayashi@example.com',
     contractStartDate: '2024/03/15',
     lastLogin: '2025/01/04',
@@ -119,7 +119,7 @@ const mockStores = [
   },
   {
     id: '9',
-    name: '加藤真由美',
+    name: '〇〇システム9',
     email: 'kato@example.com',
     contractStartDate: '2024/04/01',
     lastLogin: '2024/12/28',
@@ -128,7 +128,7 @@ const mockStores = [
   },
   {
     id: '10',
-    name: '吉田翔太',
+    name: '〇〇システム10',
     email: 'yoshida@example.com',
     contractStartDate: '2024/04/15',
     lastLogin: '2025/01/05',
@@ -137,7 +137,7 @@ const mockStores = [
   },
   {
     id: '11',
-    name: '松本さくら',
+    name: '〇〇システム11',
     email: 'matsumoto@example.com',
     contractStartDate: '2024/05/01',
     lastLogin: '2024/11/20',
@@ -146,7 +146,7 @@ const mockStores = [
   },
   {
     id: '12',
-    name: '井上大輔',
+    name: '〇〇システム12',
     email: 'inoue@example.com',
     contractStartDate: '2024/05/15',
     lastLogin: '2025/01/06',
@@ -155,7 +155,7 @@ const mockStores = [
   },
   {
     id: '13',
-    name: '木村愛',
+    name: '〇〇システム13',
     email: 'kimura@example.com',
     contractStartDate: '2024/06/01',
     lastLogin: '2024/12/25',
@@ -164,7 +164,7 @@ const mockStores = [
   },
   {
     id: '14',
-    name: '林修',
+    name: '〇〇システム14',
     email: 'hayashi@example.com',
     contractStartDate: '2024/06/15',
     lastLogin: '2025/01/07',
@@ -173,7 +173,7 @@ const mockStores = [
   },
   {
     id: '15',
-    name: '清水麻衣',
+    name: '〇〇システム15',
     email: 'shimizu@example.com',
     contractStartDate: '2024/07/01',
     lastLogin: '2024/10/30',
@@ -182,7 +182,7 @@ const mockStores = [
   },
   {
     id: '16',
-    name: '森田康介',
+    name: '〇〇システム16',
     email: 'morita@example.com',
     contractStartDate: '2024/07/15',
     lastLogin: '2025/01/08',
@@ -191,7 +191,7 @@ const mockStores = [
   },
   {
     id: '17',
-    name: '池田優子',
+    name: '〇〇システム17',
     email: 'ikeda@example.com',
     contractStartDate: '2024/08/01',
     lastLogin: '2024/12/20',
@@ -200,7 +200,7 @@ const mockStores = [
   },
   {
     id: '18',
-    name: '橋本隆',
+    name: '〇〇システム18',
     email: 'hashimoto@example.com',
     contractStartDate: '2024/08/15',
     lastLogin: '2025/01/09',
@@ -209,7 +209,7 @@ const mockStores = [
   },
   {
     id: '19',
-    name: '斎藤美香',
+    name: '〇〇システム19',
     email: 'saito@example.com',
     contractStartDate: '2024/09/01',
     lastLogin: '2024/09/15',
@@ -218,7 +218,7 @@ const mockStores = [
   },
   {
     id: '20',
-    name: '中村正樹',
+    name: '〇〇システム20',
     email: 'nakamura@example.com',
     contractStartDate: '2024/09/15',
     lastLogin: '2025/01/10',
@@ -227,7 +227,7 @@ const mockStores = [
   },
   {
     id: '21',
-    name: '岡田恵子',
+    name: '〇〇システム21',
     email: 'okada@example.com',
     contractStartDate: '2024/10/01',
     lastLogin: '2024/12/15',
@@ -236,7 +236,7 @@ const mockStores = [
   },
   {
     id: '22',
-    name: '藤田達也',
+    name: '〇〇システム22',
     email: 'fujita@example.com',
     contractStartDate: '2024/10/15',
     lastLogin: '2025/01/11',
@@ -245,7 +245,7 @@ const mockStores = [
   },
   {
     id: '23',
-    name: '野口裕子',
+    name: '〇〇システム23',
     email: 'noguchi@example.com',
     contractStartDate: '2024/11/01',
     lastLogin: '2024/11/05',
@@ -254,7 +254,7 @@ const mockStores = [
   },
   {
     id: '24',
-    name: '村上健',
+    name: '〇〇システム24',
     email: 'murakami@example.com',
     contractStartDate: '2024/11/15',
     lastLogin: '2025/01/12',
@@ -263,7 +263,7 @@ const mockStores = [
   },
   {
     id: '25',
-    name: '前田由美',
+    name: '〇〇システム25',
     email: 'maeda@example.com',
     contractStartDate: '2024/12/01',
     lastLogin: '2024/12/10',
@@ -603,30 +603,45 @@ export default function StoresPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRowAction(store.id, 'freeze')}
-                        >
-                          <Snowflake className="h-4 w-4" />
-                          凍結
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRowAction(store.id, 'freeze')}
-                        >
-                          <Snowflake className="h-4 w-4" />
-                          凍結解除
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRowAction(store.id, 'delete')}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          削除
-                        </Button>
+                        {store.status === 'frozen' ? (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRowAction(store.id, 'freeze')}
+                            >
+                              <Calendar className="h-4 w-4" />
+                              凍結解除
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRowAction(store.id, 'delete')}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              削除
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRowAction(store.id, 'freeze')}
+                            >
+                              <Snowflake className="h-4 w-4" />
+                              凍結
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRowAction(store.id, 'delete')}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              削除
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

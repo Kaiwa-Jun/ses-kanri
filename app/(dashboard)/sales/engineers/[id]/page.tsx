@@ -4,9 +4,11 @@ import { EngineerProfile } from '@/components/engineers/engineer-profile';
 // 動的レンダリングを強制
 export const dynamic = 'force-dynamic';
 
-export default function EngineerDetailsPage({ params }: { params: { id: string } }) {
+export default async function EngineerDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  // Next.js 15では params が非同期になったため await で取得
+  const { id } = await params;
   // 実際のアプリでは、APIからデータを取得する
-  const engineer = mockEngineers.find((e) => e.id === params.id);
+  const engineer = mockEngineers.find((e) => e.id === id);
 
   if (!engineer) {
     return (

@@ -86,11 +86,11 @@ describe('StoresPage', () => {
     expect(tableRows.length).toBeGreaterThan(1); // ヘッダー行 + データ行
 
     // モックデータの一部が表示されることを確認（より柔軟なテスト）
-    // 店名のパターンで検索
-    const storeNames = screen.queryAllByText(
-      /レストラン|カフェ|居酒屋|ラーメン|商店|食堂|ベーカリー|菓子店|亭|屋|精肉店/
+    // 人名のパターンで検索
+    const userNames = screen.queryAllByText(
+      /田中|山田|佐藤|鈴木|高橋|伊藤|渡辺|小林|加藤|吉田|松本|井上|木村|林|清水|森田|池田|橋本|斎藤|中村|岡田|藤田|野口|村上|前田/
     );
-    expect(storeNames.length).toBeGreaterThan(0);
+    expect(userNames.length).toBeGreaterThan(0);
 
     // メールアドレスのパターンで検索
     const emails = screen.queryAllByText(/@example\.com/);
@@ -132,10 +132,10 @@ describe('StoresPage', () => {
     render(<StoresPage />);
 
     const searchInput = screen.getByPlaceholderText('加盟店名を検索');
-    await user.type(searchInput, '田中');
+    await user.type(searchInput, '田中太郎');
 
-    // 検索後に田中が含まれる要素が表示される
-    const searchResults = screen.queryAllByText(/田中/);
+    // 検索後に田中太郎が含まれる要素が表示される
+    const searchResults = screen.queryAllByText(/田中太郎/);
     expect(searchResults.length).toBeGreaterThan(0);
   });
 

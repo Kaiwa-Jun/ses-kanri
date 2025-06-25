@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 export function Header() {
   const pathname = usePathname();
   const isRouteSection = pathname.startsWith('/route');
+  const isSalesManagerSection = pathname.startsWith('/sales-manager');
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,12 +37,23 @@ export function Header() {
                 href="/sales/projects"
                 className={cn(
                   'px-4 py-2 rounded-md text-sm font-medium transition-all',
-                  !isRouteSection
+                  !isRouteSection && !isSalesManagerSection
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 営業
+              </Link>
+              <Link
+                href="/sales-manager/sales"
+                className={cn(
+                  'px-4 py-2 rounded-md text-sm font-medium transition-all',
+                  isSalesManagerSection
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                営業管理者
               </Link>
               <Link
                 href="/route/stores"

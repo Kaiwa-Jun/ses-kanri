@@ -47,8 +47,8 @@ import { DeleteConfirmationModal } from '@/components/route/delete-confirmation-
 const mockStores = [
   {
     id: '1',
-    name: '○○システム',
-    email: 'ko@example.com',
+    name: 'レストラン田中',
+    email: 'tanaka@example.com',
     contractStartDate: '2024/01/01',
     lastLogin: '2025/01/01',
     lastDataUpdate: '2025/01/01',
@@ -56,8 +56,8 @@ const mockStores = [
   },
   {
     id: '2',
-    name: '○○システム',
-    email: 'tto@example.com',
+    name: 'カフェ山田',
+    email: 'yamada@example.com',
     contractStartDate: '2024/01/01',
     lastLogin: '2025/01/01',
     lastDataUpdate: '2025/01/01',
@@ -65,12 +65,210 @@ const mockStores = [
   },
   {
     id: '3',
-    name: '○○システム',
-    email: 'tto@example.com',
+    name: '居酒屋佐藤',
+    email: 'sato@example.com',
     contractStartDate: '2024/01/01',
     lastLogin: '2025/01/01',
     lastDataUpdate: '2025/01/01',
     status: 'frozen',
+  },
+  {
+    id: '4',
+    name: 'ラーメン鈴木',
+    email: 'suzuki@example.com',
+    contractStartDate: '2024/01/15',
+    lastLogin: '2025/01/02',
+    lastDataUpdate: '2025/01/02',
+    status: 'active',
+  },
+  {
+    id: '5',
+    name: 'イタリアン高橋',
+    email: 'takahashi@example.com',
+    contractStartDate: '2024/02/01',
+    lastLogin: '2024/12/30',
+    lastDataUpdate: '2024/12/30',
+    status: 'applying',
+  },
+  {
+    id: '6',
+    name: 'そば処伊藤',
+    email: 'ito@example.com',
+    contractStartDate: '2024/02/15',
+    lastLogin: '2025/01/03',
+    lastDataUpdate: '2025/01/03',
+    status: 'active',
+  },
+  {
+    id: '7',
+    name: 'フレンチ渡辺',
+    email: 'watanabe@example.com',
+    contractStartDate: '2024/03/01',
+    lastLogin: '2024/12/15',
+    lastDataUpdate: '2024/12/15',
+    status: 'frozen',
+  },
+  {
+    id: '8',
+    name: '焼肉小林',
+    email: 'kobayashi@example.com',
+    contractStartDate: '2024/03/15',
+    lastLogin: '2025/01/04',
+    lastDataUpdate: '2025/01/04',
+    status: 'active',
+  },
+  {
+    id: '9',
+    name: '寿司加藤',
+    email: 'kato@example.com',
+    contractStartDate: '2024/04/01',
+    lastLogin: '2024/12/28',
+    lastDataUpdate: '2024/12/28',
+    status: 'applying',
+  },
+  {
+    id: '10',
+    name: 'バー吉田',
+    email: 'yoshida@example.com',
+    contractStartDate: '2024/04/15',
+    lastLogin: '2025/01/05',
+    lastDataUpdate: '2025/01/05',
+    status: 'active',
+  },
+  {
+    id: '11',
+    name: 'パン屋松本',
+    email: 'matsumoto@example.com',
+    contractStartDate: '2024/05/01',
+    lastLogin: '2024/11/20',
+    lastDataUpdate: '2024/11/20',
+    status: 'frozen',
+  },
+  {
+    id: '12',
+    name: '中華井上',
+    email: 'inoue@example.com',
+    contractStartDate: '2024/05/15',
+    lastLogin: '2025/01/06',
+    lastDataUpdate: '2025/01/06',
+    status: 'active',
+  },
+  {
+    id: '13',
+    name: 'スイーツ木村',
+    email: 'kimura@example.com',
+    contractStartDate: '2024/06/01',
+    lastLogin: '2024/12/25',
+    lastDataUpdate: '2024/12/25',
+    status: 'applying',
+  },
+  {
+    id: '14',
+    name: 'うどん林',
+    email: 'hayashi@example.com',
+    contractStartDate: '2024/06/15',
+    lastLogin: '2025/01/07',
+    lastDataUpdate: '2025/01/07',
+    status: 'active',
+  },
+  {
+    id: '15',
+    name: 'ビストロ清水',
+    email: 'shimizu@example.com',
+    contractStartDate: '2024/07/01',
+    lastLogin: '2024/10/30',
+    lastDataUpdate: '2024/10/30',
+    status: 'frozen',
+  },
+  {
+    id: '16',
+    name: 'とんかつ森田',
+    email: 'morita@example.com',
+    contractStartDate: '2024/07/15',
+    lastLogin: '2025/01/08',
+    lastDataUpdate: '2025/01/08',
+    status: 'active',
+  },
+  {
+    id: '17',
+    name: 'たこ焼き池田',
+    email: 'ikeda@example.com',
+    contractStartDate: '2024/08/01',
+    lastLogin: '2024/12/20',
+    lastDataUpdate: '2024/12/20',
+    status: 'applying',
+  },
+  {
+    id: '18',
+    name: 'お好み焼き橋本',
+    email: 'hashimoto@example.com',
+    contractStartDate: '2024/08/15',
+    lastLogin: '2025/01/09',
+    lastDataUpdate: '2025/01/09',
+    status: 'active',
+  },
+  {
+    id: '19',
+    name: '天ぷら斎藤',
+    email: 'saito@example.com',
+    contractStartDate: '2024/09/01',
+    lastLogin: '2024/09/15',
+    lastDataUpdate: '2024/09/15',
+    status: 'frozen',
+  },
+  {
+    id: '20',
+    name: 'しゃぶしゃぶ中村',
+    email: 'nakamura@example.com',
+    contractStartDate: '2024/09/15',
+    lastLogin: '2025/01/10',
+    lastDataUpdate: '2025/01/10',
+    status: 'active',
+  },
+  {
+    id: '21',
+    name: 'ピザ岡田',
+    email: 'okada@example.com',
+    contractStartDate: '2024/10/01',
+    lastLogin: '2024/12/15',
+    lastDataUpdate: '2024/12/15',
+    status: 'applying',
+  },
+  {
+    id: '22',
+    name: 'ステーキ藤田',
+    email: 'fujita@example.com',
+    contractStartDate: '2024/10/15',
+    lastLogin: '2025/01/11',
+    lastDataUpdate: '2025/01/11',
+    status: 'active',
+  },
+  {
+    id: '23',
+    name: 'カレー野口',
+    email: 'noguchi@example.com',
+    contractStartDate: '2024/11/01',
+    lastLogin: '2024/11/05',
+    lastDataUpdate: '2024/11/05',
+    status: 'frozen',
+  },
+  {
+    id: '24',
+    name: 'ハンバーガー村上',
+    email: 'murakami@example.com',
+    contractStartDate: '2024/11/15',
+    lastLogin: '2025/01/12',
+    lastDataUpdate: '2025/01/12',
+    status: 'active',
+  },
+  {
+    id: '25',
+    name: 'オムライス前田',
+    email: 'maeda@example.com',
+    contractStartDate: '2024/12/01',
+    lastLogin: '2024/12/10',
+    lastDataUpdate: '2024/12/10',
+    status: 'applying',
   },
 ];
 
@@ -455,23 +653,18 @@ export default function StoresPage() {
                 />
               </PaginationItem>
 
-              {Array.from({ length: Math.min(10, totalPages) }, (_, i) => {
-                const startPage = Math.max(1, currentPage - 5);
-                const pageNumber = startPage + i;
-                if (pageNumber > totalPages) return null;
-
-                return (
-                  <PaginationItem key={pageNumber}>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(pageNumber)}
-                      isActive={currentPage === pageNumber}
-                      className="cursor-pointer"
-                    >
-                      {pageNumber}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              })}
+              {/* ページ番号を表示 */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                <PaginationItem key={pageNumber}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(pageNumber)}
+                    isActive={pageNumber === currentPage}
+                    className="cursor-pointer"
+                  >
+                    {pageNumber}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
 
               <PaginationItem>
                 <PaginationNext

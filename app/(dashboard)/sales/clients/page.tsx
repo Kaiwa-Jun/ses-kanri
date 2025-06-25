@@ -13,7 +13,6 @@ import {
   FileText,
   Mail,
   Phone,
-  Star,
   ArrowUpDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,13 +35,25 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { mockClients } from '@/lib/data';
+import { CreateClientDialog } from '@/components/clients/create-client-dialog';
 
 export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string | undefined>(undefined);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [sortField, setSortField] = useState<'rating' | 'projects' | 'name'>('rating');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortField, setSortField] = useState<'name'>('name');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const router = useRouter();
 
   const filteredClients = mockClients.filter((client) => {
@@ -62,33 +73,37 @@ export default function ClientsPage() {
     let aValue, bValue;
 
     switch (sortField) {
-      case 'rating':
-        aValue = a.rating;
-        bValue = b.rating;
-        break;
-      case 'projects':
-        aValue = a.totalProjects;
-        bValue = b.totalProjects;
-        break;
       case 'name':
         aValue = a.name;
         bValue = b.name;
         break;
       default:
-        aValue = a.rating;
-        bValue = b.rating;
+        aValue = a.name;
+        bValue = b.name;
     }
 
     if (sortOrder === 'desc') {
-      return typeof aValue === 'string' && typeof bValue === 'string'
-        ? bValue.localeCompare(aValue)
-        : (bValue as number) - (aValue as number);
+      return bValue.localeCompare(aValue);
     } else {
-      return typeof aValue === 'string' && typeof bValue === 'string'
-        ? aValue.localeCompare(bValue)
-        : (aValue as number) - (bValue as number);
+      return aValue.localeCompare(bValue);
     }
   });
+
+  // ページネーション
+  const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentClients = sortedClients.slice(startIndex, endIndex);
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilter = (value: string | undefined) => {
+    setFilterStatus(value);
+    setCurrentPage(1);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -116,17 +131,36 @@ export default function ClientsPage() {
     }
   };
 
-  const handleSort = (field: 'rating' | 'projects' | 'name') => {
+  const handleSort = (field: 'name') => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortOrder('desc');
+      setSortOrder('asc');
     }
   };
 
   const handleRowClick = (clientId: string) => {
     router.push(`/sales/clients/${clientId}`);
+  };
+
+  const handleCreateClient = (data: {
+    name: string;
+    industry: string;
+    description: string;
+    salesPerson: string;
+    memo?: string;
+    preferredSkills: string[];
+    domains: string[];
+    certifications: string[];
+    phases: string[];
+    positions: string[];
+    pastProjects: string[];
+    preferredEngineers: string[];
+  }) => {
+    console.log('新規クライアント登録:', data);
+    // 実際にはAPIを呼び出してクライアントを作成
+    // 成功後はデータを再取得
   };
 
   return (
@@ -140,7 +174,7 @@ export default function ClientsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">クライアント一覧</h1>
         </div>
-        <Button size="sm" className="gap-2">
+        <Button size="sm" className="gap-2" onClick={() => setCreateDialogOpen(true)}>
           <Plus className="h-4 w-4" />
           新規クライアント登録
         </Button>
@@ -153,10 +187,13 @@ export default function ClientsPage() {
             placeholder="企業名、業種、スキルで検索..."
             className="pl-10"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
-        <Select value={filterStatus} onValueChange={(value) => setFilterStatus(value || undefined)}>
+        <Select
+          value={filterStatus}
+          onValueChange={(value) => handleStatusFilter(value || undefined)}
+        >
           <SelectTrigger className="w-full sm:w-[180px]">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
@@ -177,35 +214,24 @@ export default function ClientsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>企業情報</TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    className="h-auto p-0 font-medium"
+                    onClick={() => handleSort('name')}
+                  >
+                    企業情報
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
                 <TableHead>担当者</TableHead>
                 <TableHead>ステータス</TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-medium"
-                    onClick={() => handleSort('rating')}
-                  >
-                    評価
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    className="h-auto p-0 font-medium"
-                    onClick={() => handleSort('projects')}
-                  >
-                    案件数
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </TableHead>
                 <TableHead>次回接触</TableHead>
                 <TableHead>求められるスキル</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedClients.map((client, index) => (
+              {currentClients.map((client, index) => (
                 <motion.tr
                   key={client.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -247,30 +273,6 @@ export default function ClientsPage() {
 
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < Math.floor(client.rating)
-                              ? 'text-yellow-500 fill-yellow-500'
-                              : 'text-muted-foreground'
-                          }`}
-                        />
-                      ))}
-                      <span className="text-sm font-medium ml-1">{client.rating}</span>
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">{client.activeProjects}</span>
-                      <span className="text-muted-foreground">/ {client.totalProjects}</span>
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{client.nextContact}</span>
                     </div>
@@ -303,11 +305,56 @@ export default function ClientsPage() {
                   ? '検索条件に一致するクライアントがありません'
                   : 'クライアントが登録されていません'}
               </p>
-              <Button>新規クライアントを登録する</Button>
+              <Button onClick={() => setCreateDialogOpen(true)}>新規クライアントを登録する</Button>
             </div>
           )}
         </CardContent>
       </Card>
+
+      {/* ページネーション */}
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  className={
+                    currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(page)}
+                    isActive={currentPage === page}
+                    className="cursor-pointer"
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  className={
+                    currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+
+      <CreateClientDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        onSubmit={handleCreateClient}
+      />
     </div>
   );
 }

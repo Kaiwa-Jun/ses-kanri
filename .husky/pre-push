@@ -12,5 +12,19 @@ npm run type-check
 echo "🎨 フォーマットチェック..."
 npm run format:check
 
+# テスト実行
+echo "🧪 テスト実行..."
+npm run test:ci
+
+# E2Eテスト（環境変数で制御）
+if [ "$SKIP_E2E" != "true" ]; then
+  echo "🌐 基本E2Eテスト実行..."
+  npm run e2e:basic
+else
+  echo "⏭️  E2Eテストをスキップしました（SKIP_E2E=true）"
+fi
+
 echo "✅ すべてのチェックが完了しました！"
-echo "💡 ヒント: ビルドチェックを実行するには 'npm run validate' を使用してください" 
+echo "💡 ヒント:"
+echo "   - E2Eテストをスキップ: SKIP_E2E=true git push"
+echo "   - 手動で統合チェック: npm run pre-push:full" 

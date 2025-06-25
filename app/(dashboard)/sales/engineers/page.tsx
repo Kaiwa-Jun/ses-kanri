@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -34,6 +34,14 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { mockEngineers, Engineer } from '@/lib/data';
 import { AddEngineerModal } from '@/components/engineers/add-engineer-modal';
 
@@ -43,6 +51,8 @@ export default function EngineersPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [sortField, setSortField] = useState<'experience' | 'rate' | 'name'>('experience');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const router = useRouter();
 
   const filteredEngineers = mockEngineers.filter((engineer) => {
@@ -90,14 +100,24 @@ export default function EngineersPage() {
     }
   });
 
+  // ページネーション用の計算
+  const totalItems = sortedEngineers.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEngineers = sortedEngineers.slice(startIndex, endIndex);
+
+  // 検索やフィルターが変更されたときにページを1に戻す
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterAvailability]);
+
   const getAvailabilityColor = (availability: Engineer['availability']) => {
     switch (availability) {
       case 'available':
-        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
-      case 'partially':
-        return 'text-yellow-500 bg-yellow-100 dark:bg-yellow-900/30';
+        return 'text-gray-500 bg-gray-100 dark:bg-gray-900/30';
       case 'unavailable':
-        return 'text-red-500 bg-red-100 dark:bg-red-900/30';
+        return 'text-green-500 bg-green-100 dark:bg-green-900/30';
       default:
         return '';
     }
@@ -106,11 +126,9 @@ export default function EngineersPage() {
   const getAvailabilityText = (availability: Engineer['availability']) => {
     switch (availability) {
       case 'available':
-        return '稼働可能';
-      case 'partially':
-        return '一部稼働可能';
+        return '空き';
       case 'unavailable':
-        return '稼働不可';
+        return '稼働中';
       default:
         return availability;
     }
@@ -188,9 +206,8 @@ export default function EngineersPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全ての稼働状況</SelectItem>
-            <SelectItem value="available">稼働可能</SelectItem>
-            <SelectItem value="partially">一部稼働可能</SelectItem>
-            <SelectItem value="unavailable">稼働不可</SelectItem>
+            <SelectItem value="available">空き</SelectItem>
+            <SelectItem value="unavailable">稼働中</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -228,7 +245,7 @@ export default function EngineersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedEngineers.map((engineer, index) => (
+              {currentEngineers.map((engineer, index) => (
                 <motion.tr
                   key={engineer.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -323,6 +340,46 @@ export default function EngineersPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* ページネーション */}
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  className={
+                    currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
+
+              {/* ページ番号を表示 */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                <PaginationItem key={pageNumber}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(pageNumber)}
+                    isActive={pageNumber === currentPage}
+                    className="cursor-pointer"
+                  >
+                    {pageNumber}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  className={
+                    currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
 
       <AddEngineerModal
         open={isAddModalOpen}

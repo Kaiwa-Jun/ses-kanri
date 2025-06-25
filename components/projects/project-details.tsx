@@ -143,7 +143,7 @@ export function ProjectDetails({
   };
 
   return (
-    <div className="container py-6">
+    <div className="px-4 py-6 space-y-6 max-w-none">
       <div className="mb-6">
         <Link href="/sales/projects">
           <Button variant="ghost" size="sm" className="gap-1">

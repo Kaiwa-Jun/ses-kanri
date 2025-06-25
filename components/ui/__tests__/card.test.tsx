@@ -1,116 +1,90 @@
-import { render, screen } from '@testing-library/react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from '@/components/ui/card';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
+import '@testing-library/jest-dom';
+import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '../card';
 
-describe('Card Components', () => {
-  describe('Card', () => {
-    it('基本的なカードが正しくレンダリングされる', () => {
-      render(<Card data-testid="card">カード内容</Card>);
+describe('Card', () => {
+  it('Cardコンポーネントが正しく表示される', () => {
+    render(<Card>カードコンテンツ</Card>);
 
-      const card = screen.getByTestId('card');
-      expect(card).toBeInTheDocument();
-      expect(card).toHaveClass(
-        'rounded-lg',
-        'border',
-        'bg-card',
-        'text-card-foreground',
-        'shadow-sm'
-      );
-      expect(card).toHaveTextContent('カード内容');
-    });
-
-    it('カスタムクラス名が正しく適用される', () => {
-      render(
-        <Card className="custom-card" data-testid="card">
-          テスト
-        </Card>
-      );
-
-      const card = screen.getByTestId('card');
-      expect(card).toHaveClass('custom-card');
-    });
+    const card = screen.getByText('カードコンテンツ');
+    expect(card).toBeInTheDocument();
+    expect(card).toHaveClass('rounded-lg', 'border', 'bg-card');
   });
 
-  describe('CardHeader', () => {
-    it('ヘッダーが正しくレンダリングされる', () => {
-      render(<CardHeader data-testid="header">ヘッダー</CardHeader>);
+  it('CardHeaderが正しく表示される', () => {
+    render(<CardHeader>ヘッダーコンテンツ</CardHeader>);
 
-      const header = screen.getByTestId('header');
-      expect(header).toBeInTheDocument();
-      expect(header).toHaveClass('flex', 'flex-col', 'space-y-1.5', 'p-6');
-    });
+    const header = screen.getByText('ヘッダーコンテンツ');
+    expect(header).toBeInTheDocument();
+    expect(header).toHaveClass('flex', 'flex-col', 'space-y-1.5', 'p-6');
   });
 
-  describe('CardTitle', () => {
-    it('タイトルが正しくレンダリングされる', () => {
-      render(<CardTitle>カードタイトル</CardTitle>);
+  it('CardTitleが正しく表示される', () => {
+    render(<CardTitle>カードタイトル</CardTitle>);
 
-      const title = screen.getByRole('heading', { name: 'カードタイトル' });
-      expect(title).toBeInTheDocument();
-      expect(title).toHaveClass('text-2xl', 'font-semibold', 'leading-none', 'tracking-tight');
-      expect(title.tagName).toBe('H3');
-    });
+    const title = screen.getByText('カードタイトル');
+    expect(title).toBeInTheDocument();
+    expect(title).toHaveClass('text-2xl', 'font-semibold');
   });
 
-  describe('CardDescription', () => {
-    it('説明文が正しくレンダリングされる', () => {
-      render(<CardDescription>カードの説明文</CardDescription>);
+  it('CardDescriptionが正しく表示される', () => {
+    render(<CardDescription>カードの説明</CardDescription>);
 
-      const description = screen.getByText('カードの説明文');
-      expect(description).toBeInTheDocument();
-      expect(description).toHaveClass('text-sm', 'text-muted-foreground');
-      expect(description.tagName).toBe('P');
-    });
+    const description = screen.getByText('カードの説明');
+    expect(description).toBeInTheDocument();
+    expect(description).toHaveClass('text-sm', 'text-muted-foreground');
   });
 
-  describe('CardContent', () => {
-    it('コンテンツが正しくレンダリングされる', () => {
-      render(<CardContent data-testid="content">コンテンツ</CardContent>);
+  it('CardContentが正しく表示される', () => {
+    render(<CardContent>メインコンテンツ</CardContent>);
 
-      const content = screen.getByTestId('content');
-      expect(content).toBeInTheDocument();
-      expect(content).toHaveClass('p-6', 'pt-0');
-    });
+    const content = screen.getByText('メインコンテンツ');
+    expect(content).toBeInTheDocument();
+    expect(content).toHaveClass('p-6', 'pt-0');
   });
 
-  describe('CardFooter', () => {
-    it('フッターが正しくレンダリングされる', () => {
-      render(<CardFooter data-testid="footer">フッター</CardFooter>);
+  it('CardFooterが正しく表示される', () => {
+    render(<CardFooter>フッターコンテンツ</CardFooter>);
 
-      const footer = screen.getByTestId('footer');
-      expect(footer).toBeInTheDocument();
-      expect(footer).toHaveClass('flex', 'items-center', 'p-6', 'pt-0');
-    });
+    const footer = screen.getByText('フッターコンテンツ');
+    expect(footer).toBeInTheDocument();
+    expect(footer).toHaveClass('flex', 'items-center', 'p-6', 'pt-0');
   });
 
-  describe('Complete Card', () => {
-    it('完全なカード構造が正しくレンダリングされる', () => {
-      render(
-        <Card data-testid="complete-card">
-          <CardHeader>
-            <CardTitle>テストタイトル</CardTitle>
-            <CardDescription>テスト説明</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>メインコンテンツ</p>
-          </CardContent>
-          <CardFooter>
-            <button>アクション</button>
-          </CardFooter>
-        </Card>
-      );
+  it('完全なCardが正しく表示される', () => {
+    render(
+      <Card>
+        <CardHeader>
+          <CardTitle>テストタイトル</CardTitle>
+          <CardDescription>テスト説明</CardDescription>
+        </CardHeader>
+        <CardContent>テストコンテンツ</CardContent>
+        <CardFooter>テストフッター</CardFooter>
+      </Card>
+    );
 
-      expect(screen.getByTestId('complete-card')).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: 'テストタイトル' })).toBeInTheDocument();
-      expect(screen.getByText('テスト説明')).toBeInTheDocument();
-      expect(screen.getByText('メインコンテンツ')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'アクション' })).toBeInTheDocument();
-    });
+    expect(screen.getByText('テストタイトル')).toBeInTheDocument();
+    expect(screen.getByText('テスト説明')).toBeInTheDocument();
+    expect(screen.getByText('テストコンテンツ')).toBeInTheDocument();
+    expect(screen.getByText('テストフッター')).toBeInTheDocument();
+  });
+
+  it('カスタムクラス名が各コンポーネントに適用される', () => {
+    render(
+      <Card className="custom-card">
+        <CardHeader className="custom-header">ヘッダー</CardHeader>
+        <CardContent className="custom-content">コンテンツ</CardContent>
+      </Card>
+    );
+
+    const card = screen.getByText('ヘッダー').closest('.custom-card');
+    const header = screen.getByText('ヘッダー');
+    const content = screen.getByText('コンテンツ');
+
+    expect(card).toHaveClass('custom-card');
+    expect(header).toHaveClass('custom-header');
+    expect(content).toHaveClass('custom-content');
   });
 });

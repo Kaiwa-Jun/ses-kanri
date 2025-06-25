@@ -1,5 +1,5 @@
-# Node.js公式イメージをベースに使用
-FROM node:18-alpine
+# Node.js公式イメージをベースに使用（LTS v22に更新）
+FROM node:22-alpine
 
 # 作業ディレクトリの設定
 WORKDIR /app
@@ -7,8 +7,8 @@ WORKDIR /app
 # package.jsonとpackage-lock.jsonをコピー
 COPY package*.json ./
 
-# 依存関係のインストール
-RUN npm ci
+# 依存関係のインストール（React 19対応のため--legacy-peer-depsを使用）
+RUN npm ci --legacy-peer-deps
 
 # アプリケーションのソースコードをコピー
 COPY . .

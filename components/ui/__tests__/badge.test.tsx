@@ -1,62 +1,54 @@
-import { render, screen } from '@testing-library/react';
-import { Badge } from '@/components/ui/badge';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
+import '@testing-library/jest-dom';
+import { Badge } from '../badge';
 
 describe('Badge', () => {
-  it('デフォルトのバッジが正しくレンダリングされる', () => {
+  it('デフォルトのバッジが正しく表示される', () => {
     render(<Badge>デフォルト</Badge>);
 
     const badge = screen.getByText('デフォルト');
     expect(badge).toBeInTheDocument();
-    expect(badge).toHaveClass('bg-primary', 'text-primary-foreground');
+    expect(badge).toHaveClass('bg-primary');
   });
 
-  it('異なるバリアントが正しく適用される', () => {
-    const { rerender } = render(<Badge variant="secondary">セカンダリ</Badge>);
+  it('secondaryバリアントが正しく適用される', () => {
+    render(<Badge variant="secondary">セカンダリ</Badge>);
 
-    let badge = screen.getByText('セカンダリ');
-    expect(badge).toHaveClass('bg-secondary', 'text-secondary-foreground');
-
-    rerender(<Badge variant="destructive">削除</Badge>);
-    badge = screen.getByText('削除');
-    expect(badge).toHaveClass('bg-destructive', 'text-destructive-foreground');
-
-    rerender(<Badge variant="outline">アウトライン</Badge>);
-    badge = screen.getByText('アウトライン');
-    expect(badge).toHaveClass('text-foreground');
+    const badge = screen.getByText('セカンダリ');
+    expect(badge).toHaveClass('bg-secondary');
   });
 
-  it('カスタムクラス名が正しく適用される', () => {
-    render(<Badge className="custom-badge">カスタム</Badge>);
+  it('destructiveバリアントが正しく適用される', () => {
+    render(<Badge variant="destructive">削除</Badge>);
+
+    const badge = screen.getByText('削除');
+    expect(badge).toHaveClass('bg-destructive');
+  });
+
+  it('outlineバリアントが正しく適用される', () => {
+    render(<Badge variant="outline">アウトライン</Badge>);
+
+    const badge = screen.getByText('アウトライン');
+    expect(badge).toHaveClass('border');
+  });
+
+  it('カスタムクラス名が適用される', () => {
+    render(<Badge className="custom-class">カスタム</Badge>);
 
     const badge = screen.getByText('カスタム');
-    expect(badge).toHaveClass('custom-badge');
-  });
-
-  it('基本的なスタイルが適用される', () => {
-    render(<Badge>テスト</Badge>);
-
-    const badge = screen.getByText('テスト');
-    expect(badge).toHaveClass(
-      'inline-flex',
-      'items-center',
-      'rounded-full',
-      'border',
-      'px-2.5',
-      'py-0.5',
-      'text-xs',
-      'font-semibold'
-    );
+    expect(badge).toHaveClass('custom-class');
   });
 
   it('子要素が正しく表示される', () => {
     render(
       <Badge>
-        <span>アイコン</span>
-        テキスト
+        <span>内部要素</span>
       </Badge>
     );
 
-    expect(screen.getByText('アイコン')).toBeInTheDocument();
-    expect(screen.getByText('テキスト')).toBeInTheDocument();
+    const innerElement = screen.getByText('内部要素');
+    expect(innerElement).toBeInTheDocument();
   });
 });

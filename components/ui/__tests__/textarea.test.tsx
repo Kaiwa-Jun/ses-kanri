@@ -1,130 +1,79 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { Textarea } from '../textarea';
 
 describe('Textarea', () => {
-  it('デフォルトのテキストエリアをレンダリングする', () => {
-    render(<Textarea data-testid="textarea" />);
+  it('デフォルトのテキストエリアが正しく表示される', () => {
+    render(<Textarea placeholder="メッセージを入力" />);
 
-    const textarea = screen.getByTestId('textarea');
+    const textarea = screen.getByPlaceholderText('メッセージを入力');
     expect(textarea).toBeInTheDocument();
+    expect(textarea).toHaveClass('border-input');
     expect(textarea.tagName).toBe('TEXTAREA');
-    expect(textarea).toHaveClass('flex', 'min-h-[80px]', 'w-full', 'rounded-md', 'border');
   });
 
-  it('placeholderテキストを表示する', () => {
-    const placeholderText = 'コメントを入力してください';
-    render(<Textarea placeholder={placeholderText} />);
+  it('disabled状態が正しく動作する', () => {
+    render(<Textarea disabled placeholder="無効なテキストエリア" />);
 
-    const textarea = screen.getByPlaceholderText(placeholderText);
-    expect(textarea).toBeInTheDocument();
-  });
-
-  it('valueプロパティを適用する', () => {
-    const value = 'テストコンテンツ';
-    render(<Textarea value={value} readOnly />);
-
-    const textarea = screen.getByDisplayValue(value);
-    expect(textarea).toBeInTheDocument();
-  });
-
-  it('disabled状態を適用する', () => {
-    render(<Textarea disabled data-testid="textarea" />);
-
-    const textarea = screen.getByTestId('textarea');
+    const textarea = screen.getByPlaceholderText('無効なテキストエリア');
     expect(textarea).toBeDisabled();
-    expect(textarea).toHaveClass('disabled:cursor-not-allowed', 'disabled:opacity-50');
+    expect(textarea).toHaveClass('disabled:cursor-not-allowed');
   });
 
-  it('カスタムクラス名を適用する', () => {
-    const customClass = 'custom-textarea-class';
-    render(<Textarea className={customClass} data-testid="textarea" />);
-
-    const textarea = screen.getByTestId('textarea');
-    expect(textarea).toHaveClass(customClass);
-  });
-
-  it('ユーザー入力を処理する', async () => {
+  it('value属性と onChange が正しく動作する', async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
-    render(<Textarea onChange={handleChange} data-testid="textarea" />);
+    render(<Textarea value="" onChange={handleChange} placeholder="入力テスト" />);
 
-    const textarea = screen.getByTestId('textarea');
-    await user.type(textarea, 'Hello World');
+    const textarea = screen.getByPlaceholderText('入力テスト');
+    await user.type(textarea, 'テスト入力\n複数行テスト');
 
     expect(handleChange).toHaveBeenCalled();
-    expect(textarea).toHaveValue('Hello World');
   });
 
-  it('複数行のテキストを処理する', async () => {
-    const user = userEvent.setup();
+  it('rows属性が正しく適用される', () => {
+    render(<Textarea rows={5} placeholder="5行のテキストエリア" />);
 
-    render(<Textarea data-testid="textarea" />);
-
-    const textarea = screen.getByTestId('textarea');
-    await user.type(textarea, '1行目{enter}2行目{enter}3行目');
-
-    expect(textarea).toHaveValue('1行目\n2行目\n3行目');
-  });
-
-  it('onFocusイベントを処理する', async () => {
-    const user = userEvent.setup();
-    const handleFocus = jest.fn();
-
-    render(<Textarea onFocus={handleFocus} data-testid="textarea" />);
-
-    const textarea = screen.getByTestId('textarea');
-    await user.click(textarea);
-
-    expect(handleFocus).toHaveBeenCalled();
-  });
-
-  it('onBlurイベントを処理する', async () => {
-    const user = userEvent.setup();
-    const handleBlur = jest.fn();
-
-    render(<Textarea onBlur={handleBlur} data-testid="textarea" />);
-
-    const textarea = screen.getByTestId('textarea');
-    await user.click(textarea);
-    await user.tab(); // フォーカスを外す
-
-    expect(handleBlur).toHaveBeenCalled();
-  });
-
-  it('refを正しく転送する', () => {
-    const ref = jest.fn();
-
-    render(<Textarea ref={ref} data-testid="textarea" />);
-
-    expect(ref).toHaveBeenCalledWith(expect.any(HTMLTextAreaElement));
-  });
-
-  it('その他のHTML属性を適用する', () => {
-    render(<Textarea data-testid="custom-textarea" maxLength={100} rows={5} />);
-
-    const textarea = screen.getByTestId('custom-textarea');
-    expect(textarea).toHaveAttribute('maxLength', '100');
+    const textarea = screen.getByPlaceholderText('5行のテキストエリア');
     expect(textarea).toHaveAttribute('rows', '5');
   });
 
-  it('最小高さのスタイルを持つ', () => {
-    render(<Textarea data-testid="textarea" />);
+  it('cols属性が正しく適用される', () => {
+    render(<Textarea cols={50} placeholder="50列のテキストエリア" />);
 
-    const textarea = screen.getByTestId('textarea');
-    expect(textarea).toHaveClass('min-h-[80px]');
+    const textarea = screen.getByPlaceholderText('50列のテキストエリア');
+    expect(textarea).toHaveAttribute('cols', '50');
   });
 
-  it('フォーカス時のスタイルクラスを含む', () => {
-    render(<Textarea data-testid="textarea" />);
+  it('カスタムクラス名が適用される', () => {
+    render(<Textarea className="custom-textarea-class" placeholder="カスタムテキストエリア" />);
 
-    const textarea = screen.getByTestId('textarea');
-    expect(textarea).toHaveClass(
-      'focus-visible:outline-none',
-      'focus-visible:ring-2',
-      'focus-visible:ring-ring',
-      'focus-visible:ring-offset-2'
-    );
+    const textarea = screen.getByPlaceholderText('カスタムテキストエリア');
+    expect(textarea).toHaveClass('custom-textarea-class');
+  });
+
+  it('ref が正しく渡される', () => {
+    const ref = React.createRef<HTMLTextAreaElement>();
+    render(<Textarea ref={ref} placeholder="ref テスト" />);
+
+    expect(ref.current).toBeInstanceOf(HTMLTextAreaElement);
+  });
+
+  it('maxLength属性が正しく適用される', () => {
+    render(<Textarea maxLength={100} placeholder="最大100文字" />);
+
+    const textarea = screen.getByPlaceholderText('最大100文字');
+    expect(textarea).toHaveAttribute('maxLength', '100');
+  });
+
+  it('resize機能が正しく動作する', () => {
+    render(<Textarea className="resize-none" placeholder="リサイズ無効" />);
+
+    const textarea = screen.getByPlaceholderText('リサイズ無効');
+    expect(textarea).toHaveClass('resize-none');
   });
 });

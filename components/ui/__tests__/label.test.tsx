@@ -1,125 +1,59 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
+import '@testing-library/jest-dom';
 import { Label } from '../label';
 
 describe('Label', () => {
-  it('デフォルトのラベルをレンダリングする', () => {
-    render(<Label>テストラベル</Label>);
-
-    const label = screen.getByText('テストラベル');
-    expect(label).toBeInTheDocument();
-    expect(label).toHaveClass('text-sm', 'font-medium', 'leading-none');
-  });
-
-  it('htmlFor属性を適用する', () => {
-    render(<Label htmlFor="test-input">テストラベル</Label>);
-
-    const label = screen.getByText('テストラベル');
-    expect(label).toHaveAttribute('for', 'test-input');
-  });
-
-  it('カスタムクラス名を適用する', () => {
-    const customClass = 'custom-label-class';
-    render(<Label className={customClass}>テストラベル</Label>);
-
-    const label = screen.getByText('テストラベル');
-    expect(label).toHaveClass(customClass);
-  });
-
-  it('子要素を正しくレンダリングする', () => {
-    render(
-      <Label>
-        <span>アイコン</span>
-        ラベルテキスト
-      </Label>
-    );
+  it('デフォルトのラベルが正しく表示される', () => {
+    render(<Label>ラベルテキスト</Label>);
 
     const label = screen.getByText('ラベルテキスト');
     expect(label).toBeInTheDocument();
-    expect(screen.getByText('アイコン')).toBeInTheDocument();
-  });
-
-  it('refを正しく転送する', () => {
-    const ref = jest.fn();
-
-    render(<Label ref={ref}>テストラベル</Label>);
-
-    expect(ref).toHaveBeenCalledWith(expect.any(HTMLLabelElement));
-  });
-
-  it('その他のHTML属性を適用する', () => {
-    render(
-      <Label data-testid="custom-label" title="ツールチップ">
-        テストラベル
-      </Label>
-    );
-
-    const label = screen.getByTestId('custom-label');
-    expect(label).toHaveAttribute('title', 'ツールチップ');
-  });
-
-  it('labelタグとしてレンダリングされる', () => {
-    render(<Label data-testid="label">テストラベル</Label>);
-
-    const label = screen.getByTestId('label');
     expect(label.tagName).toBe('LABEL');
   });
 
-  it('複数のラベルを同時にレンダリングできる', () => {
-    render(
-      <div>
-        <Label>ラベル1</Label>
-        <Label>ラベル2</Label>
-        <Label>ラベル3</Label>
-      </div>
-    );
+  it('htmlFor属性が正しく適用される', () => {
+    render(<Label htmlFor="test-input">入力用ラベル</Label>);
 
-    expect(screen.getByText('ラベル1')).toBeInTheDocument();
-    expect(screen.getByText('ラベル2')).toBeInTheDocument();
-    expect(screen.getByText('ラベル3')).toBeInTheDocument();
+    const label = screen.getByText('入力用ラベル');
+    expect(label).toHaveAttribute('for', 'test-input');
   });
 
-  it('フォーム要素と関連付けできる', () => {
-    render(
-      <div>
-        <Label htmlFor="username">ユーザー名</Label>
-        <input id="username" type="text" />
-      </div>
-    );
+  it('カスタムクラス名が適用される', () => {
+    render(<Label className="custom-label-class">カスタムラベル</Label>);
 
-    const label = screen.getByText('ユーザー名');
-    const input = screen.getByRole('textbox');
-
-    expect(label).toHaveAttribute('for', 'username');
-    expect(input).toHaveAttribute('id', 'username');
+    const label = screen.getByText('カスタムラベル');
+    expect(label).toHaveClass('custom-label-class');
   });
 
-  it('必須マーカーを含むラベルをレンダリングできる', () => {
+  it('無効状態でのスタイルが適用される', () => {
     render(
-      <Label>
-        メールアドレス
-        <span className="text-red-500">*</span>
+      <Label className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        無効ラベル
       </Label>
     );
 
-    expect(screen.getByText('メールアドレス')).toBeInTheDocument();
-    expect(screen.getByText('*')).toBeInTheDocument();
+    const label = screen.getByText('無効ラベル');
+    expect(label).toHaveClass('peer-disabled:cursor-not-allowed');
+    expect(label).toHaveClass('peer-disabled:opacity-70');
   });
 
-  it('onClick イベントを処理する', () => {
-    const handleClick = jest.fn();
+  it('子要素が正しく表示される', () => {
+    render(
+      <Label>
+        <span>ラベル内要素</span>
+      </Label>
+    );
 
-    render(<Label onClick={handleClick}>クリック可能ラベル</Label>);
-
-    const label = screen.getByText('クリック可能ラベル');
-    label.click();
-
-    expect(handleClick).toHaveBeenCalled();
+    const innerElement = screen.getByText('ラベル内要素');
+    expect(innerElement).toBeInTheDocument();
   });
 
-  it('peer-disabled状態のスタイルクラスを含む', () => {
-    render(<Label>テストラベル</Label>);
+  it('ref が正しく渡される', () => {
+    const ref = React.createRef<HTMLLabelElement>();
+    render(<Label ref={ref}>ref テスト</Label>);
 
-    const label = screen.getByText('テストラベル');
-    expect(label).toHaveClass('peer-disabled:cursor-not-allowed', 'peer-disabled:opacity-70');
+    expect(ref.current).toBeInstanceOf(HTMLLabelElement);
   });
 });

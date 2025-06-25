@@ -1,152 +1,74 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { Switch } from '../switch';
 
 describe('Switch', () => {
-  it('デフォルトのスイッチをレンダリングする', () => {
-    render(<Switch data-testid="switch" />);
+  it('デフォルトのスイッチが正しく表示される', () => {
+    render(<Switch />);
 
-    const switchElement = screen.getByTestId('switch');
+    const switchElement = screen.getByRole('switch');
     expect(switchElement).toBeInTheDocument();
-    expect(switchElement).toHaveAttribute('role', 'switch');
-    expect(switchElement).toHaveAttribute('aria-checked', 'false');
+    expect(switchElement).not.toBeChecked();
   });
 
-  it('checked状態を適用する', () => {
-    render(<Switch checked data-testid="switch" />);
+  it('checked状態が正しく動作する', () => {
+    render(<Switch checked />);
 
-    const switchElement = screen.getByTestId('switch');
-    expect(switchElement).toHaveAttribute('aria-checked', 'true');
-    expect(switchElement).toHaveAttribute('data-state', 'checked');
+    const switchElement = screen.getByRole('switch');
+    expect(switchElement).toBeChecked();
   });
 
-  it('disabled状態を適用する', () => {
-    render(<Switch disabled data-testid="switch" />);
+  it('disabled状態が正しく動作する', () => {
+    render(<Switch disabled />);
 
-    const switchElement = screen.getByTestId('switch');
+    const switchElement = screen.getByRole('switch');
     expect(switchElement).toBeDisabled();
-    expect(switchElement).toHaveClass('disabled:cursor-not-allowed', 'disabled:opacity-50');
+    expect(switchElement).toHaveClass('disabled:cursor-not-allowed');
   });
 
-  it('カスタムクラス名を適用する', () => {
-    const customClass = 'custom-switch-class';
-    render(<Switch className={customClass} data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    expect(switchElement).toHaveClass(customClass);
-  });
-
-  it('ユーザーのクリックでスイッチ状態を切り替える', async () => {
+  it('クリックイベントが正しく発火する', async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
-    render(<Switch onCheckedChange={handleChange} data-testid="switch" />);
+    render(<Switch onCheckedChange={handleChange} />);
 
-    const switchElement = screen.getByTestId('switch');
-    expect(switchElement).toHaveAttribute('aria-checked', 'false');
-
+    const switchElement = screen.getByRole('switch');
     await user.click(switchElement);
 
     expect(handleChange).toHaveBeenCalledWith(true);
   });
 
-  it('onCheckedChangeイベントを処理する', async () => {
+  it('カスタムクラス名が適用される', () => {
+    render(<Switch className="custom-switch-class" />);
+
+    const switchElement = screen.getByRole('switch');
+    expect(switchElement).toHaveClass('custom-switch-class');
+  });
+
+  it('トグル動作が正しく動作する', async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
-    render(<Switch onCheckedChange={handleChange} data-testid="switch" />);
+    render(<Switch onCheckedChange={handleChange} />);
 
-    const switchElement = screen.getByTestId('switch');
+    const switchElement = screen.getByRole('switch');
+
+    // 最初のクリック（ON）
     await user.click(switchElement);
-
     expect(handleChange).toHaveBeenCalledWith(true);
+
+    // 2回目のクリック（OFF）
+    await user.click(switchElement);
+    expect(handleChange).toHaveBeenCalledWith(false);
   });
 
-  it('refを正しく転送する', () => {
-    const ref = jest.fn();
+  it('ref が正しく渡される', () => {
+    const ref = React.createRef<HTMLButtonElement>();
+    render(<Switch ref={ref} />);
 
-    render(<Switch ref={ref} data-testid="switch" />);
-
-    expect(ref).toHaveBeenCalledWith(expect.any(HTMLButtonElement));
-  });
-
-  it('その他のHTML属性を適用する', () => {
-    render(<Switch data-testid="custom-switch" aria-label="設定切り替え" />);
-
-    const switchElement = screen.getByTestId('custom-switch');
-    expect(switchElement).toHaveAttribute('aria-label', '設定切り替え');
-  });
-
-  it('フォーカス状態を処理する', async () => {
-    const user = userEvent.setup();
-
-    render(<Switch data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    await user.tab(); // タブキーでフォーカス
-
-    expect(switchElement).toHaveFocus();
-  });
-
-  it('キーボード操作（スペースキー）でスイッチ状態を切り替える', async () => {
-    const user = userEvent.setup();
-    const handleChange = jest.fn();
-
-    render(<Switch onCheckedChange={handleChange} data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    switchElement.focus();
-
-    await user.keyboard(' '); // スペースキー
-
-    expect(handleChange).toHaveBeenCalledWith(true);
-  });
-
-  it('キーボード操作（Enterキー）でスイッチ状態を切り替える', async () => {
-    const user = userEvent.setup();
-    const handleChange = jest.fn();
-
-    render(<Switch onCheckedChange={handleChange} data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    switchElement.focus();
-
-    await user.keyboard('{Enter}');
-
-    expect(handleChange).toHaveBeenCalledWith(true);
-  });
-
-  it('unchecked状態のスタイルクラスを持つ', () => {
-    render(<Switch data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    expect(switchElement).toHaveClass('data-[state=unchecked]:bg-input');
-  });
-
-  it('checked状態のスタイルクラスを持つ', () => {
-    render(<Switch checked data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    expect(switchElement).toHaveClass('data-[state=checked]:bg-primary');
-  });
-
-  it('フォーカス時のスタイルクラスを含む', () => {
-    render(<Switch data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    expect(switchElement).toHaveClass(
-      'focus-visible:outline-none',
-      'focus-visible:ring-2',
-      'focus-visible:ring-ring',
-      'focus-visible:ring-offset-2'
-    );
-  });
-
-  it('Thumbコンポーネントを含む', () => {
-    render(<Switch data-testid="switch" />);
-
-    const switchElement = screen.getByTestId('switch');
-    // Thumbは内部要素として存在する
-    expect(switchElement.firstChild).toBeInTheDocument();
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
   });
 });

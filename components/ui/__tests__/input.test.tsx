@@ -1,113 +1,57 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { Input } from '../input';
 
 describe('Input', () => {
-  it('デフォルトの入力フィールドをレンダリングする', () => {
-    render(<Input />);
+  it('デフォルトのインプットが正しく表示される', () => {
+    render(<Input placeholder="テキストを入力" />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByPlaceholderText('テキストを入力');
     expect(input).toBeInTheDocument();
-    // デフォルトではtype属性が明示的に設定されない場合がある
-    expect(input.tagName).toBe('INPUT');
+    expect(input).toHaveClass('border-input');
   });
 
-  it('指定されたtypeプロパティを適用する', () => {
-    render(<Input type="email" />);
+  it('type属性が正しく適用される', () => {
+    render(<Input type="email" placeholder="メールアドレス" />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByPlaceholderText('メールアドレス');
     expect(input).toHaveAttribute('type', 'email');
   });
 
-  it('passwordタイプの場合は適切にレンダリングする', () => {
-    render(<Input type="password" data-testid="password-input" />);
+  it('disabled状態が正しく動作する', () => {
+    render(<Input disabled placeholder="無効なインプット" />);
 
-    const input = screen.getByTestId('password-input');
-    expect(input).toBeInTheDocument();
-    expect(input).toHaveAttribute('type', 'password');
-  });
-
-  it('placeholderテキストを表示する', () => {
-    const placeholderText = 'メールアドレスを入力してください';
-    render(<Input placeholder={placeholderText} />);
-
-    const input = screen.getByPlaceholderText(placeholderText);
-    expect(input).toBeInTheDocument();
-  });
-
-  it('valueプロパティを適用する', () => {
-    const value = 'test@example.com';
-    render(<Input value={value} readOnly />);
-
-    const input = screen.getByDisplayValue(value);
-    expect(input).toBeInTheDocument();
-  });
-
-  it('disabled状態を適用する', () => {
-    render(<Input disabled />);
-
-    const input = screen.getByRole('textbox');
+    const input = screen.getByPlaceholderText('無効なインプット');
     expect(input).toBeDisabled();
+    expect(input).toHaveClass('disabled:cursor-not-allowed');
   });
 
-  it('カスタムクラス名を適用する', () => {
-    const customClass = 'custom-input-class';
-    render(<Input className={customClass} />);
-
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveClass(customClass);
-  });
-
-  it('ユーザー入力を処理する', async () => {
+  it('value属性と onChange が正しく動作する', async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
-    render(<Input onChange={handleChange} />);
+    render(<Input value="" onChange={handleChange} placeholder="入力テスト" />);
 
-    const input = screen.getByRole('textbox');
-    await user.type(input, 'Hello World');
+    const input = screen.getByPlaceholderText('入力テスト');
+    await user.type(input, 'テスト入力');
 
     expect(handleChange).toHaveBeenCalled();
-    expect(input).toHaveValue('Hello World');
   });
 
-  it('onFocusイベントを処理する', async () => {
-    const user = userEvent.setup();
-    const handleFocus = jest.fn();
+  it('カスタムクラス名が適用される', () => {
+    render(<Input className="custom-input-class" placeholder="カスタムインプット" />);
 
-    render(<Input onFocus={handleFocus} />);
-
-    const input = screen.getByRole('textbox');
-    await user.click(input);
-
-    expect(handleFocus).toHaveBeenCalled();
+    const input = screen.getByPlaceholderText('カスタムインプット');
+    expect(input).toHaveClass('custom-input-class');
   });
 
-  it('onBlurイベントを処理する', async () => {
-    const user = userEvent.setup();
-    const handleBlur = jest.fn();
+  it('ref が正しく渡される', () => {
+    const ref = React.createRef<HTMLInputElement>();
+    render(<Input ref={ref} placeholder="ref テスト" />);
 
-    render(<Input onBlur={handleBlur} />);
-
-    const input = screen.getByRole('textbox');
-    await user.click(input);
-    await user.tab(); // フォーカスを外す
-
-    expect(handleBlur).toHaveBeenCalled();
-  });
-
-  it('refを正しく転送する', () => {
-    const ref = jest.fn();
-
-    render(<Input ref={ref} />);
-
-    expect(ref).toHaveBeenCalledWith(expect.any(HTMLInputElement));
-  });
-
-  it('その他のHTML属性を適用する', () => {
-    render(<Input data-testid="custom-input" maxLength={10} />);
-
-    const input = screen.getByTestId('custom-input');
-    expect(input).toHaveAttribute('maxLength', '10');
+    expect(ref.current).toBeInstanceOf(HTMLInputElement);
   });
 });

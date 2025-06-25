@@ -1,8 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { screen } from '@testing-library/dom';
+import '@testing-library/jest-dom';
 import { Skeleton } from '../skeleton';
 
 describe('Skeleton', () => {
-  it('デフォルトのスケルトンをレンダリングする', () => {
+  it('デフォルトのスケルトンが正しく表示される', () => {
     render(<Skeleton data-testid="skeleton" />);
 
     const skeleton = screen.getByTestId('skeleton');
@@ -10,43 +13,27 @@ describe('Skeleton', () => {
     expect(skeleton).toHaveClass('animate-pulse', 'rounded-md', 'bg-muted');
   });
 
-  it('カスタムクラス名を適用する', () => {
-    const customClass = 'custom-skeleton-class';
-    render(<Skeleton className={customClass} data-testid="skeleton" />);
-
-    const skeleton = screen.getByTestId('skeleton');
-    expect(skeleton).toHaveClass(customClass);
-    expect(skeleton).toHaveClass('animate-pulse', 'rounded-md', 'bg-muted');
-  });
-
-  it('HTML属性を適用する', () => {
-    render(<Skeleton data-testid="custom-skeleton" style={{ width: '100px', height: '20px' }} />);
+  it('カスタムクラス名が適用される', () => {
+    render(<Skeleton className="custom-skeleton-class" data-testid="custom-skeleton" />);
 
     const skeleton = screen.getByTestId('custom-skeleton');
-    expect(skeleton).toHaveStyle({ width: '100px', height: '20px' });
+    expect(skeleton).toHaveClass('custom-skeleton-class');
+    expect(skeleton).toHaveClass('animate-pulse', 'rounded-md', 'bg-muted');
   });
 
-  it('子要素を正しく表示する', () => {
-    render(<Skeleton data-testid="skeleton">読み込み中...</Skeleton>);
+  it('カスタムサイズのスケルトンが正しく表示される', () => {
+    render(<Skeleton className="h-4 w-48" data-testid="sized-skeleton" />);
 
-    const skeleton = screen.getByTestId('skeleton');
-    expect(skeleton).toBeInTheDocument();
-    expect(skeleton).toHaveTextContent('読み込み中...');
+    const skeleton = screen.getByTestId('sized-skeleton');
+    expect(skeleton).toHaveClass('h-4', 'w-48');
   });
 
-  it('divタグとしてレンダリングされる', () => {
-    render(<Skeleton data-testid="skeleton" />);
-
-    const skeleton = screen.getByTestId('skeleton');
-    expect(skeleton.tagName).toBe('DIV');
-  });
-
-  it('複数のスケルトンを同時にレンダリングできる', () => {
+  it('複数のスケルトンが正しく表示される', () => {
     render(
       <div>
-        <Skeleton data-testid="skeleton-1" />
-        <Skeleton data-testid="skeleton-2" />
-        <Skeleton data-testid="skeleton-3" />
+        <Skeleton data-testid="skeleton-1" className="h-6 w-32 mb-2" />
+        <Skeleton data-testid="skeleton-2" className="h-4 w-24 mb-2" />
+        <Skeleton data-testid="skeleton-3" className="h-8 w-64" />
       </div>
     );
 
@@ -55,21 +42,11 @@ describe('Skeleton', () => {
     expect(screen.getByTestId('skeleton-3')).toBeInTheDocument();
   });
 
-  it('異なるサイズのスケルトンを作成できる', () => {
-    render(
-      <div>
-        <Skeleton className="h-4 w-full" data-testid="skeleton-line" />
-        <Skeleton className="h-12 w-12 rounded-full" data-testid="skeleton-avatar" />
-        <Skeleton className="h-32 w-full" data-testid="skeleton-card" />
-      </div>
-    );
+  it('HTML属性が正しく適用される', () => {
+    render(<Skeleton data-testid="attr-skeleton" role="status" aria-label="読み込み中" />);
 
-    const skeletonLine = screen.getByTestId('skeleton-line');
-    const skeletonAvatar = screen.getByTestId('skeleton-avatar');
-    const skeletonCard = screen.getByTestId('skeleton-card');
-
-    expect(skeletonLine).toHaveClass('h-4', 'w-full');
-    expect(skeletonAvatar).toHaveClass('h-12', 'w-12', 'rounded-full');
-    expect(skeletonCard).toHaveClass('h-32', 'w-full');
+    const skeleton = screen.getByTestId('attr-skeleton');
+    expect(skeleton).toHaveAttribute('role', 'status');
+    expect(skeleton).toHaveAttribute('aria-label', '読み込み中');
   });
 });

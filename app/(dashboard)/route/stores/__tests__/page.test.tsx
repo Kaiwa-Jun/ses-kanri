@@ -87,7 +87,9 @@ describe('StoresPage', () => {
 
     // モックデータの一部が表示されることを確認（より柔軟なテスト）
     // 店名のパターンで検索
-    const storeNames = screen.queryAllByText(/レストラン|カフェ|居酒屋|ラーメン|イタリアン/);
+    const storeNames = screen.queryAllByText(
+      /レストラン|カフェ|居酒屋|ラーメン|商店|食堂|ベーカリー|菓子店|亭|屋|精肉店/
+    );
     expect(storeNames.length).toBeGreaterThan(0);
 
     // メールアドレスのパターンで検索
@@ -130,11 +132,11 @@ describe('StoresPage', () => {
     render(<StoresPage />);
 
     const searchInput = screen.getByPlaceholderText('加盟店名を検索');
-    await user.type(searchInput, 'レストラン');
+    await user.type(searchInput, '田中');
 
-    // 検索後にレストランが含まれる要素が表示される
-    const restaurantElements = screen.queryAllByText(/レストラン/);
-    expect(restaurantElements.length).toBeGreaterThan(0);
+    // 検索後に田中が含まれる要素が表示される
+    const searchResults = screen.queryAllByText(/田中/);
+    expect(searchResults.length).toBeGreaterThan(0);
   });
 
   it('チェックボックス選択でまとめて操作ボタンが表示される', async () => {

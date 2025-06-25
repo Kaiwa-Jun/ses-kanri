@@ -83,7 +83,7 @@ const mockStores = [
   },
   {
     id: '5',
-    name: 'イタリアン高橋',
+    name: '高橋商店',
     email: 'takahashi@example.com',
     contractStartDate: '2024/02/01',
     lastLogin: '2024/12/30',
@@ -101,7 +101,7 @@ const mockStores = [
   },
   {
     id: '7',
-    name: 'フレンチ渡辺',
+    name: '渡辺食堂',
     email: 'watanabe@example.com',
     contractStartDate: '2024/03/01',
     lastLogin: '2024/12/15',
@@ -137,7 +137,7 @@ const mockStores = [
   },
   {
     id: '11',
-    name: 'パン屋松本',
+    name: '松本ベーカリー',
     email: 'matsumoto@example.com',
     contractStartDate: '2024/05/01',
     lastLogin: '2024/11/20',
@@ -155,7 +155,7 @@ const mockStores = [
   },
   {
     id: '13',
-    name: 'スイーツ木村',
+    name: '木村菓子店',
     email: 'kimura@example.com',
     contractStartDate: '2024/06/01',
     lastLogin: '2024/12/25',
@@ -173,7 +173,7 @@ const mockStores = [
   },
   {
     id: '15',
-    name: 'ビストロ清水',
+    name: '清水亭',
     email: 'shimizu@example.com',
     contractStartDate: '2024/07/01',
     lastLogin: '2024/10/30',
@@ -227,7 +227,7 @@ const mockStores = [
   },
   {
     id: '21',
-    name: 'ピザ岡田',
+    name: '岡田屋',
     email: 'okada@example.com',
     contractStartDate: '2024/10/01',
     lastLogin: '2024/12/15',
@@ -236,7 +236,7 @@ const mockStores = [
   },
   {
     id: '22',
-    name: 'ステーキ藤田',
+    name: '藤田精肉店',
     email: 'fujita@example.com',
     contractStartDate: '2024/10/15',
     lastLogin: '2025/01/11',
@@ -245,7 +245,7 @@ const mockStores = [
   },
   {
     id: '23',
-    name: 'カレー野口',
+    name: '野口商店',
     email: 'noguchi@example.com',
     contractStartDate: '2024/11/01',
     lastLogin: '2024/11/05',
@@ -254,7 +254,7 @@ const mockStores = [
   },
   {
     id: '24',
-    name: 'ハンバーガー村上',
+    name: '村上食堂',
     email: 'murakami@example.com',
     contractStartDate: '2024/11/15',
     lastLogin: '2025/01/12',
@@ -263,7 +263,7 @@ const mockStores = [
   },
   {
     id: '25',
-    name: 'オムライス前田',
+    name: '前田商店',
     email: 'maeda@example.com',
     contractStartDate: '2024/12/01',
     lastLogin: '2024/12/10',

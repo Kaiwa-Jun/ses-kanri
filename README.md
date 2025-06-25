@@ -86,6 +86,88 @@ SES企業向けの営業担当者とエンジニアの業務を効率化する�
 - 稼働報告リマインダー
 - タスク期限の通知
 
+## プロジェクト構造
+
+```
+ses-kanri/
+├── 📁 app/                          # Next.js App Router
+│   ├── layout.tsx                   # ルートレイアウト
+│   ├── page.tsx                     # ホームページ
+│   ├── globals.css                  # グローバルCSS
+│   └── (dashboard)/                 # ダッシュボード用ルートグループ
+│       ├── layout.tsx               # ダッシュボード共通レイアウト
+│       ├── sales/                   # 営業担当者向けページ
+│       │   ├── clients/[id]/        # クライアント詳細
+│       │   ├── contracts/[id]/      # 契約詳細
+│       │   ├── engineers/[id]/      # エンジニア詳細
+│       │   ├── projects/[id]/       # 案件詳細
+│       │   ├── teams/               # チーム管理
+│       │   ├── wbs/                 # WBS管理
+│       │   └── notifications/       # 通知
+│       └── engineer/                # エンジニア向けページ
+│           ├── dashboard/           # ダッシュボード
+│           ├── history/             # 案件履歴
+│           ├── notifications/       # 通知
+│           ├── reports/             # 稼働報告
+│           ├── resume/              # 職務経歴書
+│           └── skills/              # スキル管理
+│
+├── 📁 components/                   # 再利用可能なReactコンポーネント
+│   ├── ui/                          # shadcn/ui基本コンポーネント
+│   │   ├── button.tsx               # ボタンコンポーネント
+│   │   ├── card.tsx                 # カードコンポーネント
+│   │   ├── dialog.tsx               # ダイアログコンポーネント
+│   │   └── __tests__/               # UIコンポーネントのテスト
+│   ├── layout/                      # レイアウト関連コンポーネント
+│   ├── clients/                     # クライアント関連コンポーネント
+│   ├── contracts/                   # 契約関連コンポーネント
+│   ├── engineers/                   # エンジニア関連コンポーネント
+│   ├── projects/                    # 案件関連コンポーネント
+│   ├── reports/                     # レポート関連コンポーネント
+│   ├── teams/                       # チーム関連コンポーネント
+│   └── permissions/                 # 権限管理コンポーネント
+│
+├── 📁 hooks/                        # カスタムReactフック
+│   └── __tests__/                   # フックのテスト
+│
+├── 📁 lib/                          # ユーティリティとヘルパー関数
+│   ├── utils.ts                     # 汎用ユーティリティ関数
+│   ├── data.ts                      # サンプルデータとモック
+│   └── __tests__/                   # ライブラリ関数のテスト
+│
+├── 📁 e2e/                          # Playwright E2Eテスト
+├── 📁 scripts/                      # ビルド・デプロイスクリプト
+├── 📁 public/                       # 静的ファイル（画像、アイコンなど）
+│
+├── 📁 .github/                      # GitHub Actions ワークフロー
+│   └── workflows/
+│       ├── ci.yml                   # CI/CDパイプライン
+│       └── lint.yml                 # Lintチェック
+│
+├── 📁 .husky/                       # Git フック設定
+├── 📁 .cursor/                      # Cursor IDE設定
+│
+├── 📄 package.json                  # NPM依存関係とスクリプト
+├── 📄 tsconfig.json                 # TypeScript設定
+├── 📄 tailwind.config.ts            # Tailwind CSS設定
+├── 📄 next.config.js                # Next.js設定
+├── 📄 playwright.config.ts          # Playwright E2Eテスト設定
+├── 📄 jest.config.js                # Jest単体テスト設定
+├── 📄 docker-compose.yml            # 開発環境Docker設定
+├── 📄 docker-compose.prod.yml       # 本番環境Docker設定
+├── 📄 Dockerfile                    # 開発用Dockerイメージ
+└── 📄 Dockerfile.prod               # 本番用Dockerイメージ
+```
+
+### 📁 主要ディレクトリの説明
+
+- **`app/`**: Next.js 13+ のApp Routerを使用したページとレイアウト
+- **`components/`**: 機能別に整理された再利用可能なReactコンポーネント
+- **`hooks/`**: カスタムReactフック（状態管理、API呼び出しなど）
+- **`lib/`**: ビジネスロジック、ユーティリティ関数、データ処理
+- **`e2e/`**: エンドツーエンドテスト（Playwright使用）
+- **`.github/workflows/`**: CI/CDパイプライン設定
+
 ## 技術スタック
 
 - フレームワーク: Next.js
